@@ -1,0 +1,13 @@
+stackname: isolationmodule
+env_folder: env_files
+replicas:
+  dev: 1
+  qa: 1 
+  uat: 1
+  prod: 3
+restart_policy: any
+max_mem: 1024M
+max_cpu: 1
+traefik_application_port: 8000
+traefik_https_enable: true
+traefik_ssl_provider: letsencrypt

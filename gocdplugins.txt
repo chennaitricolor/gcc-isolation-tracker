@@ -1,0 +1,3 @@
+https://raw.githubusercontent.com/dhileepbalaji/devops_tricks/master/utils/composegenerator/docker-compose-template.yml
+https://raw.githubusercontent.com/dhileepbalaji/devops_tricks/master/utils/composegenerator/generator_template.py
+https://raw.githubusercontent.com/dhileepbalaji/devops_tricks/master/utils/swarmStackDeploy/stackDeploy.py

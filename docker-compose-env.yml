@@ -1,0 +1,27 @@
+version: "3.7"
+
+networks:
+  traefik:
+    external: true
+    name: ${TRAEFIK_NETWORK}
+
+services:
+
+  gcc_medicaltracker_fe:
+    image: ${REGISTRY}/${IMAGETAG}:${GO_REVISION}
+    env_file: env_files/${GO_STAGE_NAME}.env
+    environment:
+      SAMPLEENV: SAMPLEENV
+    networks:
+      - traefik
+    deploy:
+      labels:
+        - traefik.frontend.rule=${TRAEFIK_FRONTEND_HOST}
+        - traefik.enable=true
+        - traefik.port=${TRAEFIK_PORT}
+        - traefik.docker.network=${TRAEFIK_NETWORK}
+        # Traefik service that listens to HTTP
+        #- traefik.redirectorservice.frontend.entryPoints=http
+        #- traefik.redirectorservice.frontend.redirect.entryPoint=https
+        # Traefik service that listens to HTTPS
+        #- traefik.webservice.frontend.entryPoints=https
