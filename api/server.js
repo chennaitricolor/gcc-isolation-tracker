@@ -5,6 +5,7 @@ const redis = require('redis');
 const RedisStore = require('connect-redis')(session);
 const bodyParser = require('body-parser');
 const cookieParser = require('cookie-parser');
+const helmet = require('helmet');
 const routes = require('./routes');
 
 const PORT = process.env.PORT || 8000;
@@ -16,6 +17,7 @@ const redisClient = redis.createClient({
 
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
+app.use(helmet());
 app.use(cookieParser());
 app.use(session({
   name: 'gcc-isolation-tracker',
@@ -37,11 +39,19 @@ app.use(express.static(path.join('build')));
 
 routes.bind(app);
 
+var authorized = (req, res, next) => {
+  if (req.session.user && req.cookies['gcc-isolation-tracker']) {
+    next();
+} else {
+  res.redirect('/');
+} 
+}
+
 app.get('/', function (req, res) {
   res.sendFile(path.join(__dirname, '../build', 'index.html'));
 });
 
-app.get('/dashboard', function (req, res) {
+app.get('/dashboard', authorized, function (req, res) {
     res.sendFile(path.join(__dirname, '../build', 'index.html'));
 });
 
