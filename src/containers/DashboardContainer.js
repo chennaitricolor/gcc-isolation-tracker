@@ -6,6 +6,7 @@ import Alert from '@material-ui/lab/Alert';
 import Fab from '@material-ui/core/Fab';
 import AddIcon from '@material-ui/icons/Add';
 import PatientsContainer from './PatientsContainer';
+import AddNewPatientComponent from '../components/AddNewPatientComponent';
 
 const loadingComponentStyle = {
   top: '40%',
@@ -17,19 +18,25 @@ const loadingComponentStyle = {
 
 const FabStyle = { position: 'absolute', top: '80%', left: '80%' };
 
-const AddPatient = () => (
-  <Fab color="secondary" aria-label="add" style={FabStyle}>
-    <AddIcon />
-  </Fab>
-);
-
 const DashboardContainer = (props) => {
-  return (
-    <div style={{ height: '100%' }}>
-      <PatientsContainer />
-      <AddPatient />
-    </div>
+  const [isFormOpen, setFormOpen] = useState(false);
+
+  const AddPatient = () => (
+    <Fab color="secondary" aria-label="add" style={FabStyle} onClick={() => setFormOpen(true)}>
+      <AddIcon />
+    </Fab>
   );
+
+  if (!isFormOpen) {
+    return (
+      <div style={{ height: '100%' }}>
+        <PatientsContainer />
+        <AddPatient />
+      </div>
+    );
+  }
+
+  return <AddNewPatientComponent />
 };
 
 DashboardContainer.propTypes = {};

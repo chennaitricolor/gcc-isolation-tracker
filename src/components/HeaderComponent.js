@@ -6,7 +6,7 @@ const useStyles = makeStyles((theme) => ({
   root: {
     flexGrow: 1,
     display: 'flex',
-    height: '80px',
+    height: '8%',
   },
   title: {
     flexGrow: 1,
