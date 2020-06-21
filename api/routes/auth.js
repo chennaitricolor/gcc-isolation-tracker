@@ -6,7 +6,7 @@ router.post('/login', async (req, res) => {
     const loginResponse = await authService.login(req.body.username, req.body.password);
     if (loginResponse[0]) {
       req.session.user = {
-        userId: req.body.username,
+        data: loginResponse[2],
         isTempUser: false
       };
       return res.send({
@@ -24,8 +24,7 @@ router.post('/login', async (req, res) => {
 
 router.get('/logout', (req, res) => {
   req.session.destroy();
-  res.status(200);
-  res.redirect('/');
+  res.sendStatus(200);
 });
 
 module.exports = router;

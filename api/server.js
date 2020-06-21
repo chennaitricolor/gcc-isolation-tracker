@@ -44,7 +44,7 @@ var authorized = (req, res, next) => {
     next();
 } else {
   res.redirect('/');
-} 
+}
 }
 
 app.get('/', function (req, res) {
