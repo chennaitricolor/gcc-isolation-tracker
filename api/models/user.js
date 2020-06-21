@@ -1,12 +1,16 @@
 /* jshint indent: 2 */
 module.exports = function (sequelize, DataTypes) {
-  const Volunteer = sequelize.define('volunteer', {
-    volunteer_id: {
+  const User = sequelize.define('user', {
+    id: {
       type: DataTypes.BIGINT,
       allowNull: false,
       primaryKey: true
     },
-    volunteer_name: {
+    first_name: {
+      type: DataTypes.STRING,
+      allowNull: true
+    },
+    last_name: {
       type: DataTypes.STRING,
       allowNull: true
     },
@@ -17,11 +21,19 @@ module.exports = function (sequelize, DataTypes) {
     password: {
       type: DataTypes.STRING,
       allowNull: false
+    },
+    active: {
+      type: DataTypes.BOOLEAN,
+      allowNull: true
+    },
+    last_login: {
+      type: DataTypes.DATE,
+      allowNull: false
     }
   }, {
-    tableName: 'volunteer',
+    tableName: 'user',
     timestamps: false
   });
 
-  return Volunteer;
+  return User;
 };

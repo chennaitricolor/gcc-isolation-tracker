@@ -1,23 +1,17 @@
-const { volunteer } = require('../models');
+const { user } = require('../models');
 
 module.exports = {
   login: async (userName, password) => {
     try {
-      const volunteerRecord = await volunteer.findOne({
+      const userRecord = await user.findOne({
           where: {
               login: userName,
               password: password,
+              active: '1'
           }
       });
-      console.log('Result: '+JSON.stringify(volunteerRecord));
-      if (volunteerRecord) {
-        // const passwordCompare = medicalOfficerRecord.first_login_indicator
-        //   ? password === medicalOfficerRecord.password
-        //   : await medicalOfficerRecord.validPassword(password);
-        // if (passwordCompare) {
-        //   return [true, medicalOfficerRecord.first_login_indicator];
-        // }
-        return [true, false];
+      if (userRecord) {
+        return [true, false, { id: userRecord.id, username: userRecord.name, login: userRecord.login }];
       }
       return [false];
     } catch (e) {

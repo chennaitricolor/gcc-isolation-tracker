@@ -1,5 +1,6 @@
 export const apiUrls = {
   login: '/api/auth/login',
+  logout: '/api/auth/logout',
   getZones: '/api/dashboard/zones',
   resetPassword: '/api/auth/password',
   getPersonsByWard: '/api/dashboard/wards/',

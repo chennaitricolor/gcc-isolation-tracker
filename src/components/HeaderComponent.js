@@ -1,8 +1,10 @@
 import React from 'react';
+import { useDispatch } from 'react-redux';
 import Typography from '@material-ui/core/Typography';
 import { makeStyles } from '@material-ui/core/styles';
 import { IconButton } from '@material-ui/core';
 import ExitToAppIcon from '@material-ui/icons/ExitToApp';
+import actions from '../actions/LogoutAction';
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -25,14 +27,22 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 export const HeaderComponent = () => {
+  const dispatch = useDispatch();
   const classes = useStyles();
+
+  const handleLogout = () => {
+    dispatch({
+        type: actions.INITIATE_LOGOUT,
+        payload: {},
+    });
+};
 
   return (
     <div className={classes.root}>
       <Typography variant="h6" className={classes.title}>
         GCC Isolation Module
       </Typography>
-      <IconButton aria-label="Logout" color="primary">
+      <IconButton aria-label="Logout" color="primary" onClick={handleLogout} >
         <ExitToAppIcon />
       </IconButton>
     </div>
