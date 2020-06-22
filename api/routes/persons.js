@@ -21,14 +21,26 @@ router.post('/', async (req, res) => {
   }
 });
 
-router.put('/', async (req, res) => {
+router.put('/:id', async (req, res) => {
+  if(!req.params.id) {
+    return res.status(500).json({
+      message: 'Invalid request'
+    });
+  }
+  const person_id = req.params.id;  
+  const existing_person = await personService.getById(person_id);
+  if(!existing_person) {
+    return res.status(500).json({
+      message: 'Invalid request'
+    });    
+  }
     if(!req.body.id) {
         return res.status(500).json({
             message: `Quarantiner entity 'id' is required`
           });
     }
     try {
-      const savedPerson = await personService.save(req.body);
+      const savedPerson = await personService.update(req.body);
       if (savedPerson) {
         return res.send(savedPerson);
       }
@@ -40,14 +52,10 @@ router.put('/', async (req, res) => {
   });
 
 router.get('/', async(req, res) => {
-    const { phone_number } = req.query;
     try {
-    let person = [];  
-    if(phone_number)
-      person = await personService.getByPhoneNumber(phone_number);
-    else
-      person= await personService.getAll();
-    return res.send(person).status(200);
+    let persons = [];  
+    persons= await personService.getAll(req.session.user);
+    return res.send(persons).status(200);
     } catch(e) {
         return res.json({
             message: e.message
