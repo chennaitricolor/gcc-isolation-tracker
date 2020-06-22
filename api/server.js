@@ -12,21 +12,23 @@ const PORT = process.env.PORT || 8000;
 const app = express();
 const redisClient = redis.createClient({
   host: process.env.REDIS_HOST,
-  port: 6379
+  port: 6379,
 });
 
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
 app.use(helmet());
 app.use(cookieParser());
-app.use(session({
-  name: 'gcc-isolation-tracker',
-  store: new RedisStore({ client: redisClient }),
-  secret: 'keyboard cat',
-  resave: false,
-  saveUninitialized: false,
-  cookie: { secure: false },
-}));
+app.use(
+  session({
+    name: 'gcc-isolation-tracker',
+    store: new RedisStore({ client: redisClient }),
+    secret: 'keyboard cat',
+    resave: false,
+    saveUninitialized: false,
+    cookie: { secure: false },
+  }),
+);
 
 app.use((req, res, next) => {
   res.header('Cache-Control', 'private, no-cache, no-store, must-revalidate');
@@ -42,17 +44,17 @@ routes.bind(app);
 var authorized = (req, res, next) => {
   if (req.session.user && req.cookies['gcc-isolation-tracker']) {
     next();
-} else {
-  res.redirect('/');
-}
-}
+  } else {
+    res.redirect('/');
+  }
+};
 
 app.get('/', function (req, res) {
   res.sendFile(path.join(__dirname, '../build', 'index.html'));
 });
 
 app.get('/dashboard', authorized, function (req, res) {
-    res.sendFile(path.join(__dirname, '../build', 'index.html'));
+  res.sendFile(path.join(__dirname, '../build', 'index.html'));
 });
 
 app.listen(PORT, (error) => {

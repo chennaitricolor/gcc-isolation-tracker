@@ -32,17 +32,17 @@ export const HeaderComponent = () => {
 
   const handleLogout = () => {
     dispatch({
-        type: actions.INITIATE_LOGOUT,
-        payload: {},
+      type: actions.INITIATE_LOGOUT,
+      payload: {},
     });
-};
+  };
 
   return (
     <div className={classes.root}>
       <Typography variant="h6" className={classes.title}>
         GCC Isolation Module
       </Typography>
-      <IconButton aria-label="Logout" color="primary" onClick={handleLogout} >
+      <IconButton aria-label="Logout" color="primary" onClick={handleLogout}>
         <ExitToAppIcon />
       </IconButton>
     </div>

@@ -8,8 +8,8 @@ module.exports = {
     schema: 'gcc_isolation_tracker_dev',
     dialect: 'postgres',
     define: {
-      "createdAt": "created_at",
-      "updatedAt": "updated_at"
-    }
+      createdAt: 'created_at',
+      updatedAt: 'updated_at',
+    },
   },
 };

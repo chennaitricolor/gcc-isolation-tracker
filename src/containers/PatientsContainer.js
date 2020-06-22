@@ -2,7 +2,7 @@ import React from 'react';
 import PatientsComponent from '../components/PatientsComponent';
 
 const PatientsContainer = () => {
-    return <PatientsComponent />;
-}
+  return <PatientsComponent />;
+};
 
 export default PatientsContainer;

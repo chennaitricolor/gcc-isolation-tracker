@@ -1,10 +1,9 @@
-import React, { useState } from 'react';
+import React from 'react';
 import './App.css';
 import HeaderComponent from './components/HeaderComponent';
 import DashboardContainer from './containers/DashboardContainer';
 
 function App() {
-
   return (
     <div className="App">
       <HeaderComponent />
