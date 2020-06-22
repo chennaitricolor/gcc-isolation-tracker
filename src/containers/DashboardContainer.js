@@ -12,7 +12,7 @@ const loadingComponentStyle = {
   width: '50px',
 };
 
-const FabStyle = { position: 'absolute', top: '80%', left: '80%' };
+const FabStyle = { position: 'absolute', top: '90%', left: '80%', backgroundColor: '#3C6886' };
 
 const DashboardContainer = () => {
   const [isFormOpen, setFormOpen] = useState(false);
@@ -32,7 +32,7 @@ const DashboardContainer = () => {
     );
   }
 
-  return <AddNewPatientContainer onCancel={() => setFormOpen(false)}/>
+  return <AddNewPatientContainer onCancel={() => setFormOpen(false)} />;
 };
 
 DashboardContainer.propTypes = {};

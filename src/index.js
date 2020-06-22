@@ -10,122 +10,121 @@ import saga from './sagas/saga';
 import Routes from './utils/routes';
 
 const theme = createMuiTheme({
-    typography: {
-        useNextVariants: true,
-        //fontFamily: ['Roboto'].join(','),
-        font: {
-            color: '#333940',
-        },
+  typography: {
+    useNextVariants: true,
+    fontFamily: ['Lato', 'Literata'].join(','),
+    font: {
+      color: '#333940',
     },
-    root: {
+  },
+  root: {
+    color: '#333940',
+  },
+  palette: {
+    tertiary: { main: '#004261' },
+    primary: { main: '#fcfcfc' },
+    secondary: { main: '#0084FF' },
+    background: { default: '#fcfcfc' },
+    error: { main: '#E10C32' },
+    success: { main: '#00AB84' },
+    buttonColor: { main: '#0099ff' },
+  },
+  overrides: {
+    MuiSvgIcon: {
+      root: {
+        // fill: '#00B4D2',
+      },
+    },
+    MuiPaper: {
+      root: {
+        backgroundColor: 'white',
         color: '#333940',
+      },
     },
-    palette: {
-        tertiary: { main: '#004261' },
-        primary: { main: '#fcfcfc' },
-        secondary: { main: '#0084FF' },
-        background: { default: '#fcfcfc' },
-        error: { main: '#E10C32' },
-        success: { main: '#00AB84' },
-        buttonColor: { main: '#0099ff' },
+    MuiDrawer: {
+      paperAnchorRight: {
+        width: '30%',
+      },
     },
-    overrides: {
-        MuiSvgIcon: {
-            root: {
-                // fill: '#00B4D2',
-            },
+    MuiInput: {
+      underline: {
+        '&:after': {
+          borderBottom: '1px solid #707070',
         },
-        MuiPaper: {
-            root: {
-                backgroundColor: 'white',
-                color: '#333940',
-            },
+        '&:before': {
+          borderBottom: '1px solid #707070',
         },
-        MuiDrawer: {
-            paperAnchorRight: {
-                width: '30%',
-            },
-        },
-        MuiInput: {
-            underline: {
-                '&:after': {
-                    borderBottom: '1px solid #707070',
-                },
-                '&:before': {
-                    borderBottom: '1px solid #707070',
-                },
-            },
-        },
-        MuiPickersToolbar: {
-            toolbar: {
-                backgroundColor: '#0084FF',
-            },
-        },
-        MuiPickersToolbarText: {
-            toolbarTxt: {
-                color: 'rgba(255, 255, 255, 0.54)',
-            },
-            toolbarBtnSelected: {
-                color: '#fff',
-            },
-        },
-        MuiPickersDay: {
-            current: {
-                color: '#0084FF',
-            },
-            daySelected: {
-                color: '#fff',
-                backgroundColor: '#0084FF',
-
-                '&:hover': {
-                    backgroundColor: '#0084FF',
-                },
-            },
-        },
-        MuiPickersYear: {
-            current: {
-                color: '#0084FF',
-            },
-            yearSelected: {
-                color: '#fff',
-                backgroundColor: '#0084FF',
-
-                '&:hover': {
-                    backgroundColor: '#0084FF',
-                },
-            },
-        },
-        MuiButton: {
-            textPrimary: {
-                color: '#0084FF',
-            },
-            contained: {
-                color: '#fff',
-                backgroundColor: '#0084FF',
-
-                '&:hover': {
-                    backgroundColor: '#0084FF',
-                },
-            },
-        },
-        App: {
-            content: {
-                padding: '0px',
-            },
-        },
+      },
     },
+    MuiPickersToolbar: {
+      toolbar: {
+        backgroundColor: '#0084FF',
+      },
+    },
+    MuiPickersToolbarText: {
+      toolbarTxt: {
+        color: 'rgba(255, 255, 255, 0.54)',
+      },
+      toolbarBtnSelected: {
+        color: '#fff',
+      },
+    },
+    MuiPickersDay: {
+      current: {
+        color: '#0084FF',
+      },
+      daySelected: {
+        color: '#fff',
+        backgroundColor: '#0084FF',
+
+        '&:hover': {
+          backgroundColor: '#0084FF',
+        },
+      },
+    },
+    MuiPickersYear: {
+      current: {
+        color: '#0084FF',
+      },
+      yearSelected: {
+        color: '#fff',
+        backgroundColor: '#0084FF',
+
+        '&:hover': {
+          backgroundColor: '#0084FF',
+        },
+      },
+    },
+    MuiButton: {
+      textPrimary: {
+        color: '#3C6886',
+      },
+      contained: {
+        color: '#fff',
+        backgroundColor: '#3C6886',
+        '&:hover': {
+          backgroundColor: '#3C6886',
+        },
+      },
+    },
+    App: {
+      content: {
+        padding: '0px',
+      },
+    },
+  },
 });
 
 sagaMiddleware.run(saga);
 
 ReactDOM.render(
-    <Provider store={store}>
-        <MuiThemeProvider theme={theme}>
-            <CssBaseline />
-            <Routes />
-        </MuiThemeProvider>
-    </Provider>,
-  document.getElementById('root')
+  <Provider store={store}>
+    <MuiThemeProvider theme={theme}>
+      <CssBaseline />
+      <Routes />
+    </MuiThemeProvider>
+  </Provider>,
+  document.getElementById('root'),
 );
 
 // If you want your app to work offline and load faster, you can change

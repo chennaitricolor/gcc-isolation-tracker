@@ -1,7 +1,7 @@
 module.exports = {
-  port: '4004',
+  port: '5432',
   db: {
-    username: 'postgres',
+    username: 'nkumar8',
     password: 'dev',
     database: 'gcc_isolation_tracker',
     host: 'localhost',
