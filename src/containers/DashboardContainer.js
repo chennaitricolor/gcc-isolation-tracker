@@ -6,7 +6,7 @@ import Alert from '@material-ui/lab/Alert';
 import Fab from '@material-ui/core/Fab';
 import AddIcon from '@material-ui/icons/Add';
 import PatientsContainer from './PatientsContainer';
-import AddNewPatientComponent from '../components/AddNewPatientComponent';
+import AddNewPatientContainer from './AddNewPatientContainer';
 
 const loadingComponentStyle = {
   top: '40%',
@@ -36,7 +36,7 @@ const DashboardContainer = (props) => {
     );
   }
 
-  return <AddNewPatientComponent />
+  return <AddNewPatientContainer onCancel={() => setFormOpen(false)}/>
 };
 
 DashboardContainer.propTypes = {};
