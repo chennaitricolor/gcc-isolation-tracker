@@ -4,7 +4,7 @@ export const apiUrls = {
   getZones: '/api/zones',
   resetPassword: '/api/auth/password',
   getPersonsByWard: '/api/dashboard/wards/',
-  getPersonsDetails: '/api/form/persons/:id',
+  getPersonsDetails: '/api/persons',
   addContractedPersons: '/api/persons',
   locationsByType: '/api/form/locations/street_name',
   searchHospitalName: '/api/form/hospitals',

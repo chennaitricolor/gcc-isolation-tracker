@@ -18,6 +18,7 @@ const useStyles = makeStyles(() => ({
   pageTitle: {
     display: 'flex',
     justifyContent: 'space-between',
+    alignItems: 'center',
   },
   form: {
     display: 'flex',
@@ -92,8 +93,8 @@ const initialState = {
   phone_number: '',
   family_member_total: '',
   isolation_start_date: moment().format('YYYY-MM-DD'),
-  type: '',
-  subtype: '',
+  quarantine_type: '',
+  quarantine_sub_type: '',
   _address: {
     door_num: '',
     building_name: '',
@@ -119,7 +120,7 @@ const AddNewPatientComponent = ({ onSubmit, onCancel, zones }) => {
       <TextField
         className={styles.textField}
         label={label}
-        value={details[field]}
+        value={details[field] || details._address[field]}
         size="medium"
         onChange={(e) => handleChange(field, e.target.value)}
         InputLabelProps={{ shrink: true }}
@@ -132,7 +133,7 @@ const AddNewPatientComponent = ({ onSubmit, onCancel, zones }) => {
       <TextField
         className={styles.textField}
         label={label}
-        value={details[field]}
+        value={details[field] || details._address[field]}
         type="number"
         size="medium"
         onChange={(e) => handleChange(field, e.target.value)}
@@ -148,9 +149,9 @@ const AddNewPatientComponent = ({ onSubmit, onCancel, zones }) => {
           Gender / பாலினம்
         </FormLabel>
         <RadioGroup row aria-label="gender" name="gender1" value={details[field]} onChange={(e) => personalInfoOnChange(field, e.target.value)}>
-          <FormControlLabel classes={{ label: styles.genderLegend }} value="female" control={<Radio />} label="Female" />
-          <FormControlLabel classes={{ label: styles.genderLegend }} value="male" control={<Radio />} label="Male" />
-          <FormControlLabel classes={{ label: styles.genderLegend }} value="others" control={<Radio />} label="Others" />
+          <FormControlLabel classes={{ label: styles.genderLegend }} value="F" control={<Radio />} label="Female" />
+          <FormControlLabel classes={{ label: styles.genderLegend }} value="M" control={<Radio />} label="Male" />
+          <FormControlLabel classes={{ label: styles.genderLegend }} value="O" control={<Radio />} label="Others" />
         </RadioGroup>
       </FormControl>
     );
@@ -177,9 +178,17 @@ const AddNewPatientComponent = ({ onSubmit, onCancel, zones }) => {
     return (
       <FormControl className={styles.dropDown}>
         <InputLabel>{label}</InputLabel>
-        <Select className={styles.dropDownSelect} value={details[field]} onChange={(e) => handleChange(field, e.target.value)}>
+        <Select
+          className={styles.dropDownSelect}
+          value={details[field] || details._address[field]}
+          onChange={(e) => handleChange(field, e.target.value)}
+        >
           {list.map((item) => {
-            return <MenuItem value={item.id}>{item.name}</MenuItem>;
+            return (
+              <MenuItem key={item.id} value={item.id}>
+                {item.name}
+              </MenuItem>
+            );
           })}
         </Select>
       </FormControl>
@@ -189,7 +198,7 @@ const AddNewPatientComponent = ({ onSubmit, onCancel, zones }) => {
   return (
     <div className={styles.root}>
       <div className={styles.pageTitle}>
-        <Typography variant="h4">Add New Patient</Typography>
+        <Typography variant="h5">Add New Patient</Typography>
         <Button variant="contained" onClick={onCancel} className={styles.cancelButton}>
           Cancel
         </Button>
@@ -203,8 +212,8 @@ const AddNewPatientComponent = ({ onSubmit, onCancel, zones }) => {
         {renderGenderInput()}
         {renderNumberInput('Phone Number / தொலைபேசி எண்', 'phone_number', personalInfoOnChange)}
         {renderIsolationDateInput()}
-        {renderNumberInput('Type', 'type', personalInfoOnChange)}
-        {renderNumberInput('Subtype', 'subtype', personalInfoOnChange)}
+        {renderNumberInput('Type', 'quarantine_type', personalInfoOnChange)}
+        {renderNumberInput('Subtype', 'quarantine_sub_type', personalInfoOnChange)}
         {renderNumberInput('Total Family Members / மொத்த குடும்ப உறுப்பினர்கள்', 'family_member_total', personalInfoOnChange)}
         <Typography variant="h5" className={styles.detailsHeader}>
           Location Details

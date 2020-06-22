@@ -1,7 +1,7 @@
 import actions from '../actions/getPersonsDetailAction';
 
 const defaultState = {
-  personDetails: null,
+  personsDetails: [],
   isLoading: false,
 };
 
@@ -10,7 +10,7 @@ const getPersonsDetailReducer = (state = defaultState, { type, payload }) => {
     case actions.GET_PERSONS_DETAILS:
       return Object.assign({}, state, { isLoading: true });
     case actions.GET_PERSONS_DETAILS_SUCCESS:
-      return Object.assign({}, state, { isLoading: false, personDetails: payload });
+      return Object.assign({}, state, { isLoading: false, personsDetails: payload });
     case actions.GET_PERSONS_DETAILS_FAILURE:
       return Object.assign({}, state, { isLoading: false, error: payload });
     default:

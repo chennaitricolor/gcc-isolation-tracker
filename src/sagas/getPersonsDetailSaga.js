@@ -5,12 +5,12 @@ import { apiUrls } from '../utils/constants';
 
 export default function* getPersonsDetailSaga(action) {
   try {
-    const api = apiUrls.getPersonsDetails.replace(':id', action.payload.personId);
+    const api = apiUrls.getPersonsDetails;
     const response = yield call(callFetchApi, api, {}, 'GET');
-    if (response.data.success) {
+    if (response.data) {
       yield put({
         type: getPersonsDetailAction.GET_PERSONS_DETAILS_SUCCESS,
-        payload: response.data.details,
+        payload: response.data,
       });
     } else {
       yield put({
