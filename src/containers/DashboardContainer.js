@@ -1,8 +1,4 @@
-import React, { useEffect, useState } from 'react';
-import * as PropTypes from 'prop-types';
-import { useDispatch, useSelector } from 'react-redux';
-import LoadingComponent from '../components/LoadingComponent';
-import Alert from '@material-ui/lab/Alert';
+import React, { useState } from 'react';
 import Fab from '@material-ui/core/Fab';
 import AddIcon from '@material-ui/icons/Add';
 import PatientsContainer from './PatientsContainer';
@@ -18,7 +14,7 @@ const loadingComponentStyle = {
 
 const FabStyle = { position: 'absolute', top: '80%', left: '80%' };
 
-const DashboardContainer = (props) => {
+const DashboardContainer = () => {
   const [isFormOpen, setFormOpen] = useState(false);
 
   const AddPatient = () => (

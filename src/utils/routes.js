@@ -5,20 +5,20 @@ import Loadable from 'react-loadable';
 import LoadingComponent from '../components/LoadingComponent';
 
 const AsyncLogin = Loadable({
-    loader: () => import('../containers/LoginContainer'),
-    loading: LoadingComponent,
+  loader: () => import('../containers/LoginContainer'),
+  loading: LoadingComponent,
 });
 
 const AsyncHome = Loadable({
-    loader: () => import('../App'),
-    loading: LoadingComponent,
+  loader: () => import('../App'),
+  loading: LoadingComponent,
 });
 
-export default props => (
-    <Router history={history}>
-        <Switch>
-            <Route exact path="/" component={AsyncLogin} />
-            <Route exact path="/dashboard" component={AsyncHome} />
-        </Switch>
-    </Router>
+export default (props) => (
+  <Router history={history}>
+    <Switch>
+      <Route exact path="/" component={AsyncLogin} />
+      <Route exact path="/dashboard" component={AsyncHome} />
+    </Switch>
+  </Router>
 );

@@ -57,7 +57,7 @@ module.exports = function (sequelize, DataTypes) {
       },
   }, {
     tableName: 'person',
-    timestamps: false
+    timestamps: true
   });
 
   Person.associate = (db) => {

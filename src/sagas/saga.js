@@ -16,7 +16,6 @@ import addContractedPersonsSaga from './addContractedPersonSaga';
 import updateContractedPersonsSaga from './updateContractedPersonsSaga';
 import logoutSaga from './LogoutSaga';
 
-
 export default function* saga() {
   yield takeLatest(loginActions.INITIATE_LOGIN, loginSaga);
   yield takeLatest(routesActions.ROUTE_TO_PATH, routesSaga);
