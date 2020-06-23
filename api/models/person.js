@@ -40,11 +40,11 @@ module.exports = function (sequelize, DataTypes) {
       allowNull: false
     },
     quarantine_type: {
-      type: DataTypes.STRING,
+      type: DataTypes.INTEGER,
       allowNull: true
     },
     quarantine_sub_type: {
-      type: DataTypes.STRING,
+      type: DataTypes.INTEGER,
       allowNull: true
     },
     created_at: {
@@ -63,6 +63,9 @@ module.exports = function (sequelize, DataTypes) {
   Person.associate = (db) => {
     Person.belongsTo(db.address, { as: '_address', foreignKey: 'address' });
     Person.belongsTo(db.user, { as: '_created_by', foreignKey: 'created_by' });
+    Person.belongsTo(db.quarantineType, { as: '_quarantine_type', foreignKey: 'quarantine_type' });
+    Person.belongsTo(db.quarantineSubType, { as: '_quarantine_sub_type', foreignKey: 'quarantine_sub_type' });
+    Person.hasMany(db.personIsolation, { as: '_isolation_enquiries', foreignKey: 'person' });
   };
 
   return Person;

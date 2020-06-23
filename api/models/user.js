@@ -6,11 +6,7 @@ module.exports = function (sequelize, DataTypes) {
       allowNull: false,
       primaryKey: true
     },
-    first_name: {
-      type: DataTypes.STRING,
-      allowNull: true
-    },
-    last_name: {
+    name: {
       type: DataTypes.STRING,
       allowNull: true
     },

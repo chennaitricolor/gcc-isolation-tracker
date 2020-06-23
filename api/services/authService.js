@@ -7,7 +7,7 @@ module.exports = {
           where: {
               login: userName,
               password: password,
-              active: '1'
+              active: true,
           }
       });
       if (userRecord) {

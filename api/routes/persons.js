@@ -1,5 +1,5 @@
 const router = require('express').Router();
-const { personService } = require('../services');
+const { personService, personIsolationService } = require('../services');
 
 router.post('/', async (req, res) => {
   try {
@@ -73,6 +73,46 @@ router.get('/:id', async(req, res) => {
             message: e.message
         }).status(500);
     }
+});
+
+router.post('/:id/isolation_enquiries', async (req, res) => {
+  const { id } = req.params;
+  try {
+    const existingPerson = await personService.getById(id);
+    if(!existingPerson) {
+        return res.status(500).json({
+            message: `Invalid person with id ${id}`
+          });
+    }
+    const savedPersonIsolationDetail = await personService.saveIsolationDetail(req.body, req.session.user);
+    if (savedPersonIsolationDetail) {
+      return res.send(savedPersonIsolationDetail);
+    }
+  } catch (e) {
+    return res.status(500).json({
+      message: e.message
+    });
+  }
+});
+
+router.get('/:id/isolation_enquiries/last_check_day', async (req, res) => {
+  const { id } = req.params;
+  try {
+    const existingPerson = await personService.getById(id);
+    if(!existingPerson) {
+        return res.status(500).json({
+            message: `Invalid person with id ${id}`
+          });
+    }
+    const savedPersonIsolationDetail = await personIsolationService.getLatestEnquiryForPerson(id);
+    if (savedPersonIsolationDetail) {
+      return res.send(savedPersonIsolationDetail);
+    }
+  } catch (e) {
+    return res.status(500).json({
+      message: e.message
+    });
+  }
 });
 
 module.exports = router;
