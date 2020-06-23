@@ -14,7 +14,7 @@ const FabStyle = { position: 'absolute', top: '90%', left: '80%', backgroundColo
 const DashboardContainer = () => {
   const dispatch = useDispatch();
   const [isFormOpen, setFormOpen] = useState(false);
-  const toastMessage = useSelector(state => state.toastMessageReducer.toastMessage);
+  const toastMessage = useSelector((state) => state.toastMessageReducer.toastMessage);
 
   useEffect(() => {
     dispatch({
@@ -30,7 +30,7 @@ const DashboardContainer = () => {
       type: toastActions.SET_TOAST_MESSAGE,
       payload,
     });
-  }
+  };
 
   const AddPatient = () => (
     <Fab color="secondary" aria-label="add" style={FabStyle} onClick={() => setFormOpen(true)}>
@@ -46,12 +46,13 @@ const DashboardContainer = () => {
           <AddPatient />
         </div>
       )}
-      {isFormOpen && (
-        <AddNewPatientContainer
-          onCancel={() => setFormOpen(false)}
-        />
-      )}
-      <ToastComponent openToast={toastMessage} toastMessage={toastMessage} handleClose={() => setToastMessage(null)} toastVariant="success" />
+      {isFormOpen && <AddNewPatientContainer onCancel={() => setFormOpen(false)} />}
+      <ToastComponent
+        openToast={toastMessage !== null}
+        toastMessage={toastMessage}
+        handleClose={() => setToastMessage(null)}
+        toastVariant="success"
+      />
     </>
   );
 };

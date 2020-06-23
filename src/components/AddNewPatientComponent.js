@@ -95,7 +95,7 @@ const initialState = {
   family_member_total: '',
   isolation_start_date: moment().format('YYYY-MM-DD'),
   quarantine_type: '',
-  quarantine_sub_type: '',
+  quarantine_sub_type: 0,
   _address: {
     door_num: '',
     building_name: '',
@@ -147,7 +147,7 @@ const AddNewPatientComponent = ({ onSubmit, onCancel, zones, types }) => {
     return (
       <FormControl component="fieldset" className={styles.genderInput}>
         <FormLabel component="legend" className={styles.genderLegend}>
-          Gender / பாலினம்
+          Gender / பாலினம்*
         </FormLabel>
         <RadioGroup row aria-label="gender" name="gender1" value={details[field]} onChange={(e) => personalInfoOnChange(field, e.target.value)}>
           <FormControlLabel classes={{ label: styles.genderLegend }} value="F" control={<Radio />} label="Female" />
@@ -161,7 +161,7 @@ const AddNewPatientComponent = ({ onSubmit, onCancel, zones, types }) => {
   const renderIsolationDateInput = (field = 'isolation_start_date') => {
     return (
       <TextField
-        label="Isolation Start Date"
+        label="Isolation Start Date*"
         type="date"
         size="medium"
         className={styles.textField}
@@ -231,28 +231,28 @@ const AddNewPatientComponent = ({ onSubmit, onCancel, zones, types }) => {
         <Typography variant="h5" className={styles.detailsHeader}>
           Personal Details
         </Typography>
-        {renderTextInput('Person Name / நபர் பெயர்', 'name', personalInfoOnChange)}
-        {renderNumberInput('Age / வயது', 'age', personalInfoOnChange)}
+        {renderTextInput('Person Name / நபர் பெயர்*', 'name', personalInfoOnChange)}
+        {renderNumberInput('Age / வயது*', 'age', personalInfoOnChange)}
         {renderGenderInput()}
-        {renderNumberInput('Phone Number / தொலைபேசி எண்', 'phone_number', personalInfoOnChange)}
+        {renderNumberInput('Phone Number / தொலைபேசி எண்*', 'phone_number', personalInfoOnChange)}
         {renderIsolationDateInput()}
-        {renderDropdownInput('Quarantine Type', 'quarantine_type', personalInfoOnChange, types)}
+        {renderDropdownInput('Quarantine Type*', 'quarantine_type', personalInfoOnChange, types)}
         {details.quarantine_type &&
           quarantineSubTypes().length > 0 &&
-          renderDropdownInput('Quarantine Sub-Type', 'quarantine_sub_type', personalInfoOnChange, quarantineSubTypes())}
-        {renderNumberInput('Total Family Members / மொத்த குடும்ப உறுப்பினர்கள்', 'family_member_total', personalInfoOnChange)}
+          renderDropdownInput('Quarantine Sub-Type*', 'quarantine_sub_type', personalInfoOnChange, quarantineSubTypes())}
+        {renderNumberInput('Total Family Members / மொத்த குடும்ப உறுப்பினர்கள்*', 'family_member_total', personalInfoOnChange)}
         <Typography variant="h5" className={styles.detailsHeader}>
           Location Details
         </Typography>
-        {renderTextInput('Door No / கதவு எண்', 'door_num', addressInfoOnChange)}
-        {renderTextInput('Building Name / கட்டிட பெயர்', 'building_name', addressInfoOnChange)}
+        {renderTextInput('Door No / கதவு எண்*', 'door_num', addressInfoOnChange)}
+        {renderTextInput('Building Name / கட்டிட பெயர்*', 'building_name', addressInfoOnChange)}
         {renderTextInput('House No. Old / வீட்டின் எண் பழையது', 'house_num_old', addressInfoOnChange)}
         {renderTextInput('House No. New / வீட்டின் எண் புதியது', 'house_num_new', addressInfoOnChange)}
-        {renderTextInput('Street Name / தெரு பெயர்', 'street', addressInfoOnChange)}
-        {renderTextInput('Area Name / பகுதி பெயர்', 'area', addressInfoOnChange)}
-        {renderTextInput('Locality / வட்டாரம்', 'locality', addressInfoOnChange)}
-        {renderDropdownInput('Zone / மண்டலம்', 'zone', addressInfoOnChange, zones)}
-        {renderTextInput('Division', 'division', addressInfoOnChange)}
+        {renderTextInput('Street Name / தெரு பெயர்*', 'street', addressInfoOnChange)}
+        {renderTextInput('Area Name / பகுதி பெயர்*', 'area', addressInfoOnChange)}
+        {renderTextInput('Locality / வட்டாரம்*', 'locality', addressInfoOnChange)}
+        {renderDropdownInput('Zone / மண்டலம்*', 'zone', addressInfoOnChange, zones)}
+        {renderTextInput('Division*', 'division', addressInfoOnChange)}
       </form>
       <Button variant="contained" disabled={!canEnableSubmit()} onClick={() => onSubmit(details)} className={styles.submitButton}>
         Submit

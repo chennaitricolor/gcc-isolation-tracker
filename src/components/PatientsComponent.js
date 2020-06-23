@@ -132,9 +132,12 @@ const PatientsComponent = ({ patients, zones }) => {
   const PatientCards = ({ details, onSelect }) => {
     return details.map((detail) => {
       const { id, name, phone_number, age, gender, _address, isolation_start_date, _isolation_enquiries } = detail;
-      const { door_num, house_num_new, building_name, street, area, locality, division, zone } = _address;
+      const { door_num, house_num_new, house_num_old, building_name, street, area, locality, division, zone } = _address;
       const zoneName = find(zones, ['id', zone]).name;
-      const address = join([door_num, house_num_new, building_name, street, area, locality, zoneName, division], ', ');
+      const address = join(
+        filter([door_num, house_num_new, house_num_old, building_name, street, area, locality, zoneName, division], (item) => item),
+        ', ',
+      );
       const currentDay = moment().diff(moment(isolation_start_date), 'days') + 1;
       return (
         <div key={id} className={styles.patientCard} onClick={() => onSelect({ ...detail, address, currentDay })}>
@@ -167,8 +170,15 @@ const PatientsComponent = ({ patients, zones }) => {
     });
   };
 
-  const pendingPatients = filter(patients, (patient) => !find(patient._isolation_enquiries, ['status_check_date', moment().format('YYYY-MM-DD')]));
-  const completedPatients = filter(patients, (patient) => find(patient._isolation_enquiries, ['status_check_date', moment().format('YYYY-MM-DD')]));
+  const pendingPatients = filter(
+    patients,
+    (patient) =>
+      patient._isolation_enquiries.length < 15 && !find(patient._isolation_enquiries, ['status_check_date', moment().format('YYYY-MM-DD')]),
+  );
+  const completedPatients = filter(
+    patients,
+    (patient) => patient._isolation_enquiries.length < 15 && find(patient._isolation_enquiries, ['status_check_date', moment().format('YYYY-MM-DD')]),
+  );
 
   if (contractedPersonResponse.addContractedPersonMessage !== '' && contractedPersonResponse.addContractedPersonMessage !== undefined) {
     return (
