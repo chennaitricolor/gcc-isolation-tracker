@@ -1,6 +1,7 @@
 version: "3.7"
 
 networks:
+  default:
   traefik:
     external: true
     name: ${TRAEFIK_NETWORK}
