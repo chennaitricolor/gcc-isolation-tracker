@@ -5,13 +5,12 @@ import Dialog from '@material-ui/core/Dialog';
 import DialogContent from '@material-ui/core/DialogContent';
 import IconButton from '@material-ui/core/IconButton';
 import CancelIcon from '@material-ui/icons/Cancel';
-import FormLabel from '@material-ui/core/FormLabel';
 import RadioGroup from '@material-ui/core/RadioGroup';
 import FormControlLabel from '@material-ui/core/FormControlLabel';
 import Radio from '@material-ui/core/Radio';
 import TextField from '@material-ui/core/TextField';
 import Button from '@material-ui/core/Button';
-import {useDispatch, useSelector} from 'react-redux';
+import { useDispatch } from 'react-redux';
 import RequiredFieldMarker from './RequiredFieldMarker';
 
 const useStyles = makeStyles(() => ({
@@ -194,8 +193,8 @@ const AttendanceComponent = (props) => {
           <div style={{ marginTop: '5%' }}>
             {renderRadioButtonField(
               'Is the person available at home?',
-              'isFamilyMembersPresent',
-              attendanceDetails.isFamilyMembersPresent,
+              'isPersonPresent',
+              attendanceDetails.isPersonPresent,
               yesNoRadioButton,
               handleOnChange,
               styles,
@@ -205,8 +204,8 @@ const AttendanceComponent = (props) => {
           <div style={{ marginTop: '5%' }}>
             {renderRadioButtonField(
               'Are the Family members present at home?',
-              'isPersonPresent',
-              attendanceDetails.isPersonPresent,
+              'isFamilyMembersPresent',
+              attendanceDetails.isFamilyMembersPresent,
               yesNoRadioButton,
               handleOnChange,
               styles,
@@ -239,12 +238,7 @@ const AttendanceComponent = (props) => {
           </div>
         </div>
         <div style={{ textAlign: 'center', marginBottom: '2%' }}>
-          <Button
-            variant="contained"
-            className={'submit-button'}
-            disabled={!showSave}
-            onClick={handleSave}
-          >
+          <Button variant="contained" className={'submit-button'} disabled={!showSave} onClick={handleSave}>
             SUBMIT
           </Button>
         </div>

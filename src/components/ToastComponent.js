@@ -92,7 +92,7 @@ export const ToastComponent = (props) => (
 
 ToastComponent.defaultProps = {
   openToast: false,
-}
+};
 
 ToastComponent.propTypes = {
   toastMessage: PropTypes.string,
