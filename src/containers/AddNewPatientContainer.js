@@ -1,8 +1,7 @@
-import React, { useEffect } from 'react';
+import React from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import LoadingComponent from '../components/LoadingComponent';
 import Alert from '@material-ui/lab/Alert';
-import zoneActions from '../actions/GetZonesAction';
 import addActions from '../actions/addContractedPersonsAction';
 import AddNewPatientComponent from '../components/AddNewPatientComponent';
 
@@ -18,16 +17,23 @@ const AddNewPatientContainer = (props) => {
   const { onCancel } = props;
   const dispatch = useDispatch();
   const getAllZones = useSelector((state) => state.getAllZonesReducer);
+  const getQuarantineTypes = useSelector((state) => state.getQuarantineTypesReducer);
 
   const onSubmit = (payload) => {
-    dispatch({type:addActions.ADD_CONTRACTED_PERSONS, payload})
+    dispatch({ type: addActions.ADD_CONTRACTED_PERSONS, payload });
+    onCancel();
+  };
+
+  if ((getAllZones !== undefined && getAllZones.isLoading) || (getQuarantineTypes !== undefined && getQuarantineTypes.isLoading)) {
+    return <LoadingComponent isLoading={true} style={loadingComponentStyle} />;
   }
 
-  if (getAllZones !== undefined && getAllZones.isLoading) {
-    return <LoadingComponent isLoading={getAllZones.isLoading} style={loadingComponentStyle} />;
-  }
-
-  if ((getAllZones !== undefined && getAllZones.allZonesError) || !getAllZones) {
+  if (
+    (getAllZones !== undefined && getAllZones.allZonesError) ||
+    !getAllZones ||
+    (getQuarantineTypes !== undefined && getQuarantineTypes.allZonesError) ||
+    !getQuarantineTypes
+  ) {
     return (
       <Alert style={{ fontWeight: 'bold', justifyContent: 'center' }} severity={'error'}>
         Error connecting to server.. Please try later..
@@ -35,7 +41,7 @@ const AddNewPatientContainer = (props) => {
     );
   }
 
-  return <AddNewPatientComponent onSubmit={onSubmit} onCancel={onCancel} zones={getAllZones.allZones} />;
+  return <AddNewPatientComponent onSubmit={onSubmit} onCancel={onCancel} zones={getAllZones.allZones} types={getQuarantineTypes.types}/>;
 };
 
 export default AddNewPatientContainer;

@@ -11,6 +11,7 @@ import FormLabel from '@material-ui/core/FormLabel';
 import Select from '@material-ui/core/Select';
 import MenuItem from '@material-ui/core/MenuItem';
 import InputLabel from '@material-ui/core/InputLabel';
+import find from 'lodash/find';
 import moment from 'moment';
 
 const useStyles = makeStyles(() => ({
@@ -108,7 +109,7 @@ const initialState = {
   },
 };
 
-const AddNewPatientComponent = ({ onSubmit, onCancel, zones }) => {
+const AddNewPatientComponent = ({ onSubmit, onCancel, zones, types }) => {
   const styles = useStyles();
   const [details, setDetails] = useState(initialState);
 
@@ -198,7 +199,7 @@ const AddNewPatientComponent = ({ onSubmit, onCancel, zones }) => {
   return (
     <div className={styles.root}>
       <div className={styles.pageTitle}>
-        <Typography variant="h5">Add New Patient</Typography>
+        <Typography variant="h5">Add New Person</Typography>
         <Button variant="contained" onClick={onCancel} className={styles.cancelButton}>
           Cancel
         </Button>
@@ -212,8 +213,14 @@ const AddNewPatientComponent = ({ onSubmit, onCancel, zones }) => {
         {renderGenderInput()}
         {renderNumberInput('Phone Number / தொலைபேசி எண்', 'phone_number', personalInfoOnChange)}
         {renderIsolationDateInput()}
-        {renderNumberInput('Type', 'quarantine_type', personalInfoOnChange)}
-        {renderNumberInput('Subtype', 'quarantine_sub_type', personalInfoOnChange)}
+        {renderDropdownInput('Quarantine Type', 'quarantine_type', personalInfoOnChange, types)}
+        {details.quarantine_type &&
+          renderDropdownInput(
+            'Quarantine Sub-Type',
+            'quarantine_sub_type',
+            personalInfoOnChange,
+            find(types, ['id', details.quarantine_type]).quarantine_sub_types,
+          )}
         {renderNumberInput('Total Family Members / மொத்த குடும்ப உறுப்பினர்கள்', 'family_member_total', personalInfoOnChange)}
         <Typography variant="h5" className={styles.detailsHeader}>
           Location Details
