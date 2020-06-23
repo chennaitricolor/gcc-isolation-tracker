@@ -173,11 +173,11 @@ const PatientsComponent = ({ patients, zones }) => {
   const pendingPatients = filter(
     patients,
     (patient) =>
-      patient._isolation_enquiries.length < 15 && !find(patient._isolation_enquiries, ['status_check_date', moment().format('YYYY-MM-DD')]),
+      patient._isolation_enquiries.length < 14 && !find(patient._isolation_enquiries, ['status_check_date', moment().format('YYYY-MM-DD')]),
   );
   const completedPatients = filter(
     patients,
-    (patient) => patient._isolation_enquiries.length < 15 && find(patient._isolation_enquiries, ['status_check_date', moment().format('YYYY-MM-DD')]),
+    (patient) => patient._isolation_enquiries.length < 14 && find(patient._isolation_enquiries, ['status_check_date', moment().format('YYYY-MM-DD')]),
   );
 
   if (contractedPersonResponse.addContractedPersonMessage !== '' && contractedPersonResponse.addContractedPersonMessage !== undefined) {

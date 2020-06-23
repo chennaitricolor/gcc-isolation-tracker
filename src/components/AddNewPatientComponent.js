@@ -95,7 +95,7 @@ const initialState = {
   family_member_total: '',
   isolation_start_date: moment().format('YYYY-MM-DD'),
   quarantine_type: '',
-  quarantine_sub_type: 0,
+  quarantine_sub_type: null,
   _address: {
     door_num: '',
     building_name: '',
@@ -170,7 +170,7 @@ const AddNewPatientComponent = ({ onSubmit, onCancel, zones, types }) => {
         InputLabelProps={{
           shrink: true,
         }}
-        inputProps={{ max: moment().format('YYYY-MM-DD'), min: moment().subtract(14, 'day').format('YYYY-MM-DD') }}
+        inputProps={{ max: moment().format('YYYY-MM-DD'), min: moment().subtract(13, 'day').format('YYYY-MM-DD') }}
       />
     );
   };
