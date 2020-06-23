@@ -2,6 +2,7 @@ import { takeLatest } from 'redux-saga/effects';
 import loginActions from '../actions/LoginAction';
 import routesActions from '../actions/RouteToPathAction';
 import getZonesAction from '../actions/GetZonesAction';
+import getQuarantineTypesAction from '../actions/GetQuarantineTypesAction';
 import resetPasswordActions from '../actions/ResetPasswordAction';
 import getPersonsDetailAction from '../actions/getPersonsDetailAction';
 import addContractedPersonsAction from '../actions/addContractedPersonsAction';
@@ -14,6 +15,7 @@ import resetPasswordSaga from './ResetPasswordSaga';
 import getPersonsDetailSaga from './getPersonsDetailSaga';
 import addContractedPersonsSaga from './addContractedPersonSaga';
 import updateContractedPersonsSaga from './updateContractedPersonsSaga';
+import getQuarantineTypesSaga from './GetQuaratineTypesSaga';
 import logoutSaga from './LogoutSaga';
 
 export default function* saga() {
@@ -25,4 +27,5 @@ export default function* saga() {
   yield takeLatest(addContractedPersonsAction.ADD_CONTRACTED_PERSONS, addContractedPersonsSaga);
   yield takeLatest(updateContractedPersonsAction.UPDATE_CONTRACTED_PERSONS, updateContractedPersonsSaga);
   yield takeLatest(logoutActions.INITIATE_LOGOUT, logoutSaga);
+  yield takeLatest(getQuarantineTypesAction.GET_QUARANTINE_TYPE, getQuarantineTypesSaga);
 }
