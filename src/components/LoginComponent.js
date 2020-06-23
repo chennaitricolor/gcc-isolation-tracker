@@ -10,16 +10,15 @@ import IconButton from '@material-ui/core/IconButton';
 import Visibility from '@material-ui/icons/Visibility';
 import VisibilityOff from '@material-ui/icons/VisibilityOff';
 
-const useStyles = makeStyles((theme) => ({
+const useStyles = makeStyles(() => ({
   loginContainer: {
     color: '#777',
     borderRadius: '3px',
     borderStyle: 'solid',
     borderWidth: '1px',
-    height: 'auto',
-    margin: '100px auto 8px',
-    width: '400px',
-    minWidth: '300px',
+    height: '100%',
+    margin: 'auto',
+    width: '100%',
   },
   loginInformationContainer: {
     backgroundColor: '#243762',
@@ -31,7 +30,7 @@ const useStyles = makeStyles((theme) => ({
     color: '#fff',
   },
   agentXLoginLogo: {
-    paddingLeft: '15%',
+    padding: 0,
   },
   agentXSignInInformation: {
     paddingTop: '5%',
@@ -65,6 +64,11 @@ const useStyles = makeStyles((theme) => ({
     width: '94%',
     bottom: '0',
   },
+  '@global': {
+    '.sign-in-button:hover': {
+      backgroundColor: '#3C6886',
+    },
+  },
 }));
 
 export const LoginComponent = (props) => {
@@ -72,8 +76,10 @@ export const LoginComponent = (props) => {
   return (
     <div className={styles.loginContainer}>
       <div className={styles.loginInformationContainer}>
-        <Typography className={styles.agentXTitle}>GCC - Medical Tracker</Typography>
-        <img className={styles.agentXLoginLogo} alt={'loginLogo'} src={agentXLoginLogo} />
+        <Typography className={styles.agentXTitle}>GCC - Isolation Tracker</Typography>
+        <div style={{ textAlign: 'center' }}>
+          <img className={styles.agentXLoginLogo} alt={'loginLogo'} src={agentXLoginLogo} />
+        </div>
         <Typography className={styles.agentXSignInInformation}>Sign in by entering the information below</Typography>
       </div>
       {props.getLoginResponse.loginMessage === 'Unauthorized' ? <div className={styles.errorMessage}>Invalid Credentials</div> : <div />}
@@ -107,7 +113,7 @@ export const LoginComponent = (props) => {
           ),
         }}
       />
-      <Button id={'agent-x-sign-in-button'} variant="contained" className={styles.actionButton} onClick={(event) => props.handleLogin(event)}>
+      <Button id={'agent-x-sign-in-button'} variant="contained" className={styles.actionButton + ' sign-in-button'} onClick={(event) => props.handleLogin(event)}>
         SIGN IN
       </Button>
     </div>
