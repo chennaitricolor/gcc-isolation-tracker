@@ -39,6 +39,10 @@ module.exports = function (sequelize, DataTypes) {
       type: DataTypes.DATE,
       allowNull: false
     },
+    isolation_end_date: {
+      type: DataTypes.DATE,
+      allowNull: true
+    },
     quarantine_type: {
       type: DataTypes.INTEGER,
       allowNull: true

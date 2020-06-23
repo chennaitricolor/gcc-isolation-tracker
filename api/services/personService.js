@@ -13,6 +13,7 @@ module.exports = {
         _person['address'] = address_result.id;
       }
       if (!_person.created_by) _person['created_by'] = sessionUser.data.id;
+      _person['isolation_end_date'] = moment(_person['isolation_start_date']).add(13, 'days');
       const result = await person.create(_person, { personTransaction });
       const { id, created_by } = result;
       const personUserMap = {

@@ -6,13 +6,17 @@ networks:
     name: ${TRAEFIK_NETWORK}
 
 services:
-
-  gcc_isolationtracker_fe:
+  redis:
+    image: redis
+    networks:
+      - default
+  gcc_isolationtracker:
     image: ${REGISTRY}/${IMAGETAG}:${GO_REVISION}
-    env_file: env_files/${GO_STAGE_NAME}.env
+    env_file: env_vars/${GO_STAGE_NAME}.env
     environment:
       SAMPLEENV: SAMPLEENV
     networks:
+      - default
       - traefik
     deploy:
       labels:

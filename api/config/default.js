@@ -5,7 +5,7 @@ module.exports = {
     password: 'dev',
     database: 'gcc_isolation_tracker',
     host: 'localhost',
-    schema: 'gcc_isolation_tracker_dev',
+    schema: 'isolation_dev',
     dialect: 'postgres',
     define: {
       createdAt: 'created_at',
