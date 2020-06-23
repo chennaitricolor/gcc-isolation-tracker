@@ -90,9 +90,13 @@ export const ToastComponent = (props) => (
   </div>
 );
 
+ToastComponent.defaultProps = {
+  openToast: false,
+}
+
 ToastComponent.propTypes = {
-  toastMessage: PropTypes.string.isRequired,
-  openToast: PropTypes.bool.isRequired,
+  toastMessage: PropTypes.string,
+  openToast: PropTypes.bool,
   handleClose: PropTypes.func.isRequired,
   toastVariant: PropTypes.string.isRequired,
 };

@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import {useDispatch, useSelector} from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import Typography from '@material-ui/core/Typography';
 import Chip from '@material-ui/core/Chip';
 import { makeStyles } from '@material-ui/core/styles';
@@ -11,10 +11,11 @@ import range from 'lodash/range';
 import moment from 'moment';
 import AttendanceComponent from './AttendanceComponent';
 import ToastComponent from './ToastComponent';
-import toastActions from "../actions/ToastAction";
+import toastActions from '../actions/ToastAction';
 
 const markerStyle = (isolation_details) => {
-  if (!isolation_details || isolation_details.is_offline_enquiry) return 'NaMarker';
+  if (!isolation_details) return 'pendingMarker';
+  if (isolation_details.is_offline_enquiry) return 'NaMarker';
   if (isolation_details.is_present_at_home) return 'safeMarker';
   if (!isolation_details.is_present_at_home) return 'violatedMarker';
 };
@@ -109,8 +110,11 @@ const useStyles = makeStyles(() => ({
   violatedMarker: {
     background: 'red',
   },
-  NaMarker: {
+  pendingMarker: {
     background: '#BDBDBD',
+  },
+  NaMarker: {
+    background: '#4F4F4F',
   },
 }));
 
