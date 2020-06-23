@@ -7,7 +7,7 @@ networks:
 
 services:
 
-  gcc_medicaltracker_fe:
+  gcc_isolationtracker_fe:
     image: ${REGISTRY}/${IMAGETAG}:${GO_REVISION}
     env_file: env_files/${GO_STAGE_NAME}.env
     environment:

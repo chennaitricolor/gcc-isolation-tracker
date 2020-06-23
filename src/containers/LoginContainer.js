@@ -76,11 +76,11 @@ export const LoginContainer = () => {
   };
 
   const openRestPasswordDialog = (message) => {
-    return getLoginResponse.loginMessage && getLoginResponse.loginMessage.isTempUser ? true : false;
+    return getLoginResponse.loginMessage && getLoginResponse.loginMessage.isTempUser;
   };
 
   return (
-    <div>
+    <div style={{ height: '100%' }}>
       <LoginComponent
         loginDetails={loginDetails}
         handleOnChange={handleOnChange}
