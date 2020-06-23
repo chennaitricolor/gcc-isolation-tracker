@@ -1,4 +1,5 @@
 import { put, call } from 'redux-saga/effects';
+import getPersonsDetailAction from '../actions/getPersonsDetailAction';
 import addContractedPersonsAction from '../actions/addContractedPersonsAction';
 import toastActions from '../actions/ToastAction';
 import { callFetchApi } from '../services/api';
@@ -11,6 +12,9 @@ export default function* addContractedPersonsSaga(action) {
       yield put({
         type: toastActions.SET_TOAST_MESSAGE,
         payload: 'Entry submitted successfully',
+      });
+      yield put({
+        type: getPersonsDetailAction.GET_PERSONS_DETAILS,
       });
     } else {
       yield put({

@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import {useDispatch, useSelector} from 'react-redux';
 import Typography from '@material-ui/core/Typography';
 import Chip from '@material-ui/core/Chip';
 import { makeStyles } from '@material-ui/core/styles';
@@ -9,6 +10,8 @@ import map from 'lodash/map';
 import range from 'lodash/range';
 import moment from 'moment';
 import AttendanceComponent from './AttendanceComponent';
+import ToastComponent from './ToastComponent';
+import toastActions from "../actions/ToastAction";
 
 const markerStyle = (isolation_details) => {
   if (!isolation_details || isolation_details.is_offline_enquiry) return 'NaMarker';
@@ -35,6 +38,12 @@ const useStyles = makeStyles(() => ({
     width: '10%',
     margin: '0 0 0 5%',
     background: '#F2994A',
+    color: '#fff',
+  },
+  successCountChip: {
+    width: '10%',
+    margin: '0 0 0 5%',
+    background: '#219653',
     color: '#fff',
   },
   dayCountChip: {
@@ -64,6 +73,7 @@ const useStyles = makeStyles(() => ({
     boxShadow: '0px 2px 2px rgba(0, 0, 0, 0.25)',
     borderRadius: '10px',
     padding: '3%',
+    backgroundColor: '#fff',
   },
   sectionTitle: {
     display: 'flex',
@@ -83,6 +93,7 @@ const useStyles = makeStyles(() => ({
     fontSize: '14px',
   },
   attendance: {
+    marginTop: '3%',
     display: 'flex',
     justifyContent: 'space-between',
   },
@@ -104,7 +115,10 @@ const useStyles = makeStyles(() => ({
 }));
 
 const PatientsComponent = ({ patients, zones }) => {
+  const dispatch = useDispatch();
   const [openPatient, setOpenPatient] = useState(null);
+  const contractedPersonResponse = useSelector((state) => state.contractedPersonReducer);
+
   const styles = useStyles();
 
   const AttendanceMarker = ({ style }) => {
@@ -143,47 +157,64 @@ const PatientsComponent = ({ patients, zones }) => {
     });
   };
 
+  const handleToastClose = () => {
+    dispatch({
+      type: toastActions.CLOSE_NOTIFICATION_DIALOG_OR_TOAST_MESSAGE,
+    });
+  };
+
   const pendingPatients = filter(patients, (patient) => !find(patient._isolation_enquiries, ['status_check_date', moment().format('YYYY-MM-DD')]));
   const completedPatients = filter(patients, (patient) => find(patient._isolation_enquiries, ['status_check_date', moment().format('YYYY-MM-DD')]));
 
-  return (
-    <div className={styles.root}>
-      <div className={styles.pageTitle}>
-        <Typography component={'div'} variant="h5" style={{ color: '#333333', fontWeight: 'bold', fontSize: '22px' }}>
-          Persons
-        </Typography>
-        <Chip component={'div'} size="small" label={patients.length} color="secondary" className={styles.personCountChip} />
-      </div>
-      {patients.length === 0 && (
-        <div style={{ height: '100%', display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
-          <Typography>No tasks available</Typography>
+  if (contractedPersonResponse.addContractedPersonMessage !== '' && contractedPersonResponse.addContractedPersonMessage !== undefined) {
+    return (
+      <ToastComponent
+        toastMessage={contractedPersonResponse.addContractedPersonMessage}
+        openToast={contractedPersonResponse.addContractedPersonMessage !== ''}
+        handleClose={handleToastClose}
+        toastVariant={'success'}
+      />
+    );
+  } else {
+    return (
+      <div className={styles.root}>
+        <div className={styles.pageTitle}>
+          <Typography component={'div'} variant="h5" style={{ color: '#333333', fontWeight: 'bold', fontSize: '22px' }}>
+            Persons
+          </Typography>
+          <Chip component={'div'} size="small" label={patients.length} color="secondary" className={styles.personCountChip} />
         </div>
-      )}
-      {patients.length > 0 && (
-        <>
-          <div className={styles.pendingPatients}>
-            <div className={styles.sectionTitle}>
-              <Typography component={'div'} variant="h5" style={{ color: '#333333', fontWeight: 'bold', fontSize: '20px' }}>
-                Pending
-              </Typography>
-              <Chip size="small" label={pendingPatients.length} className={styles.pendingCountChip} component={'div'} />
-            </div>
-            <PatientCards details={pendingPatients} onSelect={(patient) => setOpenPatient(patient)} />
+        {patients.length === 0 && (
+          <div style={{ height: '100%', display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
+            <Typography>No tasks available</Typography>
           </div>
-          <div className={styles.completedPatients}>
-            <div className={styles.sectionTitle}>
-              <Typography component={'div'} variant="h5" style={{ color: '#333333', fontWeight: 'bold', fontSize: '20px' }}>
-                Completed
-              </Typography>
-              <Chip size="small" label={completedPatients.length} className={styles.pendingCountChip} component={'div'} />
+        )}
+        {patients.length > 0 && (
+          <>
+            <div className={styles.pendingPatients}>
+              <div className={styles.sectionTitle}>
+                <Typography component={'div'} variant="h5" style={{ color: '#333333', fontWeight: 'bold', fontSize: '20px' }}>
+                  Pending
+                </Typography>
+                <Chip size="small" label={pendingPatients.length} className={styles.pendingCountChip} component={'div'} />
+              </div>
+              <PatientCards details={pendingPatients} onSelect={(patient) => setOpenPatient(patient)} />
             </div>
-            <PatientCards details={completedPatients} onSelect={() => {}} />
-          </div>
-        </>
-      )}
-      {openPatient && <AttendanceComponent open={openPatient !== null} handleClose={() => setOpenPatient(null)} patient={openPatient} />}
-    </div>
-  );
+            <div className={styles.completedPatients}>
+              <div className={styles.sectionTitle}>
+                <Typography component={'div'} variant="h5" style={{ color: '#333333', fontWeight: 'bold', fontSize: '20px' }}>
+                  Completed
+                </Typography>
+                <Chip size="small" label={completedPatients.length} className={styles.successCountChip} component={'div'} />
+              </div>
+              <PatientCards details={completedPatients} onSelect={() => {}} />
+            </div>
+          </>
+        )}
+        {openPatient && <AttendanceComponent open={openPatient !== null} handleClose={() => setOpenPatient(null)} patient={openPatient} />}
+      </div>
+    );
+  }
 };
 
 export default PatientsComponent;
