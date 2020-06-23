@@ -1,4 +1,5 @@
 import { put, call } from 'redux-saga/effects';
+import getPersonsDetailAction from '../actions/getPersonsDetailAction';
 import addContractedPersonsAction from '../actions/addContractedPersonsAction';
 import { callFetchApi } from '../services/api';
 import { apiUrls } from '../utils/constants';
@@ -10,6 +11,9 @@ export default function* addContractedPersonsSaga(action) {
       yield put({
         type: addContractedPersonsAction.ADD_CONTRACTED_PERSONS_SUCCESS,
         response: 'Record Added Successfully',
+      });
+      yield put({
+        type: getPersonsDetailAction.GET_PERSONS_DETAILS,
       });
     } else {
       yield put({

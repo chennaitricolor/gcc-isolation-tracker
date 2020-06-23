@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { makeStyles } from '@material-ui/core/styles';
 import Typography from '@material-ui/core/Typography';
 import Dialog from '@material-ui/core/Dialog';
@@ -11,7 +11,8 @@ import FormControlLabel from '@material-ui/core/FormControlLabel';
 import Radio from '@material-ui/core/Radio';
 import TextField from '@material-ui/core/TextField';
 import Button from '@material-ui/core/Button';
-import join from 'lodash/join';
+import {useDispatch, useSelector} from 'react-redux';
+import RequiredFieldMarker from './RequiredFieldMarker';
 
 const useStyles = makeStyles(() => ({
   dialogContent: {
@@ -59,12 +60,13 @@ const useStyles = makeStyles(() => ({
   },
 }));
 
-function renderRadioButtonField(label, key, value, radioButtonList, handleOnChange, styles) {
+function renderRadioButtonField(label, key, value, radioButtonList, handleOnChange, styles, isRequired) {
   return (
     <div className={'attendance-information-' + key}>
-      <FormLabel component="legend" className={'attendance-information-' + key + '-form-label' + ' ' + styles.radioButton}>
+      <Typography component={'div'} className={'attendance-information-' + key + '-form-label' + ' ' + styles.radioButton}>
         {label}
-      </FormLabel>
+        {isRequired && <RequiredFieldMarker />}
+      </Typography>
       <RadioGroup style={{ display: 'inline-block' }} value={value} onChange={(event) => handleOnChange(event, key, 'radioButton')}>
         {radioButtonList.map((radioButton, index) => {
           return <FormControlLabel key={index} value={radioButton.value} control={<Radio />} label={radioButton.label} />;
@@ -74,18 +76,19 @@ function renderRadioButtonField(label, key, value, radioButtonList, handleOnChan
   );
 }
 
-function renderTextField(label, key, value, handleOnChange, styles) {
+function renderTextField(label, key, value, handleOnChange, styles, isRequired) {
   return (
     <div className={'attendance-information-' + key}>
-      <FormLabel component="legend" className={'attendance-information-' + key + '-form-label'} style={{ color: '#3C6886', fontSize: '16px' }}>
+      <Typography component={'div'} className={'attendance-information-' + key + '-form-label'} style={{ color: '#3C6886', fontSize: '16px' }}>
         {label}
-      </FormLabel>
+        {isRequired && <RequiredFieldMarker />}
+      </Typography>
       <TextField
         className={'attendance-information-' + key + ' ' + styles.textField}
         id={key}
         value={value}
         onChange={(event) => handleOnChange(event, key, 'text')}
-        autoComplete={'disabled'}
+        autoComplete={'off'}
         margin={'normal'}
         variant={'outlined'}
       />
@@ -99,10 +102,12 @@ const yesNoRadioButton = [
 ];
 
 const AttendanceComponent = (props) => {
+  const dispatch = useDispatch();
   const styles = useStyles();
   const { patient, open, handleClose } = props;
   const { name, phone_number, address } = patient;
-  
+
+  const [showSave, setShowSave] = useState(false);
   const [attendanceDetails, setAttendanceDetails] = useState({
     isPersonPresent: '',
     isFamilyMembersPresent: '',
@@ -110,6 +115,11 @@ const AttendanceComponent = (props) => {
     isSymptoms: '',
     comments: '',
   });
+
+  useEffect(() => {
+    let showSave = attendanceDetails.isPersonPresent !== '' && attendanceDetails.isFamilyMembersPresent !== '' && attendanceDetails.isSymptoms !== '';
+    setShowSave(showSave);
+  }, [attendanceDetails]);
 
   const handleOnChange = (event, id, type) => {
     if (type === 'text') {
@@ -136,7 +146,20 @@ const AttendanceComponent = (props) => {
   };
 
   const handleSave = () => {
-    console.log(attendanceDetails);
+    dispatch({
+      type: 'UPDATE_CONTRACTED_PERSONS',
+      payload: {
+        attendanceDetails: {
+          is_present_at_home: attendanceDetails.isPersonPresent,
+          is_family_members_at_home: attendanceDetails.isFamilyMembersPresent,
+          basic_necessities: attendanceDetails.basicNecessities,
+          is_self_or_family_with_symptoms: attendanceDetails.isSymptoms,
+          additional_comments: attendanceDetails.comments,
+          status_check_date: '2020-06-23',
+          person: patient.id,
+        },
+      },
+    });
   };
 
   return (
@@ -176,6 +199,7 @@ const AttendanceComponent = (props) => {
               yesNoRadioButton,
               handleOnChange,
               styles,
+              true,
             )}
           </div>
           <div style={{ marginTop: '5%' }}>
@@ -186,10 +210,18 @@ const AttendanceComponent = (props) => {
               yesNoRadioButton,
               handleOnChange,
               styles,
+              true,
             )}
           </div>
           <div style={{ marginTop: '5%' }}>
-            {renderTextField('Do they need any Basic necessities?', 'basicNecessities', attendanceDetails.basicNecessities, handleOnChange, styles)}
+            {renderTextField(
+              'Do they need any Basic necessities?',
+              'basicNecessities',
+              attendanceDetails.basicNecessities,
+              handleOnChange,
+              styles,
+              false,
+            )}
           </div>
           <div style={{ marginTop: '5%' }}>
             {renderRadioButtonField(
@@ -199,19 +231,18 @@ const AttendanceComponent = (props) => {
               yesNoRadioButton,
               handleOnChange,
               styles,
+              true,
             )}
           </div>
           <div style={{ marginTop: '5%' }}>
-            {renderTextField('Additional Comments (optional) ', 'comments', attendanceDetails.comments, handleOnChange, styles)}
+            {renderTextField('Additional Comments (optional) ', 'comments', attendanceDetails.comments, handleOnChange, styles, false)}
           </div>
         </div>
         <div style={{ textAlign: 'center', marginBottom: '2%' }}>
           <Button
             variant="contained"
             className={'submit-button'}
-            disabled={
-              attendanceDetails.isPersonPresent === '' && attendanceDetails.isFamilyMembersPresent === '' && attendanceDetails.isSymptoms === ''
-            }
+            disabled={!showSave}
             onClick={handleSave}
           >
             SUBMIT

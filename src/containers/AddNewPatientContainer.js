@@ -11,6 +11,10 @@ const loadingComponentStyle = {
   left: '42%',
   color: '#0084FF',
   width: '50px',
+  height: '100%',
+  zIndex: '11',
+  display: 'table',
+  backgroundColor: 'rgba(255, 255, 255, 0.7)',
 };
 
 const AddNewPatientContainer = (props) => {

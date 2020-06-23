@@ -81,7 +81,7 @@ export const ToastComponent = (props) => (
         horizontal: 'center',
       }}
       open={props.openToast}
-      autoHideDuration={5000}
+      autoHideDuration={3000}
       onClose={props.handleClose}
       style={{ bottom: '15%' }}
     >
