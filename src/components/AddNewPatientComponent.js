@@ -196,6 +196,29 @@ const AddNewPatientComponent = ({ onSubmit, onCancel, zones, types }) => {
     );
   };
 
+  const quarantineSubTypes = () => find(types, ['id', details.quarantine_type]).quarantine_sub_types;
+
+  const canEnableSubmit = () => {
+    const { name, age, gender, phone_number, quarantine_type, quarantine_sub_type, family_member_total, _address } = details;
+    const { door_num, building_name, street, area, locality, zone, division } = _address;
+    return (
+      name &&
+      age &&
+      gender &&
+      phone_number &&
+      quarantine_type &&
+      (quarantineSubTypes().length === 0 || quarantine_sub_type) &&
+      family_member_total &&
+      door_num &&
+      building_name &&
+      street &&
+      area &&
+      locality &&
+      zone &&
+      division
+    );
+  };
+
   return (
     <div className={styles.root}>
       <div className={styles.pageTitle}>
@@ -215,12 +238,8 @@ const AddNewPatientComponent = ({ onSubmit, onCancel, zones, types }) => {
         {renderIsolationDateInput()}
         {renderDropdownInput('Quarantine Type', 'quarantine_type', personalInfoOnChange, types)}
         {details.quarantine_type &&
-          renderDropdownInput(
-            'Quarantine Sub-Type',
-            'quarantine_sub_type',
-            personalInfoOnChange,
-            find(types, ['id', details.quarantine_type]).quarantine_sub_types,
-          )}
+          quarantineSubTypes().length > 0 &&
+          renderDropdownInput('Quarantine Sub-Type', 'quarantine_sub_type', personalInfoOnChange, quarantineSubTypes())}
         {renderNumberInput('Total Family Members / மொத்த குடும்ப உறுப்பினர்கள்', 'family_member_total', personalInfoOnChange)}
         <Typography variant="h5" className={styles.detailsHeader}>
           Location Details
@@ -235,7 +254,7 @@ const AddNewPatientComponent = ({ onSubmit, onCancel, zones, types }) => {
         {renderDropdownInput('Zone / மண்டலம்', 'zone', addressInfoOnChange, zones)}
         {renderTextInput('Division', 'division', addressInfoOnChange)}
       </form>
-      <Button variant="contained" onClick={() => onSubmit(details)} className={styles.submitButton}>
+      <Button variant="contained" disabled={!canEnableSubmit()} onClick={() => onSubmit(details)} className={styles.submitButton}>
         Submit
       </Button>
     </div>

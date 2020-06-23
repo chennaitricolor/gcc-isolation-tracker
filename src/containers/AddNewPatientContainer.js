@@ -14,14 +14,14 @@ const loadingComponentStyle = {
 };
 
 const AddNewPatientContainer = (props) => {
-  const { onCancel, onSuccess } = props;
+  const { onCancel } = props;
   const dispatch = useDispatch();
   const getAllZones = useSelector((state) => state.getAllZonesReducer);
   const getQuarantineTypes = useSelector((state) => state.getQuarantineTypesReducer);
 
   const handleSubmit = (payload) => {
     dispatch({ type: addActions.ADD_CONTRACTED_PERSONS, payload });
-    onSuccess('Entry submitted successfully');
+    onCancel();
   };
 
   if ((getAllZones !== undefined && getAllZones.isLoading) || (getQuarantineTypes !== undefined && getQuarantineTypes.isLoading)) {

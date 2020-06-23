@@ -5,6 +5,7 @@ import getPersonsDetailReducer from './getPersonsDetailReducer';
 import contractedPersonReducer from './contractedPersonReducer';
 import getAllZonesReducer from './GetAllZonesReducer';
 import getQuarantineTypesReducer from './GetQuarantineTypesReducer';
+import toastMessageReducer from './toastMessageReducer';
 
 const reducers = combineReducers({
   loginResponse,
@@ -13,6 +14,7 @@ const reducers = combineReducers({
   contractedPersonReducer,
   getAllZonesReducer,
   getQuarantineTypesReducer,
+  toastMessageReducer,
 });
 
 export default reducers;
