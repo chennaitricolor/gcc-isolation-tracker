@@ -5,8 +5,16 @@ import { makeStyles } from '@material-ui/core/styles';
 import join from 'lodash/join';
 import find from 'lodash/find';
 import filter from 'lodash/filter';
+import map from 'lodash/map';
+import range from 'lodash/range';
 import moment from 'moment';
 import AttendanceComponent from './AttendanceComponent';
+
+const markerStyle = (isolation_details) => {
+  if (!isolation_details || isolation_details.is_offline_enquiry) return 'NaMarker';
+  if (isolation_details.is_present_at_home) return 'safeMarker';
+  if (!isolation_details.is_present_at_home) return 'violatedMarker';
+};
 
 const useStyles = makeStyles(() => ({
   root: {
@@ -74,19 +82,38 @@ const useStyles = makeStyles(() => ({
     color: '#4F4F4F',
     fontSize: '14px',
   },
+  attendance: {
+    display: 'flex',
+    justifyContent: 'space-between',
+  },
+  markerStyle: {
+    borderRadius: '50%',
+    display: 'inline-block',
+    height: '3vh',
+    width: '3vh',
+  },
+  safeMarker: {
+    background: 'green',
+  },
+  violatedMarker: {
+    background: 'red',
+  },
+  NaMarker: {
+    background: '#BDBDBD',
+  },
 }));
 
 const PatientsComponent = ({ patients, zones }) => {
   const [openPatient, setOpenPatient] = useState(null);
   const styles = useStyles();
 
-  const AttendanceMarker = ({ marked }) => {
-    return <span style={{ background: marked ? 'green' : '#BDBDBD', borderRadius: '50%', display: 'inline-block', height: '3vh', width: '3vh' }} />;
+  const AttendanceMarker = ({ style }) => {
+    return <span className={`${styles.markerStyle} ${styles[style]}`} />;
   };
 
   const PatientCards = ({ details, onSelect }) => {
     return details.map((detail) => {
-      const { id, name, phone_number, age, gender, _address, isolation_start_date } = detail;
+      const { id, name, phone_number, age, gender, _address, isolation_start_date, _isolation_enquiries } = detail;
       const { door_num, house_num_new, building_name, street, area, locality, division, zone } = _address;
       const zoneName = find(zones, ['id', zone]).name;
       const address = join([door_num, house_num_new, building_name, street, area, locality, zoneName, division], ', ');
@@ -105,11 +132,12 @@ const PatientsComponent = ({ patients, zones }) => {
           <Typography component={'div'} className={styles.personPhoneNumber}>
             {phone_number}
           </Typography>
-          {/* <div style={{ display: 'flex' }}>
-            {map(range(13), (index) => (
-              <AttendanceMarker marked={currentDate > index + 1} />
-            ))}
-          </div> */}
+          <div className={styles.attendance}>
+            {map(range(14), (index) => {
+              const isolation_details = find(_isolation_enquiries, ['day', index + 1]);
+              return <AttendanceMarker key={index} style={markerStyle(isolation_details)} />;
+            })}
+          </div>
         </div>
       );
     });

@@ -6,12 +6,14 @@ import zoneActions from '../actions/GetZonesAction';
 import typesActions from '../actions/GetQuarantineTypesAction';
 import PatientsContainer from './PatientsContainer';
 import AddNewPatientContainer from './AddNewPatientContainer';
+import ToastComponent from '../components/ToastComponent';
 
 const FabStyle = { position: 'absolute', top: '90%', left: '80%', backgroundColor: '#3C6886' };
 
 const DashboardContainer = () => {
   const dispatch = useDispatch();
   const [isFormOpen, setFormOpen] = useState(false);
+  const [toastMessage, setToastMessage] = useState(null);
 
   useEffect(() => {
     dispatch({
@@ -28,16 +30,26 @@ const DashboardContainer = () => {
     </Fab>
   );
 
-  if (!isFormOpen) {
-    return (
-      <div style={{ height: '100%' }}>
-        <PatientsContainer />
-        <AddPatient />
-      </div>
-    );
-  }
-
-  return <AddNewPatientContainer onCancel={() => setFormOpen(false)} />;
+  return (
+    <>
+      {!isFormOpen && (
+        <div style={{ height: '92%' }}>
+          <PatientsContainer />
+          <AddPatient />
+        </div>
+      )}
+      {isFormOpen && (
+        <AddNewPatientContainer
+          onCancel={() => setFormOpen(false)}
+          onSuccess={(message) => {
+            setToastMessage(message);
+            setFormOpen(false);
+          }}
+        />
+      )}
+      <ToastComponent openToast={toastMessage} toastMessage={toastMessage} handleClose={() => setToastMessage(null)} toastVariant="success" />
+    </>
+  );
 };
 
 DashboardContainer.propTypes = {};

@@ -121,7 +121,7 @@ const AddNewPatientComponent = ({ onSubmit, onCancel, zones, types }) => {
       <TextField
         className={styles.textField}
         label={label}
-        value={details[field] || details._address[field]}
+        value={details[field] === undefined ? details._address[field] : details[field]}
         size="medium"
         onChange={(e) => handleChange(field, e.target.value)}
         InputLabelProps={{ shrink: true }}
@@ -134,7 +134,7 @@ const AddNewPatientComponent = ({ onSubmit, onCancel, zones, types }) => {
       <TextField
         className={styles.textField}
         label={label}
-        value={details[field] || details._address[field]}
+        value={details[field] === undefined ? details._address[field] : details[field]}
         type="number"
         size="medium"
         onChange={(e) => handleChange(field, e.target.value)}
@@ -181,7 +181,7 @@ const AddNewPatientComponent = ({ onSubmit, onCancel, zones, types }) => {
         <InputLabel>{label}</InputLabel>
         <Select
           className={styles.dropDownSelect}
-          value={details[field] || details._address[field]}
+          value={details[field] === undefined ? details._address[field] : details[field]}
           onChange={(e) => handleChange(field, e.target.value)}
         >
           {list.map((item) => {

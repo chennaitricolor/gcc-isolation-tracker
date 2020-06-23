@@ -83,7 +83,7 @@ export const ToastComponent = (props) => (
       open={props.openToast}
       autoHideDuration={5000}
       onClose={props.handleClose}
-      style={{ bottom: '15%', maxWidth: '45%' }}
+      style={{ bottom: '15%' }}
     >
       <MySnackbarContentWrapper onClose={props.handleClose} variant={props.toastVariant} message={props.toastMessage} />
     </Snackbar>

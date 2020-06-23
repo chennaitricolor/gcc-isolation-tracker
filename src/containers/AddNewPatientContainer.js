@@ -14,14 +14,14 @@ const loadingComponentStyle = {
 };
 
 const AddNewPatientContainer = (props) => {
-  const { onCancel } = props;
+  const { onCancel, onSuccess } = props;
   const dispatch = useDispatch();
   const getAllZones = useSelector((state) => state.getAllZonesReducer);
   const getQuarantineTypes = useSelector((state) => state.getQuarantineTypesReducer);
 
-  const onSubmit = (payload) => {
+  const handleSubmit = (payload) => {
     dispatch({ type: addActions.ADD_CONTRACTED_PERSONS, payload });
-    onCancel();
+    onSuccess('Entry submitted successfully');
   };
 
   if ((getAllZones !== undefined && getAllZones.isLoading) || (getQuarantineTypes !== undefined && getQuarantineTypes.isLoading)) {
@@ -41,7 +41,7 @@ const AddNewPatientContainer = (props) => {
     );
   }
 
-  return <AddNewPatientComponent onSubmit={onSubmit} onCancel={onCancel} zones={getAllZones.allZones} types={getQuarantineTypes.types}/>;
+  return <AddNewPatientComponent onSubmit={handleSubmit} onCancel={onCancel} zones={getAllZones.allZones} types={getQuarantineTypes.types} />;
 };
 
 export default AddNewPatientContainer;
