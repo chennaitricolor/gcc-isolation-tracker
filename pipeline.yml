@@ -1,5 +1,5 @@
 stackname: isolationmodule
-env_folder: env_files
+env_folder: env_vars
 replicas:
   dev: 1
   qa: 1 
