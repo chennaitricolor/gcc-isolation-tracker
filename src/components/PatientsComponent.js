@@ -55,6 +55,7 @@ const useStyles = makeStyles(() => ({
   },
   pendingPatients: {
     padding: '5%',
+    paddingBottom: '8%',
     borderBottom: '1px solid #BDBDBD',
     display: 'flex',
     flexFlow: 'column',

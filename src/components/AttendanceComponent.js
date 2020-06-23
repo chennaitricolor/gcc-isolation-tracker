@@ -12,6 +12,7 @@ import TextField from '@material-ui/core/TextField';
 import Button from '@material-ui/core/Button';
 import { useDispatch } from 'react-redux';
 import RequiredFieldMarker from './RequiredFieldMarker';
+import moment from 'moment';
 
 const useStyles = makeStyles(() => ({
   dialogContent: {
@@ -154,7 +155,7 @@ const AttendanceComponent = (props) => {
           basic_necessities: attendanceDetails.basicNecessities,
           is_self_or_family_with_symptoms: attendanceDetails.isSymptoms,
           additional_comments: attendanceDetails.comments,
-          status_check_date: '2020-06-23',
+          status_check_date: moment().format('YYYY-MM-DD'),
           person: patient.id,
         },
       },

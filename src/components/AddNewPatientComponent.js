@@ -10,9 +10,10 @@ import FormControl from '@material-ui/core/FormControl';
 import FormLabel from '@material-ui/core/FormLabel';
 import Select from '@material-ui/core/Select';
 import MenuItem from '@material-ui/core/MenuItem';
-import InputLabel from '@material-ui/core/InputLabel';
+import InputMask from 'react-input-mask';
 import find from 'lodash/find';
 import moment from 'moment';
+import RequiredFieldMarker from './RequiredFieldMarker';
 
 const useStyles = makeStyles(() => ({
   root: { display: 'flex', flexFlow: 'column', height: '92%', overflowY: 'scroll', padding: '5%' },
@@ -25,13 +26,19 @@ const useStyles = makeStyles(() => ({
     display: 'flex',
     flexFlow: 'column',
   },
+  fieldLabel: {
+    fontSize: '18px',
+    fontWeight: 600,
+    color: '#151522 !important',
+  },
   textField: {
     width: '94%',
-    marginTop: '10%',
+    marginTop: '3%',
+    backgroundColor: '#fff',
 
     '& label': {
       color: '#707070 !important',
-      fontSize: '24px',
+      fontSize: '18PX',
       display: 'contents',
     },
 
@@ -40,20 +47,22 @@ const useStyles = makeStyles(() => ({
     },
 
     '& input': {
-      fontSize: '24px',
+      fontSize: '18px',
+      color: '#4F4F4F',
     },
   },
   detailsHeader: {
     textAlign: 'center',
-    marginTop: '3%',
+    marginTop: '5%',
+    color: '#000000',
   },
   genderInput: {
     width: '94%',
-    marginTop: '10%',
+    marginTop: '5%',
   },
   genderLegend: {
-    fontSize: '24px',
-    color: '#707070 !important',
+    fontSize: '18px',
+    color: '#151522 !important',
   },
   cancelButton: {
     fontSize: '18px',
@@ -62,28 +71,31 @@ const useStyles = makeStyles(() => ({
   submitButton: {
     fontSize: '18px',
     textTransform: 'none',
-    marginTop: '5%',
+    marginTop: '10%',
   },
   dropDown: {
     width: '94%',
-    marginTop: '10%',
+    marginTop: '5%',
 
     '& label': {
       color: '#707070 !important',
-      fontSize: '24px',
+      fontSize: '18px',
       display: 'contents',
     },
 
     '& fieldset': {
       border: '1px solid #707070 !important',
     },
-
-    '& input': {
-      fontSize: '24px',
-    },
   },
   dropDownSelect: {
-    fontSize: '24px',
+    fontSize: '18px',
+    marginTop: '3%',
+    backgroundColor: '#fff',
+
+    '& div': {
+      fontSize: '18px',
+      color: '#4F4F4F',
+    },
   },
 }));
 
@@ -116,42 +128,62 @@ const AddNewPatientComponent = ({ onSubmit, onCancel, zones, types }) => {
   const personalInfoOnChange = (field, value) => setDetails({ ...details, [field]: value });
   const addressInfoOnChange = (field, value) => setDetails({ ...details, _address: { ...details._address, [field]: value } });
 
-  const renderTextInput = (label, field, handleChange) => {
+  const renderTextInput = (label, field, handleChange, isRequired = false) => {
     return (
-      <TextField
-        className={styles.textField}
-        label={label}
-        value={details[field] === undefined ? details._address[field] : details[field]}
-        size="medium"
-        onChange={(e) => handleChange(field, e.target.value)}
-        InputLabelProps={{ shrink: true }}
-      />
+      <div style={{ marginTop: '5%' }}>
+        <Typography component={'div'} className={styles.fieldLabel}>
+          {label}
+          {isRequired && <RequiredFieldMarker />}
+        </Typography>
+        <TextField
+          className={styles.textField}
+          value={details[field] === undefined ? details._address[field] : details[field]}
+          size="small"
+          variant={'outlined'}
+          onChange={(e) => handleChange(field, e.target.value)}
+          InputLabelProps={{ shrink: true }}
+          autoComplete={'disabled'}
+        />
+      </div>
     );
   };
 
-  const renderNumberInput = (label, field, handleChange) => {
+  const renderNumberInput = (label, field, handleChange, lengthAsMask, isRequired = false) => {
     return (
-      <TextField
-        className={styles.textField}
-        label={label}
-        value={details[field] === undefined ? details._address[field] : details[field]}
-        type="number"
-        size="medium"
-        onChange={(e) => handleChange(field, e.target.value)}
-        InputLabelProps={{ shrink: true }}
-      />
+      <div style={{ marginTop: '5%' }}>
+        <Typography component={'div'} className={styles.fieldLabel}>
+          {label}
+          {isRequired && <RequiredFieldMarker />}
+        </Typography>
+        <InputMask
+          mask={lengthAsMask}
+          maskChar={null}
+          value={details[field] === undefined ? details._address[field] : details[field]}
+          onChange={(e) => handleChange(field, e.target.value)}
+        >
+          {() => <TextField className={styles.textField} size="small" variant={'outlined'} InputLabelProps={{ shrink: true }} />}
+        </InputMask>
+      </div>
     );
   };
 
   const renderGenderInput = (field = 'gender') => {
     return (
       <FormControl component="fieldset" className={styles.genderInput}>
-        <FormLabel component="legend" className={styles.genderLegend}>
-          Gender / பாலினம்*
+        <FormLabel component="legend" className={styles.fieldLabel}>
+          Gender / பாலினம்
+          <RequiredFieldMarker />
         </FormLabel>
-        <RadioGroup row aria-label="gender" name="gender1" value={details[field]} onChange={(e) => personalInfoOnChange(field, e.target.value)}>
-          <FormControlLabel classes={{ label: styles.genderLegend }} value="F" control={<Radio />} label="Female" />
+        <RadioGroup
+          row
+          aria-label="gender"
+          name="gender1"
+          value={details[field]}
+          onChange={(e) => personalInfoOnChange(field, e.target.value)}
+          style={{ marginTop: '2%' }}
+        >
           <FormControlLabel classes={{ label: styles.genderLegend }} value="M" control={<Radio />} label="Male" />
+          <FormControlLabel classes={{ label: styles.genderLegend }} value="F" control={<Radio />} label="Female" />
           <FormControlLabel classes={{ label: styles.genderLegend }} value="O" control={<Radio />} label="Others" />
         </RadioGroup>
       </FormControl>
@@ -160,26 +192,37 @@ const AddNewPatientComponent = ({ onSubmit, onCancel, zones, types }) => {
 
   const renderIsolationDateInput = (field = 'isolation_start_date') => {
     return (
-      <TextField
-        label="Isolation Start Date*"
-        type="date"
-        size="medium"
-        className={styles.textField}
-        value={details[field]}
-        onChange={(e) => personalInfoOnChange(field, e.target.value)}
-        InputLabelProps={{
-          shrink: true,
-        }}
-        inputProps={{ max: moment().format('YYYY-MM-DD'), min: moment().subtract(13, 'day').format('YYYY-MM-DD') }}
-      />
+      <div style={{ marginTop: '5%' }}>
+        <Typography component={'div'} className={styles.fieldLabel}>
+          {'Isolation Start Date'}
+          <RequiredFieldMarker />
+        </Typography>
+        <TextField
+          type="date"
+          size="small"
+          variant={'outlined'}
+          className={styles.textField}
+          value={details[field]}
+          onChange={(e) => personalInfoOnChange(field, e.target.value)}
+          InputLabelProps={{
+            shrink: true,
+          }}
+          inputProps={{ max: moment().format('YYYY-MM-DD'), min: moment().subtract(13, 'day').format('YYYY-MM-DD') }}
+        />
+      </div>
     );
   };
 
-  const renderDropdownInput = (label, field, handleChange, list) => {
+  const renderDropdownInput = (label, field, handleChange, list, isRequired = false) => {
     return (
       <FormControl className={styles.dropDown}>
-        <InputLabel>{label}</InputLabel>
+        <Typography component={'div'} className={styles.fieldLabel}>
+          {label}
+          {isRequired && <RequiredFieldMarker />}
+        </Typography>
         <Select
+          variant={'outlined'}
+          size={'small'}
           className={styles.dropDownSelect}
           value={details[field] === undefined ? details._address[field] : details[field]}
           onChange={(e) => handleChange(field, e.target.value)}
@@ -222,37 +265,39 @@ const AddNewPatientComponent = ({ onSubmit, onCancel, zones, types }) => {
   return (
     <div className={styles.root}>
       <div className={styles.pageTitle}>
-        <Typography variant="h5">Add New Person</Typography>
+        <Typography variant="h5" component={'div'} style={{ color: '#3C6886' }}>
+          Add New Person
+        </Typography>
         <Button variant="contained" onClick={onCancel} className={styles.cancelButton}>
           Cancel
         </Button>
       </div>
       <form className={styles.form}>
-        <Typography variant="h5" className={styles.detailsHeader}>
+        <Typography variant="h5" className={styles.detailsHeader} component={'div'} style={{ color: '#000000' }}>
           Personal Details
         </Typography>
-        {renderTextInput('Person Name / நபர் பெயர்*', 'name', personalInfoOnChange)}
-        {renderNumberInput('Age / வயது*', 'age', personalInfoOnChange)}
+        {renderTextInput('Person Name / நபர் பெயர்', 'name', personalInfoOnChange, true)}
+        {renderNumberInput('Age / வயது', 'age', personalInfoOnChange, '999', true)}
         {renderGenderInput()}
-        {renderNumberInput('Phone Number / தொலைபேசி எண்*', 'phone_number', personalInfoOnChange)}
+        {renderNumberInput('Phone Number / தொலைபேசி எண்', 'phone_number', personalInfoOnChange, '9999999999', true)}
         {renderIsolationDateInput()}
-        {renderDropdownInput('Quarantine Type*', 'quarantine_type', personalInfoOnChange, types)}
+        {renderDropdownInput('Quarantine Type', 'quarantine_type', personalInfoOnChange, types, true)}
         {details.quarantine_type &&
           quarantineSubTypes().length > 0 &&
-          renderDropdownInput('Quarantine Sub-Type*', 'quarantine_sub_type', personalInfoOnChange, quarantineSubTypes())}
-        {renderNumberInput('Total Family Members / மொத்த குடும்ப உறுப்பினர்கள்*', 'family_member_total', personalInfoOnChange)}
+          renderDropdownInput('Quarantine Sub-Type', 'quarantine_sub_type', personalInfoOnChange, quarantineSubTypes(), true)}
+        {renderNumberInput('Total Family Members / மொத்த குடும்ப உறுப்பினர்கள்', 'family_member_total', personalInfoOnChange, '99', true)}
         <Typography variant="h5" className={styles.detailsHeader}>
           Location Details
         </Typography>
-        {renderTextInput('Door No / கதவு எண்*', 'door_num', addressInfoOnChange)}
-        {renderTextInput('Building Name / கட்டிட பெயர்*', 'building_name', addressInfoOnChange)}
+        {renderTextInput('Door No / கதவு எண்', 'door_num', addressInfoOnChange, true)}
+        {renderTextInput('Building Name / கட்டிட பெயர்', 'building_name', addressInfoOnChange, true)}
         {renderTextInput('House No. Old / வீட்டின் எண் பழையது', 'house_num_old', addressInfoOnChange)}
         {renderTextInput('House No. New / வீட்டின் எண் புதியது', 'house_num_new', addressInfoOnChange)}
-        {renderTextInput('Street Name / தெரு பெயர்*', 'street', addressInfoOnChange)}
-        {renderTextInput('Area Name / பகுதி பெயர்*', 'area', addressInfoOnChange)}
-        {renderTextInput('Locality / வட்டாரம்*', 'locality', addressInfoOnChange)}
-        {renderDropdownInput('Zone / மண்டலம்*', 'zone', addressInfoOnChange, zones)}
-        {renderTextInput('Division*', 'division', addressInfoOnChange)}
+        {renderTextInput('Street Name / தெரு பெயர்', 'street', addressInfoOnChange, true)}
+        {renderTextInput('Area Name / பகுதி பெயர்', 'area', addressInfoOnChange, true)}
+        {renderTextInput('Locality / வட்டாரம்', 'locality', addressInfoOnChange, true)}
+        {renderDropdownInput('Zone / மண்டலம்', 'zone', addressInfoOnChange, zones, true)}
+        {renderTextInput('Division', 'division', addressInfoOnChange, true)}
       </form>
       <Button variant="contained" disabled={!canEnableSubmit()} onClick={() => onSubmit(details)} className={styles.submitButton}>
         Submit
