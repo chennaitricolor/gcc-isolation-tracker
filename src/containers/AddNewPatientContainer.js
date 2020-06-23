@@ -19,12 +19,6 @@ const AddNewPatientContainer = (props) => {
   const dispatch = useDispatch();
   const getAllZones = useSelector((state) => state.getAllZonesReducer);
 
-  useEffect(() => {
-    dispatch({
-      type: zoneActions.GET_ALL_ZONE,
-    });
-  }, [dispatch]);
-
   const onSubmit = (payload) => {
     dispatch({type:addActions.ADD_CONTRACTED_PERSONS, payload})
   }

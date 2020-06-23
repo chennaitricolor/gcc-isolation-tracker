@@ -101,10 +101,8 @@ const yesNoRadioButton = [
 const AttendanceComponent = (props) => {
   const styles = useStyles();
   const { patient, open, handleClose } = props;
-  const { name, _address, phone_number } = patient;
-  const { door_num, house_num_new, building_name, street, area, locality, division } = _address;
-  const address = join([door_num, ' ' + house_num_new, ' ' + building_name, ' ' + street, ' ' + area, ' ' + locality, ' ' + division]);
-
+  const { name, phone_number, address } = patient;
+  
   const [attendanceDetails, setAttendanceDetails] = useState({
     isPersonPresent: '',
     isFamilyMembersPresent: '',

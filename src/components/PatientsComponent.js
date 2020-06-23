@@ -4,6 +4,7 @@ import Chip from '@material-ui/core/Chip';
 import { makeStyles } from '@material-ui/core/styles';
 import map from 'lodash/map';
 import join from 'lodash/join';
+import find from 'lodash/find';
 import AttendanceComponent from './AttendanceComponent';
 
 const useStyles = makeStyles(() => ({
@@ -63,7 +64,7 @@ const useStyles = makeStyles(() => ({
   },
 }));
 
-const PatientsComponent = ({ patients }) => {
+const PatientsComponent = ({ patients, zones }) => {
   const [openPatient, setOpenPatient] = useState(null);
   const styles = useStyles();
 
@@ -74,10 +75,11 @@ const PatientsComponent = ({ patients }) => {
   const PatientCards = ({ details, onSelect }) => {
     return details.map((detail) => {
       const { id, name, phone_number, age, gender, _address } = detail;
-      const { door_num, house_num_new, building_name, street, area, locality, division } = _address;
-      const address = join([door_num, ' ' + house_num_new, ' ' + building_name, ' ' + street, ' ' + area, ' ' + locality, ' ' + division]);
+      const { door_num, house_num_new, building_name, street, area, locality, division, zone } = _address;
+      const zoneName = find(zones, ['id', zone]).name;
+      const address = join([door_num, house_num_new, building_name, street, area, locality, zoneName, division], ', ');
       return (
-        <div key={id} className={styles.patientCard} onClick={() => onSelect(detail)}>
+        <div key={id} className={styles.patientCard} onClick={() => onSelect({...detail, address})}>
           <div style={{ display: 'flex', justifyContent: 'space-between' }}>
             <Typography variant="h4" className={styles.personName} component={'div'}>
               {name} <span className={styles.genderAge}>{`${gender}${age}`}</span>

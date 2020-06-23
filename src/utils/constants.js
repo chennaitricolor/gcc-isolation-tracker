@@ -2,6 +2,7 @@ export const apiUrls = {
   login: '/api/auth/login',
   logout: '/api/auth/logout',
   getZones: '/api/zones',
+  getQuarantineTypes: '/api/quarantineTypes',
   resetPassword: '/api/auth/password',
   getPersonsByWard: '/api/dashboard/wards/',
   getPersonsDetails: '/api/persons',

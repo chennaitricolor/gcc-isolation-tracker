@@ -2,7 +2,7 @@ import React, { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import LoadingComponent from '../components/LoadingComponent';
 import Alert from '@material-ui/lab/Alert';
-import actions from '../actions/getPersonsDetailAction';
+import personActions from '../actions/getPersonsDetailAction';
 import PatientsComponent from '../components/PatientsComponent';
 
 const loadingComponentStyle = {
@@ -16,10 +16,11 @@ const loadingComponentStyle = {
 const PatientsContainer = () => {
   const dispatch = useDispatch();
   const personsList = useSelector((state) => state.getPersonsDetailReducer);
+  const getAllZones = useSelector((state) => state.getAllZonesReducer);
 
   useEffect(() => {
     dispatch({
-      type: actions.GET_PERSONS_DETAILS,
+      type: personActions.GET_PERSONS_DETAILS,
     });
   }, [dispatch]);
 
@@ -31,11 +32,11 @@ const PatientsContainer = () => {
     );
   }
 
-  if (personsList.isLoading) {
-    return <LoadingComponent isLoading={personsList.isLoading} style={loadingComponentStyle} />;
+  if (personsList.isLoading || getAllZones.isLoading) {
+    return <LoadingComponent isLoading={true} style={loadingComponentStyle} />;
   }
 
-  return <PatientsComponent patients={personsList.personsDetails} />;
+  return <PatientsComponent patients={personsList.personsDetails} zones={getAllZones.allZones} />;
 };
 
 export default PatientsContainer;

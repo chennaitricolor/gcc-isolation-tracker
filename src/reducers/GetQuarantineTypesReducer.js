@@ -1,37 +1,37 @@
-import actions from '../actions/GetZonesAction';
+import actions from '../actions/GetQuarantineTypesAction';
 import toastActions from '../actions/ToastAction';
 
 const defaultState = {
-    allZones: [],
-    allZonesError: '',
+    types: [],
+    typesError: '',
     isLoading: false,
 };
 
-const getAllZonesReducer = (state = defaultState, { type, payload }) => {
+const getQuarantineTypesReducer = (state = defaultState, { type, payload }) => {
     switch (type) {
-        case actions.GET_ALL_ZONE:
+        case actions.GET_QUARANTINE_TYPE:
             return Object.assign({}, state, {
                 isLoading: true,
-                allZones: [],
+                types: [],
             });
-        case actions.GET_ALL_ZONES_SUCCESS:
+        case actions.GET_QUARANTINE_TYPES_SUCCESS:
             return Object.assign({}, state, {
                 isLoading: false,
-                allZones: payload,
+                types: payload,
             });
-        case actions.GET_ALL_ZONES_FAILURE:
+        case actions.GET_QUARANTINE_TYPES_FAILURE:
             return Object.assign({}, state, {
                 isLoading: false,
-                allZonesError: payload,
+                typesError: payload,
             });
         case toastActions.CLOSE_NOTIFICATION_DIALOG_OR_TOAST_MESSAGE:
             return Object.assign({}, state, {
                 isLoading: false,
-                allZonesError: '',
+                typesError: '',
             });
         default:
             return state;
     }
 };
 
-export default getAllZonesReducer;
+export default getQuarantineTypesReducer;
