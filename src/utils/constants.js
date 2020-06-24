@@ -13,3 +13,7 @@ export const apiUrls = {
   getDashboardEmbedUrl: '/api/dashboard/reports/gcc-dashboard',
   getPatientsLocation: '/api/dashboard/reports/map',
 };
+
+export const symptoms = ['Fever', 'Cough', 'Cold'];
+
+export const necessities = ['Food', 'Medicine', 'Grocery', 'Others'];

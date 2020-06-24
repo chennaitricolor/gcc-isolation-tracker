@@ -17,6 +17,8 @@ import without from 'lodash/without';
 import RequiredFieldMarker from './RequiredFieldMarker';
 import moment from 'moment';
 
+import { symptoms, necessities } from '../utils/constants';
+
 const useStyles = makeStyles(() => ({
   dialogContent: {
     padding: 0,
@@ -122,10 +124,6 @@ const yesNoRadioButton = [
   { label: 'No', value: 'N' },
 ];
 
-const symptoms = ['Fever', 'Cough', 'Cold'];
-
-const necessities = ['Food', 'Medicine', 'Grocery', 'Others'];
-
 const AttendanceComponent = (props) => {
   const dispatch = useDispatch();
   const styles = useStyles();
@@ -195,8 +193,8 @@ const AttendanceComponent = (props) => {
       attendanceDetails: {
         is_present_at_home: attendanceDetails.isPersonPresent,
         is_family_members_at_home: attendanceDetails.isFamilyMembersPresent === '' ? null : attendanceDetails.isFamilyMembersPresent,
-        basic_necessities: attendanceDetails.basicNecessities.toString().replace('Others', otherNecessities),
-        is_self_or_family_with_symptoms: attendanceDetails.symptoms.length ? attendanceDetails.symptoms.toString() : 'None',
+        basic_necessities: attendanceDetails.basicNecessities.toString().replace('Others', otherNecessities).split(','),
+        is_self_or_family_with_symptoms: attendanceDetails.symptoms.length ? attendanceDetails.symptoms : ['None'],
         additional_comments: attendanceDetails.comments,
         status_check_date: moment().format('YYYY-MM-DD'),
         person: patient.id,
