@@ -7,7 +7,7 @@ router.post('/', isAuthorized, async (req, res) => {
     const existingPerson = await personService.getByNameAndPhoneNumber(req.body.name, req.body.phone_number);
     if(existingPerson) {
         return res.status(500).json({
-            message: `Person with name '${req.body.name}' and phone number '${req.body.phone_number}' already exists`
+            message: 'Person entry exists already'
           });
     }
 
