@@ -92,6 +92,7 @@ module.exports = {
       const res = await person.findAll({
         where: {
           id: persons.map((p) => p.person),
+          quarantine_status: 'open'
         },
         include: [
           {

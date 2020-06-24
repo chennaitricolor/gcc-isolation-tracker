@@ -194,7 +194,7 @@ const AttendanceComponent = (props) => {
         is_present_at_home: attendanceDetails.isPersonPresent,
         is_family_members_at_home: attendanceDetails.isFamilyMembersPresent === '' ? null : attendanceDetails.isFamilyMembersPresent,
         basic_necessities: attendanceDetails.basicNecessities.toString().replace('Others', otherNecessities).split(','),
-        is_self_or_family_with_symptoms: attendanceDetails.symptoms.length ? attendanceDetails.symptoms : ['None'],
+        self_or_family_with_symptoms: attendanceDetails.symptoms.length ? attendanceDetails.symptoms : ['None'],
         additional_comments: attendanceDetails.comments,
         status_check_date: moment().format('YYYY-MM-DD'),
         person: patient.id,

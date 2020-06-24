@@ -1,7 +1,8 @@
 const router = require('express').Router();
 const { personService, personIsolationService } = require('../services');
+const { isAuthorized } = require('../helpers/authHelper');
 
-router.post('/', async (req, res) => {
+router.post('/', isAuthorized, async (req, res) => {
   try {
     const existingPerson = await personService.getByNameAndPhoneNumber(req.body.name, req.body.phone_number);
     if(existingPerson) {
@@ -21,7 +22,7 @@ router.post('/', async (req, res) => {
   }
 });
 
-router.put('/:id', async (req, res) => {
+router.put('/:id', isAuthorized, async (req, res) => {
   if(!req.params.id) {
     return res.status(500).json({
       message: 'Invalid request'
@@ -51,7 +52,7 @@ router.put('/:id', async (req, res) => {
     }
   });
 
-router.get('/', async(req, res) => {
+router.get('/', isAuthorized, async(req, res) => {
     try {
     let persons = [];  
     persons= await personService.getAll(req.session.user);
@@ -63,7 +64,7 @@ router.get('/', async(req, res) => {
     }
 });
 
-router.get('/:id', async(req, res) => {
+router.get('/:id', isAuthorized, async(req, res) => {
     const { id } = req.params;
     try {
     const person = await personService.getById(id);
@@ -75,7 +76,7 @@ router.get('/:id', async(req, res) => {
     }
 });
 
-router.post('/:id/isolation_enquiries', async (req, res) => {
+router.post('/:id/isolation_enquiries', isAuthorized, async (req, res) => {
   const { id } = req.params;
   try {
     const existingPerson = await personService.getById(id);
@@ -95,7 +96,7 @@ router.post('/:id/isolation_enquiries', async (req, res) => {
   }
 });
 
-router.get('/:id/isolation_enquiries/last_check_day', async (req, res) => {
+router.get('/:id/isolation_enquiries/last_check_day', isAuthorized, async (req, res) => {
   const { id } = req.params;
   try {
     const existingPerson = await personService.getById(id);

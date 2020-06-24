@@ -13,15 +13,15 @@ module.exports = function (sequelize, DataTypes) {
     },
     is_family_members_at_home: {
       type: DataTypes.BOOLEAN,
-      allowNull: false
-    },
-    basic_necessities: {
-      type: DataTypes.STRING,
       allowNull: true
     },
-    is_self_or_family_with_symptoms: {
-      type: DataTypes.BOOLEAN,
-      allowNull: false
+    basic_necessities: {
+      type: DataTypes.ARRAY(DataTypes.STRING),
+      allowNull: true
+    },
+    self_or_family_with_symptoms: {
+      type: DataTypes.ARRAY(DataTypes.STRING),
+      allowNull: true
     },
     additional_comments: {
       type: DataTypes.STRING,

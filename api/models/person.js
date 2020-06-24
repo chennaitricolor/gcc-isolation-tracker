@@ -59,6 +59,11 @@ module.exports = function (sequelize, DataTypes) {
       type: DataTypes.DATE,
       allowNull: true
       },
+    quarantine_status: {
+      type: DataTypes.ENUM('open', 'closed'),
+      allowNull: true,
+      defaultValue: 'open'
+    }  
   }, {
     tableName: 'person',
     timestamps: true

@@ -1,7 +1,8 @@
 const router = require('express').Router();
 const { quarantineTypeService } = require('../services');
+const { isAuthorized } = require('../helpers/authHelper');
 
-router.get('/', async(req, res) => {
+router.get('/', isAuthorized, async(req, res) => {
   try {
   const zones = await quarantineTypeService.getAll();
   return res.send(zones).status(200);
@@ -12,7 +13,7 @@ router.get('/', async(req, res) => {
   }
 });
 
-router.get('/:id', async(req, res) => {
+router.get('/:id', isAuthorized, async(req, res) => {
   const { id } = req.params;
   try {
   const zone = await quarantineTypeService.getById(id);

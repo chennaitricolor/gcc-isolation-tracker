@@ -1,5 +1,6 @@
 const router = require('express').Router();
 const { authService } = require('../services');
+const { isAuthorized } = require('../helpers/authHelper');
 
 router.post('/login', async (req, res) => {
   try {
@@ -22,7 +23,7 @@ router.post('/login', async (req, res) => {
   }
 });
 
-router.get('/logout', (req, res) => {
+router.get('/logout', isAuthorized, (req, res) => {
   req.session.destroy();
   res.sendStatus(200);
 });
