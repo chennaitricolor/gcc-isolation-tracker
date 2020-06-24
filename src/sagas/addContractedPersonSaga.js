@@ -11,7 +11,7 @@ export default function* addContractedPersonsSaga(action) {
     if (response.data !== undefined && response.status === 200) {
       yield put({
         type: toastActions.SET_TOAST_MESSAGE,
-        payload: 'Entry submitted successfully',
+        payload: 'Person added successfully',
       });
       yield put({
         type: getPersonsDetailAction.GET_PERSONS_DETAILS,

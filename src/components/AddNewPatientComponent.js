@@ -230,7 +230,7 @@ const AddNewPatientComponent = ({ onSubmit, onCancel, zones, types }) => {
           {list.map((item) => {
             return (
               <MenuItem key={item.id} value={item.id}>
-                {item.name}
+                {field === 'zone' ? `${item.id} - ${item.name}` : item.name}
               </MenuItem>
             );
           })}

@@ -7,10 +7,13 @@ import IconButton from '@material-ui/core/IconButton';
 import CancelIcon from '@material-ui/icons/Cancel';
 import RadioGroup from '@material-ui/core/RadioGroup';
 import FormControlLabel from '@material-ui/core/FormControlLabel';
+import FormControl from '@material-ui/core/FormControl';
+import Checkbox from '@material-ui/core/Checkbox';
 import Radio from '@material-ui/core/Radio';
 import TextField from '@material-ui/core/TextField';
 import Button from '@material-ui/core/Button';
 import { useDispatch } from 'react-redux';
+import without from 'lodash/without';
 import RequiredFieldMarker from './RequiredFieldMarker';
 import moment from 'moment';
 
@@ -96,10 +99,32 @@ function renderTextField(label, key, value, handleOnChange, styles, isRequired) 
   );
 }
 
+function renderMultiInput(label, key, value, handleOnChange, list, styles, isRequired = false) {
+  return (
+    <FormControl className={styles.dropDown}>
+      <Typography component={'div'} className={styles.fieldLabel}>
+        {label}
+        {isRequired && <RequiredFieldMarker />}
+      </Typography>
+      {list.map((item) => (
+        <FormControlLabel
+          key={item}
+          control={<Checkbox checked={value.includes(item)} onChange={(event) => handleOnChange(event, key, 'checkbox')} name={item} />}
+          label={item}
+        />
+      ))}
+    </FormControl>
+  );
+}
+
 const yesNoRadioButton = [
   { label: 'Yes', value: 'Y' },
   { label: 'No', value: 'N' },
 ];
+
+const symptoms = ['Fever', 'Cough', 'Cold'];
+
+const necessities = ['Food', 'Medicine', 'Grocery', 'Others'];
 
 const AttendanceComponent = (props) => {
   const dispatch = useDispatch();
@@ -111,15 +136,19 @@ const AttendanceComponent = (props) => {
   const [attendanceDetails, setAttendanceDetails] = useState({
     isPersonPresent: '',
     isFamilyMembersPresent: '',
-    basicNecessities: '',
-    isSymptoms: '',
+    basicNecessities: [],
+    symptoms: [],
     comments: '',
   });
 
+  const [otherNecessities, setOtherNecessities] = useState('');
+
   useEffect(() => {
-    let showSave = attendanceDetails.isPersonPresent !== '' && attendanceDetails.isFamilyMembersPresent !== '' && attendanceDetails.isSymptoms !== '';
+    let showSave =
+      attendanceDetails.isPersonPresent !== '' &&
+      (attendanceDetails.isFamilyMembersPresent !== '' || patient._quarantine_type.name !== 'Home Isolation');
     setShowSave(showSave);
-  }, [attendanceDetails]);
+  }, [attendanceDetails, patient._quarantine_type.name]);
 
   const handleOnChange = (event, id, type) => {
     if (type === 'text') {
@@ -143,22 +172,40 @@ const AttendanceComponent = (props) => {
         });
       }
     }
+    if (type === 'checkbox') {
+      if (event !== null) {
+        if (!attendanceDetails[id].includes(event.target.name)) {
+          setAttendanceDetails({
+            ...attendanceDetails,
+            [id]: [...attendanceDetails[id], event.target.name],
+          });
+        } else {
+          const updatedList = without(attendanceDetails[id], event.target.name);
+          setAttendanceDetails({
+            ...attendanceDetails,
+            [id]: updatedList,
+          });
+        }
+      }
+    }
   };
 
   const handleSave = () => {
+    const payload = {
+      attendanceDetails: {
+        is_present_at_home: attendanceDetails.isPersonPresent,
+        is_family_members_at_home: attendanceDetails.isFamilyMembersPresent === '' ? null : attendanceDetails.isFamilyMembersPresent,
+        basic_necessities: attendanceDetails.basicNecessities.toString().replace('Others', otherNecessities),
+        is_self_or_family_with_symptoms: attendanceDetails.symptoms.length ? attendanceDetails.symptoms.toString() : 'None',
+        additional_comments: attendanceDetails.comments,
+        status_check_date: moment().format('YYYY-MM-DD'),
+        person: patient.id,
+        day: patient.currentDay,
+      },
+    };
     dispatch({
       type: 'UPDATE_CONTRACTED_PERSONS',
-      payload: {
-        attendanceDetails: {
-          is_present_at_home: attendanceDetails.isPersonPresent,
-          is_family_members_at_home: attendanceDetails.isFamilyMembersPresent,
-          basic_necessities: attendanceDetails.basicNecessities,
-          is_self_or_family_with_symptoms: attendanceDetails.isSymptoms,
-          additional_comments: attendanceDetails.comments,
-          status_check_date: moment().format('YYYY-MM-DD'),
-          person: patient.id,
-        },
-      },
+      payload,
     });
   };
 
@@ -202,36 +249,49 @@ const AttendanceComponent = (props) => {
               true,
             )}
           </div>
+          {patient._quarantine_type.name === 'Home Isolation' && (
+            <div style={{ marginTop: '5%' }}>
+              {renderRadioButtonField(
+                'Are the Family members present at home?',
+                'isFamilyMembersPresent',
+                attendanceDetails.isFamilyMembersPresent,
+                yesNoRadioButton,
+                handleOnChange,
+                styles,
+                true,
+              )}
+            </div>
+          )}
           <div style={{ marginTop: '5%' }}>
-            {renderRadioButtonField(
-              'Are the Family members present at home?',
-              'isFamilyMembersPresent',
-              attendanceDetails.isFamilyMembersPresent,
-              yesNoRadioButton,
-              handleOnChange,
-              styles,
-              true,
-            )}
-          </div>
-          <div style={{ marginTop: '5%' }}>
-            {renderTextField(
+            {renderMultiInput(
               'Do they need any Basic necessities?',
               'basicNecessities',
               attendanceDetails.basicNecessities,
               handleOnChange,
+              necessities,
               styles,
               false,
             )}
+            {attendanceDetails.basicNecessities.includes('Others') && (
+              <TextField
+                className={styles.textField}
+                value={otherNecessities}
+                onChange={(event) => setOtherNecessities(event.target.value)}
+                autoComplete={'off'}
+                margin={'normal'}
+                variant={'outlined'}
+              />
+            )}
           </div>
           <div style={{ marginTop: '5%' }}>
-            {renderRadioButtonField(
+            {renderMultiInput(
               'Does the person or any of the family members have symptoms?',
-              'isSymptoms',
-              attendanceDetails.isSymptoms,
-              yesNoRadioButton,
+              'symptoms',
+              attendanceDetails.symptoms,
               handleOnChange,
+              symptoms,
               styles,
-              true,
+              false,
             )}
           </div>
           <div style={{ marginTop: '5%' }}>

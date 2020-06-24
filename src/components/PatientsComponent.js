@@ -174,12 +174,17 @@ const PatientsComponent = ({ patients, zones }) => {
   const pendingPatients = filter(
     patients,
     (patient) =>
-      patient._isolation_enquiries.length < 14 && !find(patient._isolation_enquiries, ['status_check_date', moment().format('YYYY-MM-DD')]),
+      moment().diff(moment(patient.isolation_start_date), 'days') < 14 &&
+      !find(patient._isolation_enquiries, ['status_check_date', moment().format('YYYY-MM-DD')]),
   );
   const completedPatients = filter(
     patients,
-    (patient) => patient._isolation_enquiries.length < 14 && find(patient._isolation_enquiries, ['status_check_date', moment().format('YYYY-MM-DD')]),
+    (patient) =>
+      moment().diff(moment(patient.isolation_start_date), 'days') < 14 &&
+      find(patient._isolation_enquiries, ['status_check_date', moment().format('YYYY-MM-DD')]),
   );
+
+  const totalPatientsLength = pendingPatients.length + completedPatients.length;
 
   if (contractedPersonResponse.addContractedPersonMessage !== '' && contractedPersonResponse.addContractedPersonMessage !== undefined) {
     return (
@@ -195,21 +200,21 @@ const PatientsComponent = ({ patients, zones }) => {
       <div className={styles.root}>
         <div className={styles.pageTitle}>
           <Typography component={'div'} variant="h5" style={{ color: '#333333', fontWeight: 'bold', fontSize: '22px' }}>
-            Persons
+            Total Tasks
           </Typography>
-          <Chip component={'div'} size="small" label={patients.length} color="secondary" className={styles.personCountChip} />
+          <Chip component={'div'} size="small" label={totalPatientsLength} color="secondary" className={styles.personCountChip} />
         </div>
-        {patients.length === 0 && (
+        {totalPatientsLength === 0 && (
           <div style={{ height: '100%', display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
             <Typography>No tasks available</Typography>
           </div>
         )}
-        {patients.length > 0 && (
+        {totalPatientsLength > 0 && (
           <>
             <div className={styles.pendingPatients}>
               <div className={styles.sectionTitle}>
                 <Typography component={'div'} variant="h5" style={{ color: '#333333', fontWeight: 'bold', fontSize: '20px' }}>
-                  Pending
+                  Incomplete Tasks
                 </Typography>
                 <Chip size="small" label={pendingPatients.length} className={styles.pendingCountChip} component={'div'} />
               </div>
@@ -218,7 +223,7 @@ const PatientsComponent = ({ patients, zones }) => {
             <div className={styles.completedPatients}>
               <div className={styles.sectionTitle}>
                 <Typography component={'div'} variant="h5" style={{ color: '#333333', fontWeight: 'bold', fontSize: '20px' }}>
-                  Completed
+                  Completed Tasks
                 </Typography>
                 <Chip size="small" label={completedPatients.length} className={styles.successCountChip} component={'div'} />
               </div>

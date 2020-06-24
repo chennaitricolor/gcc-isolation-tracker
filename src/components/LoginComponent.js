@@ -3,7 +3,7 @@ import { makeStyles } from '@material-ui/core/styles';
 import * as PropTypes from 'prop-types';
 import { Typography } from '@material-ui/core';
 import Button from '@material-ui/core/Button';
-import agentXLoginLogo from '../images/loginVector.png';
+import agentXLoginLogo from '../images/GccLogo.jpg';
 import TextField from '@material-ui/core/TextField';
 import InputAdornment from '@material-ui/core/InputAdornment';
 import IconButton from '@material-ui/core/IconButton';
@@ -13,9 +13,6 @@ import VisibilityOff from '@material-ui/icons/VisibilityOff';
 const useStyles = makeStyles(() => ({
   loginContainer: {
     color: '#777',
-    borderRadius: '3px',
-    borderStyle: 'solid',
-    borderWidth: '1px',
     height: '100%',
     margin: 'auto',
     width: '100%',
@@ -76,7 +73,7 @@ export const LoginComponent = (props) => {
   return (
     <div className={styles.loginContainer}>
       <div className={styles.loginInformationContainer}>
-        <Typography className={styles.agentXTitle}>GCC - Isolation Tracker</Typography>
+        <Typography className={styles.agentXTitle}>GCC HQIMS FOCUS Module</Typography>
         <div style={{ textAlign: 'center' }}>
           <img className={styles.agentXLoginLogo} alt={'loginLogo'} src={agentXLoginLogo} />
         </div>

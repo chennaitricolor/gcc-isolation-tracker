@@ -17,7 +17,7 @@ const useStyles = makeStyles((theme) => ({
     flexGrow: 1,
     fontWeight: 'bold',
     color: 'white',
-    fontSize: '24px',
+    fontSize: '20px',
     letterSpacing: '0px',
     opacity: 1,
     padding: '5px',
@@ -40,7 +40,7 @@ export const HeaderComponent = () => {
   return (
     <div className={classes.root}>
       <Typography variant="h6" className={classes.title}>
-        GCC Isolation Module
+        GCC HQIMS FOCUS Module
       </Typography>
       <IconButton aria-label="Logout" color="primary" onClick={handleLogout}>
         <ExitToAppIcon />
