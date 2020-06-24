@@ -1,5 +1,5 @@
 const moment = require('moment');
-const { user, address, person, sequelize, personUser, personIsolation } = require('../models');
+const { user, address, person, sequelize, personUser, personIsolation, quarantineType } = require('../models');
 const personIsolationService = require('./personIsolationService');
 
 module.exports = {
@@ -107,6 +107,10 @@ module.exports = {
             model: personIsolation,
             as: '_isolation_enquiries',
           },
+          {
+            model: quarantineType,
+            as: '_quarantine_type',
+          },
         ],
       });
       if (res) return res;
@@ -132,6 +136,39 @@ module.exports = {
           },
         ],
       });
+      if (res) return res;
+      return null;
+    } catch (e) {
+      throw e;
+    }
+  },
+  getByNameAndPhoneNumber: async (name, phone_number) => {
+    try {
+      const res = await person.findOne({
+        where: {
+          phone_number: phone_number,
+          name: name
+        },
+        include: [
+          {
+            model: address,
+            as: '_address',
+          },
+          {
+            model: personIsolation,
+            as: '_isolation_enquiries',
+          },
+        ],
+      });
+      if (res) return res;
+      return null;
+    } catch (e) {
+      throw e;
+    }
+  },
+  getByIdWithoutAssociations: async (id) => {
+    try {
+      const res = await person.findByPk(id);
       if (res) return res;
       return null;
     } catch (e) {
@@ -175,8 +212,6 @@ module.exports = {
       if (!_personIsolation.updated_by) _personIsolation['updated_by'] = sessionUser.data.id;
       _personIsolation['is_offline_enquiry'] = false;
       _personIsolation['disabled'] = true;
-      const last_check_day_of_the_person = await personIsolationService.getLatestEnquiryForPerson(_personIsolation.person);
-      _personIsolation['day'] = (last_check_day_of_the_person.dataValues && last_check_day_of_the_person.dataValues['last_enquiry_day_num'])  ? parseInt(last_check_day_of_the_person.dataValues['last_enquiry_day_num'])+1 : 1;
       const result = await personIsolationService.insertOne(_personIsolation);
       await personIsolationTransaction.commit();
       return result;

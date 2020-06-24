@@ -3,10 +3,10 @@ const { personService, personIsolationService } = require('../services');
 
 router.post('/', async (req, res) => {
   try {
-    const existingPerson = await personService.getByPhoneNumber(req.body.phone_number);
+    const existingPerson = await personService.getByNameAndPhoneNumber(req.body.name, req.body.phone_number);
     if(existingPerson) {
         return res.status(500).json({
-            message: `Person with phone number '${req.body.phone_number}' already exists`
+            message: `Person with name '${req.body.name}' and phone number '${req.body.phone_number}' already exists`
           });
     }
 

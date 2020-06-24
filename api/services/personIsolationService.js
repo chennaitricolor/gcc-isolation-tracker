@@ -47,7 +47,7 @@ module.exports = {
         where: {
           person: person
         },
-        attributes: [[sequelize.fn('max', sequelize.col('day')), 'last_enquiry_day_num']]
+        attributes: ['status_check_date', [sequelize.fn('max', sequelize.col('day')), 'last_enquiry_day_num']]
       });
       if(res)
           return res;
