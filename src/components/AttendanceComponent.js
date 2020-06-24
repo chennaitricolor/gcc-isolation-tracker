@@ -181,7 +181,7 @@ const AttendanceComponent = (props) => {
               <CancelIcon />
             </IconButton>
           </div>
-          <Typography variant="h6" style={{ color: '#3C6886' }}>
+          <Typography variant="h6" style={{ color: '#3C6886', marginTOp: '2%' }}>
             {name}
           </Typography>
           <Typography style={{ fontSize: '14px' }}>{address}</Typography>
