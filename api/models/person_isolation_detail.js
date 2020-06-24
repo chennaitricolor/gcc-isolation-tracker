@@ -9,7 +9,7 @@ module.exports = function (sequelize, DataTypes) {
     },
     is_present_at_home: {
       type: DataTypes.BOOLEAN,
-      allowNull: false
+      allowNull: true
     },
     is_family_members_at_home: {
       type: DataTypes.BOOLEAN,

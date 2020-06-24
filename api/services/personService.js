@@ -6,6 +6,9 @@ module.exports = {
   save: async (personObj, sessionUser) => {
     let personTransaction = await sequelize.transaction();
     let _person = personObj;
+    const isolation_start_date = moment(_person.isolation_start_date);
+    if(!isolation_start_date || !isolation_start_date.isValid())
+      throw new Error('Isolation start date is invalid'); 
     try {
       if (!_person.address && _person._address) {
         const address_result = await address.create(_person._address, { personTransaction });
@@ -27,8 +30,8 @@ module.exports = {
         let status_entries = [];
         let enquiry = {
           person: id,
-          is_present_at_home: false,
-          is_family_members_at_home: false,
+          is_present_at_home: null,
+          is_family_members_at_home: null,
           basic_necessities: [],
           self_or_family_with_symptoms: [],
           additional_comments: 'NA',
