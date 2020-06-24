@@ -203,11 +203,19 @@ const AddNewPatientComponent = ({ onSubmit, onCancel, zones, types }) => {
           variant={'outlined'}
           className={styles.textField}
           value={details[field]}
-          onChange={(e) => personalInfoOnChange(field, e.target.value)}
+          onChange={(e) => {
+            const { value } = e.target;
+            if (moment(value).isValid() && moment(value).isBetween(moment().subtract(14, 'day'), moment().add(1, 'day'), 'day')) {
+              personalInfoOnChange(field, value);
+            }
+          }}
           InputLabelProps={{
             shrink: true,
           }}
-          inputProps={{ max: moment().format('YYYY-MM-DD'), min: moment().subtract(13, 'day').format('YYYY-MM-DD') }}
+          inputProps={{
+            max: moment().format('YYYY-MM-DD'),
+            min: moment().subtract(13, 'day').format('YYYY-MM-DD'),
+          }}
         />
       </div>
     );
@@ -242,12 +250,13 @@ const AddNewPatientComponent = ({ onSubmit, onCancel, zones, types }) => {
   const quarantineSubTypes = () => find(types, ['id', details.quarantine_type]).quarantine_sub_types;
 
   const canEnableSubmit = () => {
-    const { name, age, gender, phone_number, quarantine_type, quarantine_sub_type, family_member_total, _address } = details;
+    const { name, age, gender, phone_number, quarantine_type, quarantine_sub_type, family_member_total, _address, isolation_start_date } = details;
     const { door_num, building_name, street, area, locality, zone, division } = _address;
     return (
       name &&
       age &&
       gender &&
+      isolation_start_date &&
       phone_number &&
       quarantine_type &&
       (quarantineSubTypes().length === 0 || quarantine_sub_type) &&
