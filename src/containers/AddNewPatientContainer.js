@@ -25,7 +25,6 @@ const AddNewPatientContainer = (props) => {
 
   const handleSubmit = (payload) => {
     dispatch({ type: addActions.ADD_CONTRACTED_PERSONS, payload });
-    onCancel();
   };
 
   if ((getAllZones !== undefined && getAllZones.isLoading) || (getQuarantineTypes !== undefined && getQuarantineTypes.isLoading)) {

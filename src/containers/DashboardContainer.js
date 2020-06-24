@@ -14,7 +14,8 @@ const FabStyle = { position: 'absolute', top: '90%', left: '80%', backgroundColo
 const DashboardContainer = () => {
   const dispatch = useDispatch();
   const [isFormOpen, setFormOpen] = useState(false);
-  const toastMessage = useSelector((state) => state.toastMessageReducer.toastMessage);
+  const contractedPersonResponse = useSelector((state) => state.contractedPersonReducer);
+  const { addContractedPersonMessage, addContractedPersonError } = contractedPersonResponse;
 
   useEffect(() => {
     dispatch({
@@ -25,10 +26,13 @@ const DashboardContainer = () => {
     });
   }, [dispatch]);
 
-  const setToastMessage = (payload) => {
+  useEffect(() => {
+    if (addContractedPersonMessage) setFormOpen(false);
+  }, [addContractedPersonMessage]);
+
+  const handleToastClose = () => {
     dispatch({
-      type: toastActions.SET_TOAST_MESSAGE,
-      payload,
+      type: toastActions.CLOSE_NOTIFICATION_DIALOG_OR_TOAST_MESSAGE,
     });
   };
 
@@ -48,10 +52,10 @@ const DashboardContainer = () => {
       )}
       {isFormOpen && <AddNewPatientContainer onCancel={() => setFormOpen(false)} />}
       <ToastComponent
-        openToast={toastMessage !== null}
-        toastMessage={toastMessage}
-        handleClose={() => setToastMessage(null)}
-        toastVariant="success"
+        openToast={(addContractedPersonMessage || addContractedPersonError) !== ''}
+        toastMessage={addContractedPersonMessage ? addContractedPersonMessage : addContractedPersonError}
+        handleClose={handleToastClose}
+        toastVariant={addContractedPersonMessage ? 'success' : 'error'}
       />
     </>
   );
