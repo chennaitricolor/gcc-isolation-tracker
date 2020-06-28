@@ -116,4 +116,25 @@ router.get('/:id/isolation_enquiries/last_check_day', isAuthorized, async (req, 
   }
 });
 
+router.get('/:id/isolation_enquiries/day/:day', isAuthorized, async (req, res) => {
+  const { id, day } = req.params;
+  try {
+    const existingPerson = await personService.getById(id);
+    if(!existingPerson) {
+        return res.status(500).json({
+            message: `Invalid person with id ${id}`
+          });
+    }
+    const savedPersonIsolationDetail = await personIsolationService.getEnquirySeqOfDayForPerson(day, id);
+    console.log(JSON.stringify(savedPersonIsolationDetail));
+    if (savedPersonIsolationDetail) {
+      return res.send(savedPersonIsolationDetail);
+    }
+  } catch (e) {
+    return res.status(500).json({
+      message: e.message
+    });
+  }
+});
+
 module.exports = router;

@@ -15,8 +15,8 @@ module.exports = function (sequelize, DataTypes) {
       type: DataTypes.BOOLEAN,
       allowNull: true
     },
-    basic_necessities: {
-      type: DataTypes.ARRAY(DataTypes.STRING),
+    basic_necessities_delivered: {
+      type: DataTypes.BOOLEAN,
       allowNull: true
     },
     self_or_family_with_symptoms: {
@@ -64,6 +64,10 @@ module.exports = function (sequelize, DataTypes) {
       allowNull: true
     },
     day: {
+      type: DataTypes.INTEGER,
+      allowNull: true
+    },
+    enquiry_seq: {
       type: DataTypes.INTEGER,
       allowNull: true
     },
