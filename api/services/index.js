@@ -4,6 +4,8 @@ const zoneService = require('./zoneService');
 const quarantineTypeService = require('./quarantineTypeService');
 const quarantineSubTypeService = require('./quarantineSubTypeService');
 const personIsolationService = require('./personIsolationService');
+const dashboardService = require('./dashboardService');
+const userService = require('./userService');
 
 module.exports = {
   authService,
@@ -12,4 +14,6 @@ module.exports = {
   quarantineTypeService,
   quarantineSubTypeService,
   personIsolationService,
+  dashboardService,
+  userService
 };

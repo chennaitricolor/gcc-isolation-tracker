@@ -54,5 +54,19 @@ module.exports = {
   } catch (e) {
     throw e;
   }
+  },
+  getEnquirySeqOfDayForPerson: async(status_check_date, person) => {
+    try {
+      const res = await personIsolation.findAll({
+        where: {
+          status_check_date: status_check_date,
+          person: person
+        }
+      });
+      if(res)
+          return res;
+  } catch (e) {
+    throw e;
+  }
   }
 };

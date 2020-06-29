@@ -32,7 +32,7 @@ module.exports = {
           person: id,
           is_present_at_home: null,
           is_family_members_at_home: null,
-          basic_necessities: [],
+          basic_necessities_delivered: null,
           self_or_family_with_symptoms: [],
           additional_comments: 'NA',
           status_check_date: null,
@@ -216,6 +216,13 @@ module.exports = {
       if (!_personIsolation.updated_by) _personIsolation['updated_by'] = sessionUser.data.id;
       _personIsolation['is_offline_enquiry'] = false;
       _personIsolation['disabled'] = true;
+      const lastEnquirySeqForDayOfPerson = personIsolationService.getEnquirySeqOfDayForPerson(_personIsolation.status_check_date, _personIsolation.person);
+      if(lastEnquirySeqForDayOfPerson && lastEnquirySeqForDayOfPerson.length > 2)
+        throw new Error('Only 2 enquiries can be recorded per day');
+      if(lastEnquirySeqForDayOfPerson && lastEnquirySeqForDayOfPerson.length === 1)  
+        _personIsolation.enquiry_seq = 2;
+      if(!lastEnquirySeqForDayOfPerson || lastEnquirySeqForDayOfPerson.length === 0)  
+        _personIsolation.enquiry_seq = 1;  
       const result = await personIsolationService.insertOne(_personIsolation);
       await personIsolationTransaction.commit();
       return result;

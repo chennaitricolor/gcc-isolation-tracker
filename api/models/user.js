@@ -31,5 +31,9 @@ module.exports = function (sequelize, DataTypes) {
     timestamps: false
   });
 
+  User.associate = (db) => {
+      User.hasMany(db.userRole, { as: '_roles', foreignKey: 'user' });
+  };
+
   return User;
 };
