@@ -17,7 +17,7 @@ import without from 'lodash/without';
 import RequiredFieldMarker from './RequiredFieldMarker';
 import moment from 'moment';
 
-import { symptoms, necessities } from '../utils/constants';
+import { symptoms } from '../utils/constants';
 
 const useStyles = makeStyles(() => ({
   dialogContent: {
@@ -134,16 +134,15 @@ const AttendanceComponent = (props) => {
   const [attendanceDetails, setAttendanceDetails] = useState({
     isPersonPresent: '',
     isFamilyMembersPresent: '',
-    basicNecessities: [],
+    basicNecessities: '',
     symptoms: [],
     comments: '',
   });
 
-  const [otherNecessities, setOtherNecessities] = useState('');
-
   useEffect(() => {
     let showSave =
       attendanceDetails.isPersonPresent !== '' &&
+      attendanceDetails.basicNecessities &&
       (attendanceDetails.isFamilyMembersPresent !== '' || patient._quarantine_type.name !== 'Home Isolation');
     setShowSave(showSave);
   }, [attendanceDetails, patient._quarantine_type.name]);
@@ -193,7 +192,7 @@ const AttendanceComponent = (props) => {
       attendanceDetails: {
         is_present_at_home: attendanceDetails.isPersonPresent,
         is_family_members_at_home: attendanceDetails.isFamilyMembersPresent === '' ? null : attendanceDetails.isFamilyMembersPresent,
-        basic_necessities: attendanceDetails.basicNecessities.toString().replace('Others', otherNecessities).split(','),
+        basic_necessities_delivered: attendanceDetails.basicNecessities,
         self_or_family_with_symptoms: attendanceDetails.symptoms.length ? attendanceDetails.symptoms : ['None'],
         additional_comments: attendanceDetails.comments,
         status_check_date: moment().format('YYYY-MM-DD'),
@@ -261,24 +260,14 @@ const AttendanceComponent = (props) => {
             </div>
           )}
           <div style={{ marginTop: '5%' }}>
-            {renderMultiInput(
-              'Do they need any Basic necessities?',
+            {renderRadioButtonField(
+              'Are the basic necessities delivered?',
               'basicNecessities',
               attendanceDetails.basicNecessities,
+              yesNoRadioButton,
               handleOnChange,
-              necessities,
               styles,
-              false,
-            )}
-            {attendanceDetails.basicNecessities.includes('Others') && (
-              <TextField
-                className={styles.textField}
-                value={otherNecessities}
-                onChange={(event) => setOtherNecessities(event.target.value)}
-                autoComplete={'off'}
-                margin={'normal'}
-                variant={'outlined'}
-              />
+              true,
             )}
           </div>
           <div style={{ marginTop: '5%' }}>

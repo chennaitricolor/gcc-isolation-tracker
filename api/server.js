@@ -37,8 +37,6 @@ app.use((req, res, next) => {
   next();
 });
 
-app.use(express.static(path.join('build')));
-
 routes.bind(app);
 
 var authorized = (req, res, next) => {
@@ -50,12 +48,18 @@ var authorized = (req, res, next) => {
 };
 
 app.get('/', function (req, res) {
-  res.sendFile(path.join(__dirname, '../build', 'index.html'));
+  if (req.session.user && req.cookies['gcc-isolation-tracker']) {
+    res.redirect('/dashboard');
+  } else {
+    res.sendFile(path.join(__dirname, '../build', 'index.html'));
+  }
 });
 
 app.get('/dashboard', authorized, function (req, res) {
   res.sendFile(path.join(__dirname, '../build', 'index.html'));
 });
+
+app.use(express.static(path.join('build')));
 
 app.listen(PORT, (error) => {
   if (error) {
