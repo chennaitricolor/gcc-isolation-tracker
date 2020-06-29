@@ -16,7 +16,7 @@ module.exports = function (sequelize, DataTypes) {
       allowNull: true
     },
     basic_necessities_delivered: {
-      type: DataTypes.BOOLEAN,
+      type: DataTypes.ARRAY(DataTypes.STRING),
       allowNull: true
     },
     self_or_family_with_symptoms: {

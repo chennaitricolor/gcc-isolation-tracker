@@ -32,7 +32,7 @@ module.exports = {
           person: id,
           is_present_at_home: null,
           is_family_members_at_home: null,
-          basic_necessities_delivered: null,
+          basic_necessities_delivered: [],
           self_or_family_with_symptoms: [],
           additional_comments: 'NA',
           status_check_date: null,
