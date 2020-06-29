@@ -192,7 +192,7 @@ const AttendanceComponent = (props) => {
       attendanceDetails: {
         is_present_at_home: attendanceDetails.isPersonPresent,
         is_family_members_at_home: attendanceDetails.isFamilyMembersPresent === '' ? null : attendanceDetails.isFamilyMembersPresent,
-        basic_necessities: attendanceDetails.basicNecessities,
+        basic_necessities_delivered: attendanceDetails.basicNecessities,
         self_or_family_with_symptoms: attendanceDetails.symptoms.length ? attendanceDetails.symptoms : ['None'],
         additional_comments: attendanceDetails.comments,
         status_check_date: moment().format('YYYY-MM-DD'),
