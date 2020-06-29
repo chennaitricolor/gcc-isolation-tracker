@@ -13,9 +13,10 @@ import AttendanceComponent from './AttendanceComponent';
 import ToastComponent from './ToastComponent';
 import toastActions from '../actions/ToastAction';
 
-const markerStyle = (isolation_details) => {
-  if (!isolation_details) return 'pendingMarker';
-  if (isolation_details.is_offline_enquiry) return 'NaMarker';
+const markerStyle = (isolation_details, currentDay, index) => {
+  if (!isolation_details && currentDay === index) return 'pendingMarker';
+  if (!isolation_details && currentDay < index) return 'futureMarker';
+  if (!isolation_details && currentDay > index) return 'NaMarker';
   if (isolation_details.is_present_at_home) return 'safeMarker';
   if (!isolation_details.is_present_at_home) return 'violatedMarker';
 };
@@ -97,13 +98,21 @@ const useStyles = makeStyles(() => ({
   attendance: {
     marginTop: '3%',
     display: 'flex',
+    flexFlow: 'column',
     justifyContent: 'space-between',
+  },
+  markerCaption: {
+    color: '#3C6886',
   },
   markerStyle: {
     borderRadius: '50%',
     display: 'inline-block',
     height: '3vh',
     width: '3vh',
+    margin: '1px',
+  },
+  markers: {
+    display: 'flex',
   },
   safeMarker: {
     background: 'green',
@@ -116,6 +125,10 @@ const useStyles = makeStyles(() => ({
   },
   NaMarker: {
     background: '#4F4F4F',
+  },
+  futureMarker: {
+    background: 'white',
+    border: '1px solid',
   },
 }));
 
@@ -155,10 +168,24 @@ const PatientsComponent = ({ patients, zones }) => {
             {phone_number}
           </Typography>
           <div className={styles.attendance}>
-            {map(range(14), (index) => {
-              const isolation_details = find(_isolation_enquiries, ['day', index + 1]);
-              return <AttendanceMarker key={index} style={markerStyle(isolation_details)} />;
-            })}
+            <Typography component={'div'} className={styles.markerCaption}>
+              Person History - Morning
+            </Typography>
+            <div className={styles.markers}>
+              {map(range(14), (index) => {
+                const isolation_details = find(_isolation_enquiries, { day: index + 1, enquiry_seq: 1 });
+                return <AttendanceMarker key={index} style={markerStyle(isolation_details, currentDay, index)} />;
+              })}
+            </div>
+            <Typography component={'div'} className={styles.markerCaption}>
+              Person History - Evening
+            </Typography>
+            <div className={styles.markers}>
+              {map(range(14), (index) => {
+                const isolation_details = find(_isolation_enquiries, { day: index + 1, enquiry_seq: 2 });
+                return <AttendanceMarker key={index} style={markerStyle(isolation_details, currentDay, index)} />;
+              })}
+            </div>
           </div>
         </div>
       );
@@ -175,13 +202,13 @@ const PatientsComponent = ({ patients, zones }) => {
     patients,
     (patient) =>
       moment().diff(moment(patient.isolation_start_date), 'days') < 14 &&
-      !find(patient._isolation_enquiries, ['status_check_date', moment().format('YYYY-MM-DD')]),
+      !(filter(patient._isolation_enquiries, ['status_check_date', moment().format('YYYY-MM-DD')]).length === 2),
   );
   const completedPatients = filter(
     patients,
     (patient) =>
       moment().diff(moment(patient.isolation_start_date), 'days') < 14 &&
-      find(patient._isolation_enquiries, ['status_check_date', moment().format('YYYY-MM-DD')]),
+      filter(patient._isolation_enquiries, ['status_check_date', moment().format('YYYY-MM-DD')]).length === 2,
   );
 
   const totalPatientsLength = pendingPatients.length + completedPatients.length;

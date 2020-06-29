@@ -17,7 +17,7 @@ import without from 'lodash/without';
 import RequiredFieldMarker from './RequiredFieldMarker';
 import moment from 'moment';
 
-import { symptoms } from '../utils/constants';
+import { symptoms, necessities } from '../utils/constants';
 
 const useStyles = makeStyles(() => ({
   dialogContent: {
@@ -111,7 +111,14 @@ function renderMultiInput(label, key, value, handleOnChange, list, styles, isReq
       {list.map((item) => (
         <FormControlLabel
           key={item}
-          control={<Checkbox checked={value.includes(item)} onChange={(event) => handleOnChange(event, key, 'checkbox')} name={item} />}
+          control={
+            <Checkbox
+              checked={value.includes(item)}
+              disabled={item !== 'None' && value.includes('None')}
+              onChange={(event) => handleOnChange(event, key, 'checkbox')}
+              name={item}
+            />
+          }
           label={item}
         />
       ))}
@@ -134,7 +141,7 @@ const AttendanceComponent = (props) => {
   const [attendanceDetails, setAttendanceDetails] = useState({
     isPersonPresent: '',
     isFamilyMembersPresent: '',
-    basicNecessities: '',
+    basicNecessities: [],
     symptoms: [],
     comments: '',
   });
@@ -142,7 +149,7 @@ const AttendanceComponent = (props) => {
   useEffect(() => {
     let showSave =
       attendanceDetails.isPersonPresent !== '' &&
-      attendanceDetails.basicNecessities &&
+      attendanceDetails.symptoms.length &&
       (attendanceDetails.isFamilyMembersPresent !== '' || patient._quarantine_type.name !== 'Home Isolation');
     setShowSave(showSave);
   }, [attendanceDetails, patient._quarantine_type.name]);
@@ -171,7 +178,12 @@ const AttendanceComponent = (props) => {
     }
     if (type === 'checkbox') {
       if (event !== null) {
-        if (!attendanceDetails[id].includes(event.target.name)) {
+        if (event.target.name === 'None') {
+          setAttendanceDetails({
+            ...attendanceDetails,
+            [id]: event.target.checked ? ['None'] : [],
+          });
+        } else if (!attendanceDetails[id].includes(event.target.name)) {
           setAttendanceDetails({
             ...attendanceDetails,
             [id]: [...attendanceDetails[id], event.target.name],
@@ -193,7 +205,7 @@ const AttendanceComponent = (props) => {
         is_present_at_home: attendanceDetails.isPersonPresent,
         is_family_members_at_home: attendanceDetails.isFamilyMembersPresent === '' ? null : attendanceDetails.isFamilyMembersPresent,
         basic_necessities_delivered: attendanceDetails.basicNecessities,
-        self_or_family_with_symptoms: attendanceDetails.symptoms.length ? attendanceDetails.symptoms : ['None'],
+        self_or_family_with_symptoms: attendanceDetails.symptoms,
         additional_comments: attendanceDetails.comments,
         status_check_date: moment().format('YYYY-MM-DD'),
         person: patient.id,
@@ -260,14 +272,14 @@ const AttendanceComponent = (props) => {
             </div>
           )}
           <div style={{ marginTop: '5%' }}>
-            {renderRadioButtonField(
-              'Are the basic necessities delivered?',
+            {renderMultiInput(
+              'Which of the following the basic necessities delivered?',
               'basicNecessities',
               attendanceDetails.basicNecessities,
-              yesNoRadioButton,
               handleOnChange,
+              necessities,
               styles,
-              true,
+              false,
             )}
           </div>
           <div style={{ marginTop: '5%' }}>
@@ -278,7 +290,7 @@ const AttendanceComponent = (props) => {
               handleOnChange,
               symptoms,
               styles,
-              false,
+              true,
             )}
           </div>
           <div style={{ marginTop: '5%' }}>

@@ -14,6 +14,6 @@ export const apiUrls = {
   getPatientsLocation: '/api/dashboard/reports/map',
 };
 
-export const symptoms = ['Fever', 'Cough', 'Cold'];
+export const symptoms = ['None', 'Fever', 'Cough', 'Cold'];
 
-export const necessities = ['Food', 'Medicine', 'Grocery', 'Others'];
+export const necessities = ['None', 'Food', 'Medicine', 'Grocery'];

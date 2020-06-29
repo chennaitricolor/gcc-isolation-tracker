@@ -251,7 +251,7 @@ const AddNewPatientComponent = ({ onSubmit, onCancel, zones, types }) => {
 
   const canEnableSubmit = () => {
     const { name, age, gender, phone_number, quarantine_type, quarantine_sub_type, family_member_total, _address, isolation_start_date } = details;
-    const { door_num, building_name, street, area, locality, zone, division } = _address;
+    const { door_num, street, area, locality, zone, division } = _address;
     return (
       name &&
       age &&
@@ -262,7 +262,6 @@ const AddNewPatientComponent = ({ onSubmit, onCancel, zones, types }) => {
       (quarantineSubTypes().length === 0 || quarantine_sub_type) &&
       family_member_total &&
       door_num &&
-      building_name &&
       street &&
       area &&
       locality &&
@@ -299,7 +298,7 @@ const AddNewPatientComponent = ({ onSubmit, onCancel, zones, types }) => {
           Location Details
         </Typography>
         {renderTextInput('Door No / கதவு எண்', 'door_num', addressInfoOnChange, true)}
-        {renderTextInput('Building Name / கட்டிட பெயர்', 'building_name', addressInfoOnChange, true)}
+        {renderTextInput('Building Name / கட்டிட பெயர்', 'building_name', addressInfoOnChange, false)}
         {renderTextInput('House No. Old / வீட்டின் எண் பழையது', 'house_num_old', addressInfoOnChange)}
         {renderTextInput('House No. New / வீட்டின் எண் புதியது', 'house_num_new', addressInfoOnChange)}
         {renderTextInput('Street Name / தெரு பெயர்', 'street', addressInfoOnChange, true)}
