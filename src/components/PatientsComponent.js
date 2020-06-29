@@ -14,9 +14,9 @@ import ToastComponent from './ToastComponent';
 import toastActions from '../actions/ToastAction';
 
 const markerStyle = (isolation_details, currentDay, index) => {
-  if (!isolation_details && currentDay === index) return 'pendingMarker';
-  if (!isolation_details && currentDay < index) return 'futureMarker';
-  if (!isolation_details && currentDay > index) return 'NaMarker';
+  if (!isolation_details && currentDay === index + 1) return 'pendingMarker';
+  if (!isolation_details && currentDay < index + 1) return 'futureMarker';
+  if (!isolation_details || isolation_details.is_offline_enquiry) return 'NaMarker';
   if (isolation_details.is_present_at_home) return 'safeMarker';
   if (!isolation_details.is_present_at_home) return 'violatedMarker';
 };
