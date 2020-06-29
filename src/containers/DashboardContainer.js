@@ -30,6 +30,8 @@ const DashboardContainer = () => {
     if (addContractedPersonMessage) setFormOpen(false);
   }, [addContractedPersonMessage]);
 
+  useEffect(() => (window.onpopstate = () => window.history.forward(1)));
+
   const handleToastClose = () => {
     dispatch({
       type: toastActions.CLOSE_NOTIFICATION_DIALOG_OR_TOAST_MESSAGE,
