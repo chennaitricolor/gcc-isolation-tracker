@@ -216,7 +216,7 @@ module.exports = {
       if (!_personIsolation.updated_by) _personIsolation['updated_by'] = sessionUser.data.id;
       _personIsolation['is_offline_enquiry'] = false;
       _personIsolation['disabled'] = true;
-      const lastEnquirySeqForDayOfPerson = personIsolationService.getEnquirySeqOfDayForPerson(_personIsolation.status_check_date, _personIsolation.person);
+      const lastEnquirySeqForDayOfPerson = await personIsolationService.getEnquirySeqOfDayForPerson(_personIsolation.status_check_date, _personIsolation.person);
       if(lastEnquirySeqForDayOfPerson && lastEnquirySeqForDayOfPerson.length > 2)
         throw new Error('Only 2 enquiries can be recorded per day');
       if(lastEnquirySeqForDayOfPerson && lastEnquirySeqForDayOfPerson.length === 1)  
