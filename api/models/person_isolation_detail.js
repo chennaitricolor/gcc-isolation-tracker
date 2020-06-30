@@ -28,7 +28,7 @@ module.exports = function (sequelize, DataTypes) {
       allowNull: true
     },
     status_check_date: {
-      type: DataTypes.DATE,
+      type: DataTypes.DATEONLY,
       allowNull: false
     },
     location_lat: {
