@@ -145,14 +145,15 @@ const PatientsComponent = ({ patients, zones }) => {
 
   const PatientCards = ({ details, onSelect }) => {
     return details.map((detail) => {
-      const { id, name, phone_number, age, gender, _address, isolation_start_date, _isolation_enquiries } = detail;
+      const { id, name, phone_number, age, gender, _address, isolation_start_date, isolation_end_date, _isolation_enquiries } = detail;
       const { door_num, house_num_new, house_num_old, building_name, street, area, locality, division, zone } = _address;
       const zoneName = find(zones, ['id', zone]).name;
       const address = join(
         filter([door_num, house_num_new, house_num_old, building_name, street, area, locality, zoneName, division], (item) => item),
         ', ',
       );
-      const currentDay = moment().diff(moment(isolation_start_date), 'days') + 1;
+      const currentDay = moment.utc().diff(moment.utc(isolation_start_date), 'days') + 1;
+      const totalIsolationDays = moment.utc(isolation_end_date).startOf('day').diff(moment.utc(isolation_start_date).startOf('day'), 'days') + 1;
       return (
         <div key={id} className={styles.patientCard} onClick={() => onSelect({ ...detail, address, currentDay })}>
           <div style={{ display: 'flex', justifyContent: 'space-between' }}>
@@ -172,7 +173,7 @@ const PatientsComponent = ({ patients, zones }) => {
               Person History - Morning
             </Typography>
             <div className={styles.markers}>
-              {map(range(14), (index) => {
+              {map(range(totalIsolationDays), (index) => {
                 const isolation_details = find(_isolation_enquiries, { day: index + 1, enquiry_seq: 1 });
                 return <AttendanceMarker key={index} style={markerStyle(isolation_details, currentDay, index)} />;
               })}
@@ -181,7 +182,7 @@ const PatientsComponent = ({ patients, zones }) => {
               Person History - Evening
             </Typography>
             <div className={styles.markers}>
-              {map(range(14), (index) => {
+              {map(range(totalIsolationDays), (index) => {
                 const isolation_details = find(_isolation_enquiries, { day: index + 1, enquiry_seq: 2 });
                 return <AttendanceMarker key={index} style={markerStyle(isolation_details, currentDay, index)} />;
               })}
@@ -201,14 +202,14 @@ const PatientsComponent = ({ patients, zones }) => {
   const pendingPatients = filter(
     patients,
     (patient) =>
-      moment().diff(moment(patient.isolation_start_date), 'days') < 14 &&
-      !(filter(patient._isolation_enquiries, ['status_check_date', moment().format('YYYY-MM-DD')]).length === 2),
+      moment.utc().startOf('day').diff(moment.utc(patient.isolation_end_date).startOf('day'), 'days') <= 0 &&
+      !(filter(patient._isolation_enquiries, ['status_check_date', moment.utc().format('YYYY-MM-DD')]).length === 2),
   );
   const completedPatients = filter(
     patients,
     (patient) =>
-      moment().diff(moment(patient.isolation_start_date), 'days') < 14 &&
-      filter(patient._isolation_enquiries, ['status_check_date', moment().format('YYYY-MM-DD')]).length === 2,
+      moment.utc().startOf('day').diff(moment.utc(patient.isolation_end_date).startOf('day'), 'days') <= 0 &&
+      filter(patient._isolation_enquiries, ['status_check_date', moment.utc().format('YYYY-MM-DD')]).length === 2,
   );
 
   const totalPatientsLength = pendingPatients.length + completedPatients.length;

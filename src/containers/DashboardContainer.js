@@ -54,10 +54,10 @@ const DashboardContainer = () => {
       )}
       {isFormOpen && <AddNewPatientContainer onCancel={() => setFormOpen(false)} />}
       <ToastComponent
-        openToast={(addContractedPersonMessage || addContractedPersonError) !== ''}
+        openToast={addContractedPersonMessage !== '' || addContractedPersonError !== ''}
         toastMessage={addContractedPersonMessage ? addContractedPersonMessage : addContractedPersonError}
         handleClose={handleToastClose}
-        toastVariant={addContractedPersonMessage ? 'success' : 'error'}
+        toastVariant={addContractedPersonError ? 'error' : 'success'}
       />
     </>
   );
