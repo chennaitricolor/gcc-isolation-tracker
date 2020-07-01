@@ -8,7 +8,7 @@ module.exports = {
   save: async (personObj, sessionUser) => {
     let personTransaction = await sequelize.transaction();
     let _person = personObj;
-    const isolation_start_date = moment(_person.isolation_start_date).startOf('day');
+    const isolation_start_date = moment.utc(_person.isolation_start_date);
     if(!isolation_start_date || !isolation_start_date.isValid())
       throw new Error('Isolation start date is invalid'); 
     try {
@@ -27,8 +27,8 @@ module.exports = {
         gcc_user: created_by,
       };
       await personUser.create(personUserMap, { personTransaction });
-      const today = moment().startOf('day');
-      let isol_start_day = moment(result.isolation_start_date).startOf('day');
+      const today = moment.utc().startOf('day');
+      let isol_start_day = moment.utc(result.isolation_start_date).startOf('day');
       if (isol_start_day < today) {
         let status_entries = [];
         let enquiry = {
@@ -211,8 +211,8 @@ module.exports = {
     let personIsolationTransaction = await sequelize.transaction();
     let _personIsolation = personIsolationObj;
     try {
-      const day = moment(_personIsolation.status_check_date).startOf('day');
-      const today = moment().startOf('day');
+      const day = moment.utc(_personIsolation.status_check_date);
+      const today = moment.utc().startOf('day');
       if(!day.isSame(today))
         throw new Error('Isolation status check date should be today');
       if (!_personIsolation.created_by) _personIsolation['created_by'] = sessionUser.data.id;
@@ -238,12 +238,12 @@ module.exports = {
 
 
 const getIsolationEndDateByQuarantineTypeAndSubType = async (isolationStartDate, quarantineTypeId, quarantineSubTypeId) => {
-  let isloationEndDate = moment(isolationStartDate).startOf('day').add(13, 'days');
+  let isloationEndDate = moment.utc(isolationStartDate).add(13, 'days');
   const type = quarantineTypeId && await quarantineTypeService.getById(quarantineTypeId);
   const subType = quarantineSubTypeId && await quarantineSubTypeService.getById(quarantineSubTypeId);
   if(type && type.name === 'Tested and Waiting for Results')
-    isloationEndDate = moment(isolationStartDate).startOf('day').add(2, 'days');
+    isloationEndDate = moment.utc(isolationStartDate).add(2, 'days');
   if(type && type.name === 'Travel Quarantine' && (subType && subType.name === 'International Flight'))
-    isloationEndDate = moment(isolationStartDate).startOf('day').add(6, 'days');
+    isloationEndDate = moment.utc(isolationStartDate).add(6, 'days');
   return isloationEndDate;
 }
