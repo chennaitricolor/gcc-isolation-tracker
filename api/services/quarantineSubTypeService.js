@@ -34,5 +34,19 @@ module.exports = {
     } catch (e) {
       throw e;
     }
+  },
+  getByName: async (name) => {
+    try {
+        const res = await quarantineSubType.findOne({
+          where: {
+            name: name
+          }
+      });
+        if(res)
+            return res;
+        return null;    
+    } catch (e) {
+      throw e;
+    }
   }
 };

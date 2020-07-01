@@ -1,6 +1,8 @@
 const moment = require('moment');
 const { user, address, person, sequelize, personUser, personIsolation, quarantineType } = require('../models');
 const personIsolationService = require('./personIsolationService');
+const quarantineTypeService = require('./quarantineTypeService');
+const quarantineSubTypeService = require('./quarantineSubTypeService');
 
 module.exports = {
   save: async (personObj, sessionUser) => {
@@ -16,7 +18,8 @@ module.exports = {
         _person['address'] = address_result.id;
       }
       if (!_person.created_by) _person['created_by'] = sessionUser.data.id;
-      _person['isolation_end_date'] = moment(_person['isolation_start_date']).add(13, 'days');
+//      _person['isolation_end_date'] = moment(_person['isolation_start_date']).add(13, 'days');
+      _person['isolation_end_date'] = await getIsolationEndDateByQuarantineTypeAndSubType(_person.isolation_start_date, _person.quarantine_type, _person.quarantine_sub_type);
       const result = await person.create(_person, { personTransaction });
       const { id, created_by } = result;
       const personUserMap = {
@@ -230,5 +233,17 @@ module.exports = {
       if (personIsolationTransaction) personIsolationTransaction.rollback();
       throw e;
     }
-  },
+  }
 };
+
+
+const getIsolationEndDateByQuarantineTypeAndSubType = async (isolationStartDate, quarantineTypeId, quarantineSubTypeId) => {
+  let isloationEndDate = moment(isolationStartDate).add(13, 'days');
+  const type = quarantineTypeId && await quarantineTypeService.getById(quarantineTypeId);
+  const subType = quarantineSubTypeId && await quarantineSubTypeService.getById(quarantineSubTypeId);
+  if(type && type.name === 'Tested and Waiting for Results')
+    isloationEndDate = moment(isolationStartDate).add(2, 'days');
+  if(type && type.name === 'Travel Quarantine' && (subType && subType.name === 'International Flight'))
+    isloationEndDate = moment(isolationStartDate).add(6, 'days');
+  return isloationEndDate;
+}
