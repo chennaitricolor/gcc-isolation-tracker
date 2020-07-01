@@ -8,7 +8,7 @@ module.exports = {
   save: async (personObj, sessionUser) => {
     let personTransaction = await sequelize.transaction();
     let _person = personObj;
-    const isolation_start_date = moment(_person.isolation_start_date);
+    const isolation_start_date = moment(_person.isolation_start_date).startOf('day');
     if(!isolation_start_date || !isolation_start_date.isValid())
       throw new Error('Isolation start date is invalid'); 
     try {
@@ -28,7 +28,7 @@ module.exports = {
       };
       await personUser.create(personUserMap, { personTransaction });
       const today = moment().startOf('day');
-      let isol_start_day = moment(result.isolation_start_date);
+      let isol_start_day = moment(result.isolation_start_date).startOf('day');
       if (isol_start_day < today) {
         let status_entries = [];
         let enquiry = {
@@ -238,12 +238,12 @@ module.exports = {
 
 
 const getIsolationEndDateByQuarantineTypeAndSubType = async (isolationStartDate, quarantineTypeId, quarantineSubTypeId) => {
-  let isloationEndDate = moment(isolationStartDate).add(13, 'days');
+  let isloationEndDate = moment(isolationStartDate).startOf('day').add(13, 'days');
   const type = quarantineTypeId && await quarantineTypeService.getById(quarantineTypeId);
   const subType = quarantineSubTypeId && await quarantineSubTypeService.getById(quarantineSubTypeId);
   if(type && type.name === 'Tested and Waiting for Results')
-    isloationEndDate = moment(isolationStartDate).add(2, 'days');
+    isloationEndDate = moment(isolationStartDate).startOf('day').add(2, 'days');
   if(type && type.name === 'Travel Quarantine' && (subType && subType.name === 'International Flight'))
-    isloationEndDate = moment(isolationStartDate).add(6, 'days');
+    isloationEndDate = moment(isolationStartDate).startOf('day').add(6, 'days');
   return isloationEndDate;
 }
