@@ -4,7 +4,7 @@ const { isAuthorized } = require('../helpers/authHelper');
 
 router.post('/', isAuthorized, async (req, res) => {
   try {
-    const existingPerson = await personService.getByNameAndPhoneNumber(req.body.name, req.body.phone_number);
+    const existingPerson = await personService.getByNameAndPhoneNumberAndStatusOpen(req.body.name, req.body.phone_number);
     if(existingPerson) {
         return res.status(500).json({
             message: 'Person entry exists already'

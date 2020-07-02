@@ -149,12 +149,13 @@ module.exports = {
       throw e;
     }
   },
-  getByNameAndPhoneNumber: async (name, phone_number) => {
+  getByNameAndPhoneNumberAndStatusOpen: async (name, phone_number) => {
     try {
       const res = await person.findOne({
         where: {
           phone_number: phone_number,
-          name: name
+          name: name,
+          quarantine_status: 'open'
         },
         include: [
           {
