@@ -135,7 +135,7 @@ const AttendanceComponent = (props) => {
   const dispatch = useDispatch();
   const styles = useStyles();
   const { patient, open, handleClose } = props;
-  const { name, phone_number, address } = patient;
+  const { name, phone_number, address, _quarantine_type } = patient;
 
   const [showSave, setShowSave] = useState(false);
   const [attendanceDetails, setAttendanceDetails] = useState({
@@ -147,12 +147,9 @@ const AttendanceComponent = (props) => {
   });
 
   useEffect(() => {
-    let showSave =
-      attendanceDetails.isPersonPresent !== '' &&
-      attendanceDetails.symptoms.length &&
-      (attendanceDetails.isFamilyMembersPresent !== '' || patient._quarantine_type.name !== 'Home Isolation');
+    let showSave = attendanceDetails.isPersonPresent !== '' && attendanceDetails.symptoms.length && attendanceDetails.isFamilyMembersPresent !== '';
     setShowSave(showSave);
-  }, [attendanceDetails, patient._quarantine_type.name]);
+  }, [attendanceDetails]);
 
   const handleOnChange = (event, id, type) => {
     if (type === 'text') {
@@ -242,6 +239,7 @@ const AttendanceComponent = (props) => {
           </Typography>
           <Typography style={{ fontSize: '14px' }}>{address}</Typography>
           <Typography style={{ fontSize: '14px' }}>{phone_number}</Typography>
+          <Typography style={{ fontSize: '14px' }}>Quarantine Type: {_quarantine_type.name}</Typography>
         </div>
         <div style={{ padding: '5%' }}>
           <Typography variant="h5">
@@ -258,19 +256,17 @@ const AttendanceComponent = (props) => {
               true,
             )}
           </div>
-          {patient._quarantine_type.name === 'Home Isolation' && (
-            <div style={{ marginTop: '5%' }}>
-              {renderRadioButtonField(
-                'Are the Family members present at home?',
-                'isFamilyMembersPresent',
-                attendanceDetails.isFamilyMembersPresent,
-                yesNoRadioButton,
-                handleOnChange,
-                styles,
-                true,
-              )}
-            </div>
-          )}
+          <div style={{ marginTop: '5%' }}>
+            {renderRadioButtonField(
+              'Are the Family members present at home?',
+              'isFamilyMembersPresent',
+              attendanceDetails.isFamilyMembersPresent,
+              yesNoRadioButton,
+              handleOnChange,
+              styles,
+              true,
+            )}
+          </div>
           <div style={{ marginTop: '5%' }}>
             {renderMultiInput(
               'Which of the following the basic necessities delivered?',

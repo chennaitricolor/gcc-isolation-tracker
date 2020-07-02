@@ -194,7 +194,7 @@ const AddNewPatientComponent = ({ onSubmit, onCancel, zones, types }) => {
     return (
       <div style={{ marginTop: '5%' }}>
         <Typography component={'div'} className={styles.fieldLabel}>
-          {'Isolation Start Date'}
+          {'Quarantine Start Date'}
           <RequiredFieldMarker />
         </Typography>
         <TextField
