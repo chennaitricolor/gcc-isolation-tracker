@@ -243,7 +243,7 @@ const AttendanceComponent = (props) => {
         </div>
         <div style={{ padding: '5%' }}>
           <Typography variant="h5">
-            <span className={styles.title}>Isolation Questions</span>
+            <span className={styles.title}>Quarantine Questions</span>
           </Typography>
           <div style={{ marginTop: '5%' }}>
             {renderRadioButtonField(
