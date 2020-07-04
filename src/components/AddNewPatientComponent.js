@@ -70,7 +70,6 @@ const useStyles = makeStyles(() => ({
   },
   submitButton: {
     fontSize: '18px',
-    textTransform: 'none',
     marginTop: '10%',
   },
   dropDown: {
@@ -272,44 +271,48 @@ const AddNewPatientComponent = ({ onSubmit, onCancel, zones, types }) => {
 
   return (
     <div className={styles.root}>
-      <div className={styles.pageTitle}>
-        <Typography variant="h5" component={'div'} style={{ color: '#3C6886' }}>
-          Add New Person
-        </Typography>
-        <Button variant="contained" onClick={onCancel} className={styles.cancelButton}>
-          Cancel
+      <div>
+        <div className={styles.pageTitle}>
+          <Typography variant="h5" component={'div'} style={{ color: '#3C6886' }}>
+            Add New Person
+          </Typography>
+          <Button variant="contained" onClick={onCancel} className={styles.cancelButton}>
+            Cancel
+          </Button>
+        </div>
+        <form className={styles.form}>
+          <Typography variant="h5" className={styles.detailsHeader} component={'div'} style={{ color: '#000000' }}>
+            Personal Details
+          </Typography>
+          {renderTextInput('Person Name / நபர் பெயர்', 'name', personalInfoOnChange, true)}
+          {renderNumberInput('Age / வயது', 'age', personalInfoOnChange, '999', true)}
+          {renderGenderInput()}
+          {renderNumberInput('Phone Number / தொலைபேசி எண்', 'phone_number', personalInfoOnChange, '9999999999', true)}
+          {renderIsolationDateInput()}
+          {renderDropdownInput('Quarantine Type', 'quarantine_type', personalInfoOnChange, types, true)}
+          {details.quarantine_type &&
+            quarantineSubTypes().length > 0 &&
+            renderDropdownInput('Quarantine Sub-Type', 'quarantine_sub_type', personalInfoOnChange, quarantineSubTypes(), true)}
+          {renderNumberInput('Total Family Members / மொத்த குடும்ப உறுப்பினர்கள்', 'family_member_total', personalInfoOnChange, '99', true)}
+          <Typography variant="h5" className={styles.detailsHeader}>
+            Location Details
+          </Typography>
+          {renderTextInput('Door No / கதவு எண்', 'door_num', addressInfoOnChange, true)}
+          {renderTextInput('Building Name / கட்டிட பெயர்', 'building_name', addressInfoOnChange, false)}
+          {renderTextInput('House No. Old / வீட்டின் எண் பழையது', 'house_num_old', addressInfoOnChange)}
+          {renderTextInput('House No. New / வீட்டின் எண் புதியது', 'house_num_new', addressInfoOnChange)}
+          {renderTextInput('Street Name / தெரு பெயர்', 'street', addressInfoOnChange, true)}
+          {renderTextInput('Area Name / பகுதி பெயர்', 'area', addressInfoOnChange, true)}
+          {renderTextInput('Locality / வட்டாரம்', 'locality', addressInfoOnChange, true)}
+          {renderDropdownInput('Zone / மண்டலம்', 'zone', addressInfoOnChange, zones, true)}
+          {renderTextInput('Division', 'division', addressInfoOnChange, true)}
+        </form>
+      </div>
+      <div style={{ textAlign: 'center' }}>
+        <Button variant="contained" disabled={!canEnableSubmit()} onClick={() => onSubmit(details)} className={styles.submitButton}>
+          Submit
         </Button>
       </div>
-      <form className={styles.form}>
-        <Typography variant="h5" className={styles.detailsHeader} component={'div'} style={{ color: '#000000' }}>
-          Personal Details
-        </Typography>
-        {renderTextInput('Person Name / நபர் பெயர்', 'name', personalInfoOnChange, true)}
-        {renderNumberInput('Age / வயது', 'age', personalInfoOnChange, '999', true)}
-        {renderGenderInput()}
-        {renderNumberInput('Phone Number / தொலைபேசி எண்', 'phone_number', personalInfoOnChange, '9999999999', true)}
-        {renderIsolationDateInput()}
-        {renderDropdownInput('Quarantine Type', 'quarantine_type', personalInfoOnChange, types, true)}
-        {details.quarantine_type &&
-          quarantineSubTypes().length > 0 &&
-          renderDropdownInput('Quarantine Sub-Type', 'quarantine_sub_type', personalInfoOnChange, quarantineSubTypes(), true)}
-        {renderNumberInput('Total Family Members / மொத்த குடும்ப உறுப்பினர்கள்', 'family_member_total', personalInfoOnChange, '99', true)}
-        <Typography variant="h5" className={styles.detailsHeader}>
-          Location Details
-        </Typography>
-        {renderTextInput('Door No / கதவு எண்', 'door_num', addressInfoOnChange, true)}
-        {renderTextInput('Building Name / கட்டிட பெயர்', 'building_name', addressInfoOnChange, false)}
-        {renderTextInput('House No. Old / வீட்டின் எண் பழையது', 'house_num_old', addressInfoOnChange)}
-        {renderTextInput('House No. New / வீட்டின் எண் புதியது', 'house_num_new', addressInfoOnChange)}
-        {renderTextInput('Street Name / தெரு பெயர்', 'street', addressInfoOnChange, true)}
-        {renderTextInput('Area Name / பகுதி பெயர்', 'area', addressInfoOnChange, true)}
-        {renderTextInput('Locality / வட்டாரம்', 'locality', addressInfoOnChange, true)}
-        {renderDropdownInput('Zone / மண்டலம்', 'zone', addressInfoOnChange, zones, true)}
-        {renderTextInput('Division', 'division', addressInfoOnChange, true)}
-      </form>
-      <Button variant="contained" disabled={!canEnableSubmit()} onClick={() => onSubmit(details)} className={styles.submitButton}>
-        Submit
-      </Button>
     </div>
   );
 };

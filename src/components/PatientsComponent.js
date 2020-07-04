@@ -259,7 +259,7 @@ const PatientsComponent = ({ patients, zones }) => {
             </div>
           </>
         )}
-        {openPatient && <AttendanceComponent open={openPatient !== null} handleClose={() => setOpenPatient(null)} patient={openPatient} />}
+        {openPatient && <AttendanceComponent open={openPatient !== null} handleClose={() => setOpenPatient(null)} patient={openPatient} contractedPersonResponse={contractedPersonResponse} />}
       </div>
     );
   }

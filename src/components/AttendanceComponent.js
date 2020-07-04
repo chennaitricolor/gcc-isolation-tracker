@@ -134,7 +134,7 @@ const yesNoRadioButton = [
 const AttendanceComponent = (props) => {
   const dispatch = useDispatch();
   const styles = useStyles();
-  const { patient, open, handleClose } = props;
+  const { patient, open, handleClose, contractedPersonResponse } = props;
   const { name, phone_number, address, _quarantine_type } = patient;
 
   const [showSave, setShowSave] = useState(false);
@@ -294,7 +294,7 @@ const AttendanceComponent = (props) => {
           </div>
         </div>
         <div style={{ textAlign: 'center', marginBottom: '2%' }}>
-          <Button variant="contained" className={'submit-button'} disabled={!showSave} onClick={handleSave}>
+          <Button variant="contained" className={'submit-button'} disabled={!showSave || contractedPersonResponse.isSaving} onClick={handleSave}>
             SUBMIT
           </Button>
         </div>
