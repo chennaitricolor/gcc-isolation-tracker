@@ -10,7 +10,16 @@ router.post('/', isAuthorized, async (req, res) => {
             message: 'Person entry exists already'
           });
     }
-
+    if(req.body.phone_number.length < 7 || req.body.phone_number.length > 10) {
+      return res.status(500).json({
+        message: 'Phone number should be valid'
+      });
+    }
+    if(req.body.age < 0 || req.body.age > 120) {
+      return res.status(500).json({
+        message: 'Age should be valid'
+      });
+    }
     const savedPerson = await personService.save(req.body, req.session.user);
     if (savedPerson) {
       return res.send(savedPerson);
