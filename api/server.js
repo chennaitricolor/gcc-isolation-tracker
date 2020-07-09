@@ -27,6 +27,7 @@ app.use(
     resave: false,
     saveUninitialized: false,
     cookie: { secure: false },
+    expires: Date.now() + (7 * 86400 * 1000)
   }),
 );
 
