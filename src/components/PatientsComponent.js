@@ -31,19 +31,19 @@ const useStyles = makeStyles(() => ({
     display: 'flex',
   },
   personCountChip: {
-    width: '10%',
+    width: '14%',
     margin: '1% 0 0 5%',
     background: '#3C6886',
     color: '#fff',
   },
   pendingCountChip: {
-    width: '10%',
+    width: '14%',
     margin: '0 0 0 5%',
     background: '#F2994A',
     color: '#fff',
   },
   successCountChip: {
-    width: '10%',
+    width: '14%',
     margin: '0 0 0 5%',
     background: '#219653',
     color: '#fff',
