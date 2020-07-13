@@ -305,7 +305,7 @@ const AddNewPatientComponent = ({ onSubmit, onCancel, zones, types }) => {
           {renderTextInput('Area Name / பகுதி பெயர்', 'area', addressInfoOnChange, true)}
           {renderTextInput('Locality / வட்டாரம்', 'locality', addressInfoOnChange, true)}
           {renderDropdownInput('Zone / மண்டலம்', 'zone', addressInfoOnChange, zones, true)}
-          {renderTextInput('Division', 'division', addressInfoOnChange, true)}
+          {renderNumberInput('Division', 'division', addressInfoOnChange, '99999', true)}
         </form>
       </div>
       <div style={{ textAlign: 'center' }}>

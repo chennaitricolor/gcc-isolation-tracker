@@ -246,7 +246,6 @@ module.exports = {
       return result;
     } catch (e) {
       if (closeCaseTransaction) closeCaseTransaction.rollback();
-      console.log(e)
       throw e;
     }
   },
