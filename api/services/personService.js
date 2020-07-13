@@ -4,6 +4,16 @@ const personIsolationService = require('./personIsolationService');
 const quarantineTypeService = require('./quarantineTypeService');
 const quarantineSubTypeService = require('./quarantineSubTypeService');
 
+const getByIdWithoutAssociations = async (id, transaction) => {
+  try {
+    const res = await person.findByPk(id, { transaction });
+    if (res) return res;
+    return null;
+  } catch (e) {
+    throw e;
+  }
+};
+
 module.exports = {
   save: async (personObj, sessionUser) => {
     let personTransaction = await sequelize.transaction();
@@ -173,15 +183,7 @@ module.exports = {
       throw e;
     }
   },
-  getByIdWithoutAssociations: async (id) => {
-    try {
-      const res = await person.findByPk(id);
-      if (res) return res;
-      return null;
-    } catch (e) {
-      throw e;
-    }
-  },
+  getByIdWithoutAssociations,
   getById: async (id) => {
     try {
       const res = await person.findByPk(id, {
@@ -233,7 +235,20 @@ module.exports = {
       if (personIsolationTransaction) personIsolationTransaction.rollback();
       throw e;
     }
-  }
+  },
+  closeCase: async (id) => {
+    const closeCaseTransaction = await sequelize.transaction();
+    try {
+      const closingCase = await getByIdWithoutAssociations(id, closeCaseTransaction);
+      closingCase.quarantine_status = 'closed';
+      const result = await closingCase.save({ transaction: closeCaseTransaction });
+      await closeCaseTransaction.commit();
+      return result;
+    } catch (e) {
+      if (closeCaseTransaction) closeCaseTransaction.rollback();
+      throw e;
+    }
+  },
 };
 
 

@@ -7,9 +7,10 @@ export const apiUrls = {
   getPersonsByWard: '/api/dashboard/wards/',
   getPersonsDetails: '/api/persons',
   addContractedPersons: '/api/persons',
+  updateContractedPersons: 'api/persons/:id',
   locationsByType: '/api/form/locations/street_name',
   searchHospitalName: '/api/form/hospitals',
-  updateContractedPersons: '/api/persons/:id/isolation_enquiries',
+  addContractedPersonEnquiry: '/api/persons/:id/isolation_enquiries',
   getDashboardEmbedUrl: '/api/dashboard/reports/gcc-dashboard',
   getPatientsLocation: '/api/dashboard/reports/map',
 };

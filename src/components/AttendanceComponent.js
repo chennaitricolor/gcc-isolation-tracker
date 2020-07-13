@@ -5,6 +5,8 @@ import Dialog from '@material-ui/core/Dialog';
 import DialogContent from '@material-ui/core/DialogContent';
 import IconButton from '@material-ui/core/IconButton';
 import CancelIcon from '@material-ui/icons/Cancel';
+import CloseIcon from '@material-ui/icons/RemoveCircle';
+import DeleteIcon from '@material-ui/icons/Delete';
 import RadioGroup from '@material-ui/core/RadioGroup';
 import FormControlLabel from '@material-ui/core/FormControlLabel';
 import FormControl from '@material-ui/core/FormControl';
@@ -14,6 +16,7 @@ import TextField from '@material-ui/core/TextField';
 import Button from '@material-ui/core/Button';
 import { useDispatch } from 'react-redux';
 import without from 'lodash/without';
+import actions from '../actions/updateContractedPersonsAction';
 import RequiredFieldMarker from './RequiredFieldMarker';
 import moment from 'moment';
 
@@ -62,6 +65,30 @@ const useStyles = makeStyles(() => ({
     '.submit-button:hover': {
       backgroundColor: '#3C6886',
     },
+  },
+  confirmScreen: {
+    display: 'flex',
+    flexFlow: 'column',
+    padding: '20% 5%',
+  },
+  confirmButton: {
+    margin: '5%',
+    background: 'green',
+  },
+  rejectButton: {
+    margin: '5%',
+    background: 'grey',
+  },
+  closeButton: {
+    padding: '2%',
+    margin: '2%',
+    background: 'orange',
+  },
+  deleteButton: {
+    padding: '2%',
+    margin: '2%',
+    background: 'red',
+    color: 'white',
   },
 }));
 
@@ -135,9 +162,11 @@ const AttendanceComponent = (props) => {
   const dispatch = useDispatch();
   const styles = useStyles();
   const { patient, open, handleClose, contractedPersonResponse } = props;
-  const { name, phone_number, address, _quarantine_type } = patient;
+  const { id, name, phone_number, address, _quarantine_type } = patient;
 
   const [showSave, setShowSave] = useState(false);
+  const [closeCase, setCloseCase] = useState(false);
+  const [deleteCase, setDeleteCase] = useState(false);
   const [attendanceDetails, setAttendanceDetails] = useState({
     isPersonPresent: '',
     isFamilyMembersPresent: '',
@@ -215,6 +244,17 @@ const AttendanceComponent = (props) => {
     });
   };
 
+  const handleConfirmation = () => {
+    if (closeCase) {
+      dispatch({
+        type: actions.CLOSE_CONTRACTED_PERSON,
+        payload: id,
+      });
+    } else {
+      console.log('deleteCase');
+    }
+  };
+
   return (
     <Dialog
       open={open}
@@ -240,64 +280,98 @@ const AttendanceComponent = (props) => {
           <Typography style={{ fontSize: '14px' }}>{address}</Typography>
           <Typography style={{ fontSize: '14px' }}>{phone_number}</Typography>
           <Typography style={{ fontSize: '14px' }}>Quarantine Type: {_quarantine_type.name}</Typography>
+          {!closeCase && !deleteCase && (
+            <div>
+              <Button onClick={() => setCloseCase(true)} className={styles.closeButton}>
+                <CloseIcon />
+                Close
+              </Button>
+              {/* <Button onClick={() => setDeleteCase(true)} className={styles.deleteButton}>
+                <DeleteIcon />
+                Delete
+              </Button> */}
+            </div>
+          )}
         </div>
-        <div style={{ padding: '5%' }}>
-          <Typography variant="h5">
-            <span className={styles.title}>Quarantine Questions</span>
-          </Typography>
-          <div style={{ marginTop: '5%' }}>
-            {renderRadioButtonField(
-              'Is the person available at home?',
-              'isPersonPresent',
-              attendanceDetails.isPersonPresent,
-              yesNoRadioButton,
-              handleOnChange,
-              styles,
-              true,
-            )}
+        {!closeCase && !deleteCase && (
+          <>
+            <div style={{ padding: '5%' }}>
+              <Typography variant="h5">
+                <span className={styles.title}>Quarantine Questions</span>
+              </Typography>
+              <div style={{ marginTop: '5%' }}>
+                {renderRadioButtonField(
+                  'Is the person available at home?',
+                  'isPersonPresent',
+                  attendanceDetails.isPersonPresent,
+                  yesNoRadioButton,
+                  handleOnChange,
+                  styles,
+                  true,
+                )}
+              </div>
+              <div style={{ marginTop: '5%' }}>
+                {renderRadioButtonField(
+                  'Are the Family members present at home?',
+                  'isFamilyMembersPresent',
+                  attendanceDetails.isFamilyMembersPresent,
+                  yesNoRadioButton,
+                  handleOnChange,
+                  styles,
+                  true,
+                )}
+              </div>
+              <div style={{ marginTop: '5%' }}>
+                {renderMultiInput(
+                  'Which of the following the basic necessities delivered?',
+                  'basicNecessities',
+                  attendanceDetails.basicNecessities,
+                  handleOnChange,
+                  necessities,
+                  styles,
+                  false,
+                )}
+              </div>
+              <div style={{ marginTop: '5%' }}>
+                {renderMultiInput(
+                  'Does the person or any of the family members have symptoms?',
+                  'symptoms',
+                  attendanceDetails.symptoms,
+                  handleOnChange,
+                  symptoms,
+                  styles,
+                  true,
+                )}
+              </div>
+              <div style={{ marginTop: '5%' }}>
+                {renderTextField('Additional Comments (optional) ', 'comments', attendanceDetails.comments, handleOnChange, styles, false)}
+              </div>
+            </div>
+            <div style={{ textAlign: 'center', marginBottom: '2%' }}>
+              <Button variant="contained" className={'submit-button'} disabled={!showSave || contractedPersonResponse.isSaving} onClick={handleSave}>
+                SUBMIT
+              </Button>
+            </div>
+          </>
+        )}
+        {(closeCase || deleteCase) && (
+          <div className={styles.confirmScreen}>
+            <Typography>{`Confirm if you want to ${closeCase ? 'close' : 'delete'} the case`}</Typography>
+            <Button variant="contained" className={styles.confirmButton} onClick={handleConfirmation}>
+              Yes
+            </Button>
+            <Button
+              variant="contained"
+              className={styles.rejectButton}
+              onClick={() => {
+                setCloseCase(false);
+                setDeleteCase(false);
+              }}
+            >
+              No
+            </Button>
           </div>
-          <div style={{ marginTop: '5%' }}>
-            {renderRadioButtonField(
-              'Are the Family members present at home?',
-              'isFamilyMembersPresent',
-              attendanceDetails.isFamilyMembersPresent,
-              yesNoRadioButton,
-              handleOnChange,
-              styles,
-              true,
-            )}
-          </div>
-          <div style={{ marginTop: '5%' }}>
-            {renderMultiInput(
-              'Which of the following the basic necessities delivered?',
-              'basicNecessities',
-              attendanceDetails.basicNecessities,
-              handleOnChange,
-              necessities,
-              styles,
-              false,
-            )}
-          </div>
-          <div style={{ marginTop: '5%' }}>
-            {renderMultiInput(
-              'Does the person or any of the family members have symptoms?',
-              'symptoms',
-              attendanceDetails.symptoms,
-              handleOnChange,
-              symptoms,
-              styles,
-              true,
-            )}
-          </div>
-          <div style={{ marginTop: '5%' }}>
-            {renderTextField('Additional Comments (optional) ', 'comments', attendanceDetails.comments, handleOnChange, styles, false)}
-          </div>
-        </div>
-        <div style={{ textAlign: 'center', marginBottom: '2%' }}>
-          <Button variant="contained" className={'submit-button'} disabled={!showSave || contractedPersonResponse.isSaving} onClick={handleSave}>
-            SUBMIT
-          </Button>
-        </div>
+        )}
       </DialogContent>
     </Dialog>
   );
