@@ -61,6 +61,31 @@ router.put('/:id', isAuthorized, async (req, res) => {
     }
   });
 
+router.put('/:id/closeCase', isAuthorized, async (req, res) => {
+  if (!req.params.id) {
+    return res.status(500).json({
+      message: 'Invalid request',
+    });
+  }
+  const person_id = req.params.id;
+  const existing_person = await personService.getById(person_id);
+  if (!existing_person) {
+    return res.status(500).json({
+      message: 'Invalid request',
+    });
+  }
+  try {
+    const closedPerson = await personService.closeCase(person_id);
+    if (closedPerson) {
+      return res.send(closedPerson);
+    }
+  } catch (e) {
+    return res.status(500).json({
+      message: e.message,
+    });
+  }
+});
+
 router.get('/', isAuthorized, async(req, res) => {
     try {
     let persons = [];  
