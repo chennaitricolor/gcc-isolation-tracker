@@ -107,7 +107,8 @@ module.exports = {
       const res = await person.findAll({
         where: {
           id: persons.map((p) => p.person),
-          quarantine_status: 'open'
+          quarantine_status: 'open',
+          active: true,
         },
         include: [
           {
@@ -164,7 +165,8 @@ module.exports = {
         where: {
           phone_number: phone_number,
           name: name,
-          quarantine_status: 'open'
+          quarantine_status: 'open',
+          active: true,
         },
         include: [
           {
@@ -246,6 +248,19 @@ module.exports = {
       return result;
     } catch (e) {
       if (closeCaseTransaction) closeCaseTransaction.rollback();
+      throw e;
+    }
+  },
+  deleteCase: async (id) => {
+    const deleteCaseTransaction = await sequelize.transaction();
+    try {
+      const deletingCase = await getByIdWithoutAssociations(id, deleteCaseTransaction);
+      deletingCase.active = false;
+      const result = await deletingCase.save({ transaction: deleteCaseTransaction });
+      await deleteCaseTransaction.commit();
+      return result;
+    } catch (e) {
+      if (deleteCaseTransaction) deleteCaseTransaction.rollback();
       throw e;
     }
   },

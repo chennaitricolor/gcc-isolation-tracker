@@ -171,4 +171,29 @@ router.get('/:id/isolation_enquiries/day/:day', isAuthorized, async (req, res) =
   }
 });
 
+router.delete('/:id', isAuthorized, async (req, res) => {
+  if (!req.params.id) {
+    return res.status(500).json({
+      message: 'Invalid request',
+    });
+  }
+  const person_id = req.params.id;
+  const existing_person = await personService.getById(person_id);
+  if (!existing_person) {
+    return res.status(500).json({
+      message: 'Invalid request',
+    });
+  }
+  try {
+    const deletedPerson = await personService.deleteCase(person_id);
+    if (deletedPerson) {
+      return res.send(deletedPerson);
+    }
+  } catch (e) {
+    return res.status(500).json({
+      message: e.message,
+    });
+  }
+});
+
 module.exports = router;

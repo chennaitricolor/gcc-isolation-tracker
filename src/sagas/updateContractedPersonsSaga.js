@@ -58,8 +58,8 @@ export default function* updateContractedPersonsSaga(action) {
       break;
     case updateContractedPersonsAction.DELETE_CONTRACTED_PERSON:
       try {
-        const api = apiUrls.addContractedPersonEnquiry.replace(':id', action.payload.attendanceDetails.person);
-        const response = yield call(callFetchApi, api, {}, 'POST', action.payload.attendanceDetails);
+        const api = apiUrls.updateContractedPersons.replace(':id', action.payload);
+        const response = yield call(callFetchApi, api, {}, 'DELETE');
         if (response.data !== undefined && response.status === 200) {
           yield put({
             type: updateContractedPersonsAction.UPDATE_CONTRACTED_PERSONS_SUCCESS,
