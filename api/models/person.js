@@ -63,7 +63,12 @@ module.exports = function (sequelize, DataTypes) {
       type: DataTypes.ENUM('open', 'closed'),
       allowNull: true,
       defaultValue: 'open'
-    }  
+    },
+    active: {
+      type: DataTypes.BOOLEAN,
+      allowNull: false,
+      defaultValue: true,
+    },
   }, {
     tableName: 'person',
     timestamps: true

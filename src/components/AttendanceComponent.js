@@ -251,7 +251,10 @@ const AttendanceComponent = (props) => {
         payload: id,
       });
     } else {
-      console.log('deleteCase');
+      dispatch({
+        type: actions.DELETE_CONTRACTED_PERSON,
+        payload: id,
+      });
     }
   };
 
@@ -286,10 +289,10 @@ const AttendanceComponent = (props) => {
                 <CloseIcon />
                 Close
               </Button>
-              {/* <Button onClick={() => setDeleteCase(true)} className={styles.deleteButton}>
+              <Button onClick={() => setDeleteCase(true)} className={styles.deleteButton}>
                 <DeleteIcon />
                 Delete
-              </Button> */}
+              </Button>
             </div>
           )}
         </div>
