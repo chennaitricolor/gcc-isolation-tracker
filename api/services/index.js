@@ -6,6 +6,7 @@ const quarantineSubTypeService = require('./quarantineSubTypeService');
 const personIsolationService = require('./personIsolationService');
 const dashboardService = require('./dashboardService');
 const userService = require('./userService');
+const wardService = require('./wardService');
 
 module.exports = {
   authService,
@@ -15,5 +16,6 @@ module.exports = {
   quarantineSubTypeService,
   personIsolationService,
   dashboardService,
-  userService
+  userService,
+  wardService,
 };

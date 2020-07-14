@@ -4,7 +4,8 @@ module.exports = function (sequelize, DataTypes) {
     id: {
       type: DataTypes.BIGINT,
       allowNull: false,
-      primaryKey: true
+      primaryKey: true,
+      autoIncrement: true
     },
     name: {
       type: DataTypes.STRING,
@@ -24,7 +25,23 @@ module.exports = function (sequelize, DataTypes) {
     },
     last_login: {
       type: DataTypes.DATE,
-      allowNull: false
+      allowNull: true
+    },
+    zone: {
+      type: DataTypes.INTEGER,
+      allowNull: true,
+    },
+    ward: {
+      type: DataTypes.INTEGER,
+      allowNull: true,
+    },
+    city: {
+      type: DataTypes.STRING,
+      allowNull: true,
+    },
+    region: {
+      type: DataTypes.STRING,
+      allowNull: true,
     }
   }, {
     tableName: 'users',
@@ -33,6 +50,8 @@ module.exports = function (sequelize, DataTypes) {
 
   User.associate = (db) => {
       User.hasMany(db.userRole, { as: '_roles', foreignKey: 'user' });
+      User.belongsTo(db.zone, { as: '_zone', foreignKey: 'zone' });
+      User.belongsTo(db.ward, { as: '_ward', foreignKey: 'ward' });
   };
 
   return User;
