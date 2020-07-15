@@ -238,11 +238,12 @@ module.exports = {
       throw e;
     }
   },
-  closeCase: async (id) => {
+  closeCase: async (id, closeReason) => {
     const closeCaseTransaction = await sequelize.transaction();
     try {
       const closingCase = await getByIdWithoutAssociations(id, closeCaseTransaction);
       closingCase.quarantine_status = 'closed';
+      closingCase.close_reason = closeReason;
       const result = await closingCase.save({ transaction: closeCaseTransaction });
       await closeCaseTransaction.commit();
       return result;

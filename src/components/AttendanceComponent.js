@@ -13,6 +13,8 @@ import FormControl from '@material-ui/core/FormControl';
 import Checkbox from '@material-ui/core/Checkbox';
 import Radio from '@material-ui/core/Radio';
 import TextField from '@material-ui/core/TextField';
+import Select from '@material-ui/core/Select';
+import MenuItem from '@material-ui/core/MenuItem';
 import Button from '@material-ui/core/Button';
 import { useDispatch } from 'react-redux';
 import without from 'lodash/without';
@@ -20,7 +22,7 @@ import actions from '../actions/updateContractedPersonsAction';
 import RequiredFieldMarker from './RequiredFieldMarker';
 import moment from 'moment';
 
-import { symptoms, necessities } from '../utils/constants';
+import { symptoms, necessities, closeReasons } from '../utils/constants';
 
 const useStyles = makeStyles(() => ({
   dialogContent: {
@@ -69,7 +71,7 @@ const useStyles = makeStyles(() => ({
   confirmScreen: {
     display: 'flex',
     flexFlow: 'column',
-    padding: '20% 5%',
+    padding: '10% 5%',
   },
   confirmButton: {
     margin: '5%',
@@ -89,6 +91,28 @@ const useStyles = makeStyles(() => ({
     margin: '2%',
     background: 'red',
     color: 'white',
+  },
+  dropDown: {
+    marginTop: '5%',
+
+    '& label': {
+      color: '#707070 !important',
+      fontSize: '18px',
+    },
+
+    '& fieldset': {
+      border: '1px solid #707070 !important',
+    },
+  },
+  dropDownSelect: {
+    fontSize: '18px',
+    marginTop: '3%',
+    backgroundColor: '#fff',
+
+    '& div': {
+      fontSize: '18px',
+      color: '#4F4F4F',
+    },
   },
 }));
 
@@ -153,6 +177,26 @@ function renderMultiInput(label, key, value, handleOnChange, list, styles, isReq
   );
 }
 
+function renderDropdownInput(label, value, handleOnChange, list, styles, isRequired = false) {
+  return (
+    <FormControl className={styles.dropDown}>
+      <Typography component={'div'} className={styles.fieldLabel}>
+        {label}
+        {isRequired && <RequiredFieldMarker />}
+      </Typography>
+      <Select variant={'outlined'} size={'small'} className={styles.dropDownSelect} value={value} onChange={(e) => handleOnChange(e.target.value)}>
+        {list.map((item) => {
+          return (
+            <MenuItem key={item} value={item}>
+              {item}
+            </MenuItem>
+          );
+        })}
+      </Select>
+    </FormControl>
+  );
+}
+
 const yesNoRadioButton = [
   { label: 'Yes', value: 'Y' },
   { label: 'No', value: 'N' },
@@ -168,6 +212,8 @@ const AttendanceComponent = (props) => {
   const [closeCase, setCloseCase] = useState(false);
   const [deleteCase, setDeleteCase] = useState(false);
   const [isLastEnquiry, setIsLastEnquiry] = useState(false);
+  const [closeReason, setCloseReason] = useState('');
+  const [manualReason, setManualReason] = useState('');
   const [attendanceDetails, setAttendanceDetails] = useState({
     isPersonPresent: '',
     isFamilyMembersPresent: '',
@@ -249,17 +295,25 @@ const AttendanceComponent = (props) => {
       if (isLastEnquiry) {
         dispatch({
           type: actions.CLOSE_CONTRACTED_PERSON,
-          payload: id,
+          payload: { id, reason: null },
         });
       }
     }
   };
 
+  const canEnableConfirm = () => {
+    if (closeCase) {
+      return closeReason !== 'Others' || manualReason;
+    }
+    return true;
+  };
+
   const handleConfirmation = () => {
     if (closeCase) {
+      const reason = closeReason === 'Others' ? manualReason : closeReason;
       dispatch({
         type: actions.CLOSE_CONTRACTED_PERSON,
-        payload: id,
+        payload: { id, reason },
       });
     } else {
       dispatch({
@@ -371,7 +425,10 @@ const AttendanceComponent = (props) => {
         {(closeCase || deleteCase) && (
           <div className={styles.confirmScreen}>
             <Typography>{`Confirm if you want to ${closeCase ? 'close' : 'delete'} the case`}</Typography>
-            <Button variant="contained" className={styles.confirmButton} onClick={handleConfirmation}>
+            {closeCase && renderDropdownInput('Close Reason', closeReason, (value) => setCloseReason(value), closeReasons, styles, true)}
+            {closeReason === 'Others' &&
+              renderTextField('Enter reason', 'otherCloseReason', manualReason, (event) => setManualReason(event.target.value), styles, true)}
+            <Button variant="contained" className={styles.confirmButton} onClick={handleConfirmation} disabled={!canEnableConfirm()}>
               Yes
             </Button>
             <Button

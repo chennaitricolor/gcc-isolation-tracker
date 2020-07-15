@@ -18,3 +18,5 @@ export const apiUrls = {
 export const symptoms = ['None', 'Fever', 'Cough', 'Cold'];
 
 export const necessities = ['None', 'Food', 'Medicine', 'Grocery'];
+
+export const closeReasons = ['Person Died', 'Turned Positive', 'Person/Address not found', 'Others'];

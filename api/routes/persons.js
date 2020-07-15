@@ -75,7 +75,7 @@ router.put('/:id/closeCase', isAuthorized, async (req, res) => {
     });
   }
   try {
-    const closedPerson = await personService.closeCase(person_id);
+    const closedPerson = await personService.closeCase(person_id, req.body.closeReason);
     if (closedPerson) {
       return res.send(closedPerson);
     }

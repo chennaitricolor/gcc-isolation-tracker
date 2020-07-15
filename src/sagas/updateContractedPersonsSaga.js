@@ -32,8 +32,8 @@ export default function* updateContractedPersonsSaga(action) {
       }
       break;
     case updateContractedPersonsAction.CLOSE_CONTRACTED_PERSON:
-      const api = apiUrls.updateContractedPersons.replace(':id', `${action.payload}/closeCase`);
-      const response = yield call(callFetchApi, api, {}, 'PUT');
+      const api = apiUrls.updateContractedPersons.replace(':id', `${action.payload.id}/closeCase`);
+      const response = yield call(callFetchApi, api, {}, 'PUT', { closeReason: action.payload.reason });
       try {
         if (response.data !== undefined && response.status === 200) {
           yield put({
