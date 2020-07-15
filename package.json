@@ -44,8 +44,8 @@
   },
   "devDependencies": {
     "jsonpath-plus": "^0.15.0",
-    "prettier": "^2.0.2",
-    "nodemon": "2.0.4"
+    "nodemon": "2.0.4",
+    "prettier": "^2.0.2"
   },
   "scripts": {
     "start": "react-scripts start",
