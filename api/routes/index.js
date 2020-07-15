@@ -5,6 +5,7 @@ const quarantineTypes = require('./quarantineTypes');
 const quarantineSubTypes = require('./quarantineSubTypes');
 const dashboard = require('./dashboard');
 const users = require('./users');
+const wards = require('./wards');
 
 exports.bind = (app) => {
   app.use('/api/auth', auth);
@@ -14,4 +15,5 @@ exports.bind = (app) => {
   app.use('/api/quarantineSubTypes', quarantineSubTypes);
   app.use('/api/dashboard', dashboard);
   app.use('/api/users', users);
+  app.use('/api/wards', wards);
 };

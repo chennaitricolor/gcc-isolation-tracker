@@ -1,4 +1,4 @@
-const { user, userRole, sequelize } = require('../models');
+const { user, userRole, zone, ward, personUser, person, address, quarantineType, sequelize, Sequelize } = require('../models');
 
 module.exports = {
   getAll: async (id) => {
@@ -10,6 +10,16 @@ module.exports = {
               as: '_roles',
               attributes: ['role']
             },
+              {
+                  model: zone,
+                  as: '_zone',
+                  attributes: ['name']
+              },
+              {
+                  model: ward,
+                  as: '_ward',
+                  attributes: ['id']
+              }
           ],
         });
         if(res)
@@ -42,5 +52,152 @@ module.exports = {
     } catch (e) {
       throw e;
     }
-  }
+  },
+    getByLogin: async (number) => {
+        try {
+            const res = await user.findOne({
+                where: {
+                    login: number
+                },
+                include: [
+                    {
+                        model: userRole,
+                        as: '_roles',
+                        attributes: ['role']
+                    },
+                    {
+                        model: zone,
+                        as: '_zone',
+                        attributes: ['name']
+                    },
+                    {
+                        model: ward,
+                        as: '_ward',
+                        attributes: ['id']
+                    }
+                ]
+            });
+            if(res)
+                return res;
+            return null;
+        } catch (e) {
+            throw e;
+        }
+    },
+    getPersonsByUser: async (id) => {
+        try {
+            const res = await personUser.findAll({
+                where: {
+                    gcc_user: id,
+                    curr_ind: true
+                },
+                include: [
+                    {
+                        model: person,
+                        as: '_person',
+                        include: [
+                            {
+                                model: address,
+                                as: '_address',
+                            },
+                            {
+                                model: quarantineType,
+                                as: '_quarantine_type',
+                            }
+                        ]
+                    }
+                ]
+            });
+            if (res)
+                return res;
+            return null;
+        } catch (e) {
+            throw e;
+        }
+    },
+    save: async (payload) => {
+        try {
+            let userTransaction = await sequelize.transaction();
+            const res = await user.create(payload, { userTransaction });
+            if (res)
+                return res;
+            return null;
+        } catch (e) {
+            throw e;
+        }
+    },
+    update: async (payload) => {
+        try {
+            let userTransaction = await sequelize.transaction();
+            const res = await user.update(payload, { returning: true, plain: true, where: { id: payload.id } }, { userTransaction });
+            if (res)
+                return res;
+            return null;
+        } catch (e) {
+            throw e;
+        }
+    },
+    upsert: async (payload) => {
+        try {
+            let userTransaction = await sequelize.transaction();
+            const res = await user.upsert(payload, {
+                include: [
+                    {
+                        model: zone,
+                        as: '_zone',
+                    },
+                    {
+                        model: ward,
+                        as: '_ward',
+                    }
+                ],
+                returning: true, plain: true
+            }, { userTransaction });
+            if (res)
+                return res;
+            return null;
+        } catch (e) {
+            throw e;
+        }
+    },
+    transferPersonsToUser: async (payload) => {
+        try {
+            let userTransaction = await sequelize.transaction();
+            const res = await personUser.update(
+                {
+                    gcc_user: payload.toId
+                },
+                {
+                    where: {
+                        person: {
+                            [Sequelize.Op.in]: payload.patients.map(p => p.id)
+                        }
+                    }
+                },
+                {
+                    userTransaction
+                }
+            );
+            if (res)
+                return res;
+            return null;
+        } catch (e) {
+            console.log(e);
+            throw e;
+        }
+    },
+    deleteUserById: async (id) => {
+        try {
+            const res = await user.destroy({
+                where: {
+                    id: id,
+                }
+            });
+            if(res)
+                return res;
+            return null;
+        } catch (e) {
+            throw e;
+        }
+    },
 };
