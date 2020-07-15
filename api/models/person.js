@@ -69,6 +69,14 @@ module.exports = function (sequelize, DataTypes) {
       allowNull: false,
       defaultValue: true,
     },
+    close_reason: {
+      type: DataTypes.STRING,
+      allowNull: true,
+    },
+    delete_reason: {
+      type: DataTypes.STRING,
+      allowNull: true,
+    }
   }, {
     tableName: 'person',
     timestamps: true
