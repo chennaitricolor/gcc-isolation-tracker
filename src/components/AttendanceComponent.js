@@ -162,11 +162,12 @@ const AttendanceComponent = (props) => {
   const dispatch = useDispatch();
   const styles = useStyles();
   const { patient, open, handleClose, contractedPersonResponse } = props;
-  const { id, name, phone_number, address, _quarantine_type } = patient;
+  const { id, name, phone_number, address, _quarantine_type, isolation_end_date, visitsMadeToday } = patient;
 
   const [showSave, setShowSave] = useState(false);
   const [closeCase, setCloseCase] = useState(false);
   const [deleteCase, setDeleteCase] = useState(false);
+  const [isLastEnquiry, setIsLastEnquiry] = useState(false);
   const [attendanceDetails, setAttendanceDetails] = useState({
     isPersonPresent: '',
     isFamilyMembersPresent: '',
@@ -226,22 +227,32 @@ const AttendanceComponent = (props) => {
   };
 
   const handleSave = () => {
-    const payload = {
-      attendanceDetails: {
-        is_present_at_home: attendanceDetails.isPersonPresent,
-        is_family_members_at_home: attendanceDetails.isFamilyMembersPresent === '' ? null : attendanceDetails.isFamilyMembersPresent,
-        basic_necessities_delivered: attendanceDetails.basicNecessities,
-        self_or_family_with_symptoms: attendanceDetails.symptoms,
-        additional_comments: attendanceDetails.comments,
-        status_check_date: moment().format('YYYY-MM-DD'),
-        person: patient.id,
-        day: patient.currentDay,
-      },
-    };
-    dispatch({
-      type: 'UPDATE_CONTRACTED_PERSONS',
-      payload,
-    });
+    if (!isLastEnquiry && isolation_end_date === moment().format('YYYY-MM-DD') && visitsMadeToday === 1) {
+      setIsLastEnquiry(true);
+    } else {
+      const payload = {
+        attendanceDetails: {
+          is_present_at_home: attendanceDetails.isPersonPresent,
+          is_family_members_at_home: attendanceDetails.isFamilyMembersPresent === '' ? null : attendanceDetails.isFamilyMembersPresent,
+          basic_necessities_delivered: attendanceDetails.basicNecessities,
+          self_or_family_with_symptoms: attendanceDetails.symptoms,
+          additional_comments: attendanceDetails.comments,
+          status_check_date: moment().format('YYYY-MM-DD'),
+          person: patient.id,
+          day: patient.currentDay,
+        },
+      };
+      dispatch({
+        type: 'UPDATE_CONTRACTED_PERSONS',
+        payload,
+      });
+      if (isLastEnquiry) {
+        dispatch({
+          type: actions.CLOSE_CONTRACTED_PERSON,
+          payload: id,
+        });
+      }
+    }
   };
 
   const handleConfirmation = () => {
@@ -296,7 +307,7 @@ const AttendanceComponent = (props) => {
             </div>
           )}
         </div>
-        {!closeCase && !deleteCase && (
+        {!closeCase && !deleteCase && visitsMadeToday < 2 && !isLastEnquiry && (
           <>
             <div style={{ padding: '5%' }}>
               <Typography variant="h5">
@@ -372,6 +383,14 @@ const AttendanceComponent = (props) => {
               }}
             >
               No
+            </Button>
+          </div>
+        )}
+        {isLastEnquiry && (
+          <div className={styles.confirmScreen}>
+            <Typography>Confirm if we can close the case as this is last enquiry for the person.</Typography>
+            <Button variant="contained" className={styles.confirmButton} onClick={handleSave}>
+              Yes
             </Button>
           </div>
         )}

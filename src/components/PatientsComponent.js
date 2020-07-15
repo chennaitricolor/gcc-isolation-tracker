@@ -154,8 +154,9 @@ const PatientsComponent = ({ patients, zones }) => {
       );
       const currentDay = moment.utc().diff(moment.utc(isolation_start_date), 'days') + 1;
       const totalIsolationDays = moment.utc(isolation_end_date).startOf('day').diff(moment.utc(isolation_start_date).startOf('day'), 'days') + 1;
+      const visitsMadeToday = filter(_isolation_enquiries, { day: currentDay }).length;
       return (
-        <div key={id} className={styles.patientCard} onClick={() => onSelect({ ...detail, address, currentDay })}>
+        <div key={id} className={styles.patientCard} onClick={() => onSelect({ ...detail, address, currentDay, visitsMadeToday })}>
           <div style={{ display: 'flex', justifyContent: 'space-between' }}>
             <Typography variant="h4" className={styles.personName} component={'div'}>
               {name} <span className={styles.genderAge}>{`${gender}${age}`}</span>
@@ -255,7 +256,7 @@ const PatientsComponent = ({ patients, zones }) => {
                 </Typography>
                 <Chip size="small" label={completedPatients.length} className={styles.successCountChip} component={'div'} />
               </div>
-              <PatientCards details={completedPatients} onSelect={() => {}} />
+              <PatientCards details={completedPatients} onSelect={(patient) => setOpenPatient(patient)} />
             </div>
           </>
         )}
