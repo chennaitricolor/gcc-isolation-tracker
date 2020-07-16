@@ -369,7 +369,9 @@ const AttendanceComponent = (props) => {
               </Typography>
               <div style={{ marginTop: '5%' }}>
                 {renderRadioButtonField(
-                  'Is the person available at home?',
+                  _quarantine_type.code === 'PPH'
+                    ? 'Is the person available at home / hospital / covid care center?'
+                    : 'Is the person available at home?',
                   'isPersonPresent',
                   attendanceDetails.isPersonPresent,
                   yesNoRadioButton,
