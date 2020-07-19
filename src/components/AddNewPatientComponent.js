@@ -310,7 +310,7 @@ const AddNewPatientComponent = ({ onSubmit, onCancel, zones, types }) => {
       </div>
       <div style={{ textAlign: 'center' }}>
         <Button variant="contained" disabled={!canEnableSubmit()} onClick={() => onSubmit(details)} className={styles.submitButton}>
-          Submit
+          Preview
         </Button>
       </div>
     </div>
