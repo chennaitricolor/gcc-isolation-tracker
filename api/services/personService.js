@@ -257,10 +257,14 @@ module.exports = {
       throw e;
     }
   },
-  saveDuplicateCase: async(personDuplicateContactObj, sessionUser) => {
+  saveDuplicateCase: async(id, personDuplicateContactObj, sessionUser) => {
     const duplicateCaseTransaction = await sequelize.transaction();
     try {
       let _personDuplicateContactObj = personDuplicateContactObj;
+      if(!_personDuplicateContactObj.person)
+        _personDuplicateContactObj.person = id;
+      if(_personDuplicateContactObj.person !== id)
+        throw new Error('Invalid request'); 
       _personDuplicateContactObj.created_by = sessionUser.data.id;
       _personDuplicateContactObj.updated_by = sessionUser.data.id;
       const result = await personDuplicateContact.create(_personDuplicateContactObj, { duplicateCaseTransaction });

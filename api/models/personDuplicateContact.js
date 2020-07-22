@@ -21,7 +21,7 @@ module.exports = function (sequelize, DataTypes) {
     },
     quarantine_sub_type: {
       type: DataTypes.INTEGER,
-      allowNull: false
+      allowNull: true
     },
     no_of_duplicates: {
       type: DataTypes.INTEGER,

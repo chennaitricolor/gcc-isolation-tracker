@@ -1,6 +1,7 @@
 const router = require('express').Router();
 const { personService, personIsolationService } = require('../services');
 const { isAuthorized } = require('../helpers/authHelper');
+const { person } = require('../models');
 
 router.post('/', isAuthorized, async (req, res) => {
   try {
@@ -197,8 +198,15 @@ router.put('/:id/deleteCase', isAuthorized, async (req, res) => {
 });
 
 router.post('/:id/duplicate', isAuthorized, async (req, res) => {
+  const { id } = req.params;
   try {
-    await personService.saveDuplicateCase(req.body, req.session.user);
+    const existingPerson = await person.findByPk(id);
+    if(!existingPerson) {
+      return res.status(500).json({
+        message: 'Invalid request',
+      });
+    }
+    await personService.saveDuplicateCase(id, req.body, req.session.user);
     return res.send({message: 'saved successfully'}).status(200);
   } catch (e) {
     return res.status(500).json({
