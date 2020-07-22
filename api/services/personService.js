@@ -1,5 +1,5 @@
 const moment = require('moment');
-const { user, address, person, sequelize, personUser, personIsolation, quarantineType } = require('../models');
+const { user, address, person, sequelize, personUser, personIsolation, quarantineType, personDuplicateContact } = require('../models');
 const personIsolationService = require('./personIsolationService');
 const quarantineTypeService = require('./quarantineTypeService');
 const quarantineSubTypeService = require('./quarantineSubTypeService');
@@ -265,6 +265,20 @@ module.exports = {
       throw e;
     }
   },
+  saveDuplicateCase: async(personDuplicateContactObj, sessionUser) => {
+    const duplicateCaseTransaction = await sequelize.transaction();
+    try {
+      let _personDuplicateContactObj = personDuplicateContactObj;
+      _personDuplicateContactObj.created_by = sessionUser.data.id;
+      _personDuplicateContactObj.updated_by = sessionUser.data.id;
+      const result = await personDuplicateContact.create(_personDuplicateContactObj, { duplicateCaseTransaction });
+      await duplicateCaseTransaction.commit();
+      return result;
+    } catch (e) {
+      if (duplicateCaseTransaction) duplicateCaseTransaction.rollback();
+      throw e;
+    }
+  }
 };
 
 

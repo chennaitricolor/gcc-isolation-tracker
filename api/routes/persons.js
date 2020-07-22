@@ -196,4 +196,15 @@ router.delete('/:id', isAuthorized, async (req, res) => {
   }
 });
 
+router.post('/:id/duplicate', isAuthorized, async (req, res) => {
+  try {
+    await personService.saveDuplicateCase(req.body, req.session.user);
+    return res.send({message: 'saved successfully'}).status(200);
+  } catch (e) {
+    return res.status(500).json({
+      message: e.message
+    });
+  }
+});
+
 module.exports = router;

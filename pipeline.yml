@@ -24,6 +24,8 @@ vault:
     - DB_SCHEMA
     - DB_PORT
     - REDIS_HOST
+    - SECURITY_USER
+    - SECURITY_PASSWORD
   prod:
     - NODE_ENV
     - TZ
@@ -34,3 +36,5 @@ vault:
     - DB_SCHEMA
     - DB_PORT
     - REDIS_HOST
+    - SECURITY_USER
+    - SECURITY_PASSWORD
