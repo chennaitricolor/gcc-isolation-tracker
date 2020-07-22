@@ -70,11 +70,7 @@ module.exports = function (sequelize, DataTypes) {
     enquiry_seq: {
       type: DataTypes.INTEGER,
       allowNull: true
-    },
-    is_at_medical_facility: {
-      type: DataTypes.BOOLEAN,
-      allowNull: true
-    },
+    }
   }, {
     tableName: 'person_isolation_details',
     timestamps: true
