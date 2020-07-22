@@ -243,11 +243,12 @@ module.exports = {
       throw e;
     }
   },
-  deleteCase: async (id) => {
+  deleteCase: async (id, deleteReason) => {
     const deleteCaseTransaction = await sequelize.transaction();
     try {
       const deletingCase = await getByIdWithoutAssociations(id, deleteCaseTransaction);
       deletingCase.active = false;
+      deletingCase.delete_reason = deleteReason;
       const result = await deletingCase.save({ transaction: deleteCaseTransaction });
       await deleteCaseTransaction.commit();
       return result;

@@ -3,6 +3,7 @@ import actions from '../actions/getPersonsDetailAction';
 const defaultState = {
   personsDetails: [],
   isLoading: false,
+  error: '',
 };
 
 const getPersonsDetailReducer = (state = defaultState, { type, payload }) => {

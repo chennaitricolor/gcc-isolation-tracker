@@ -25,9 +25,15 @@ export default function* saga() {
   yield takeLatest(resetPasswordActions.RESET_PASSWORD, resetPasswordSaga);
   yield takeLatest(getPersonsDetailAction.GET_PERSONS_DETAILS, getPersonsDetailSaga);
   yield takeLatest(addContractedPersonsAction.ADD_CONTRACTED_PERSONS, addContractedPersonsSaga);
-  yield takeLatest(updateContractedPersonsAction.UPDATE_CONTRACTED_PERSONS, updateContractedPersonsSaga);
-  yield takeLatest(updateContractedPersonsAction.CLOSE_CONTRACTED_PERSON, updateContractedPersonsSaga);
-  yield takeLatest(updateContractedPersonsAction.DELETE_CONTRACTED_PERSON, updateContractedPersonsSaga);
+  yield takeLatest(
+    [
+      updateContractedPersonsAction.UPDATE_CONTRACTED_PERSONS,
+      updateContractedPersonsAction.CLOSE_CONTRACTED_PERSON,
+      updateContractedPersonsAction.DELETE_CONTRACTED_PERSON,
+      updateContractedPersonsAction.DUPLICATE_CONTRACTED_PERSON,
+    ],
+    updateContractedPersonsSaga,
+  );
   yield takeLatest(logoutActions.INITIATE_LOGOUT, logoutSaga);
   yield takeLatest(getQuarantineTypesAction.GET_QUARANTINE_TYPE, getQuarantineTypesSaga);
 }

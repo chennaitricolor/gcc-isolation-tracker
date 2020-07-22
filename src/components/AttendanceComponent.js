@@ -7,6 +7,7 @@ import IconButton from '@material-ui/core/IconButton';
 import CancelIcon from '@material-ui/icons/Cancel';
 import CloseIcon from '@material-ui/icons/RemoveCircle';
 import DeleteIcon from '@material-ui/icons/Delete';
+import DuplicateIcon from '@material-ui/icons/FileCopyOutlined';
 import RadioGroup from '@material-ui/core/RadioGroup';
 import FormControlLabel from '@material-ui/core/FormControlLabel';
 import FormControl from '@material-ui/core/FormControl';
@@ -18,6 +19,8 @@ import MenuItem from '@material-ui/core/MenuItem';
 import Button from '@material-ui/core/Button';
 import { useDispatch } from 'react-redux';
 import without from 'lodash/without';
+import find from 'lodash/find';
+import InputMask from 'react-input-mask';
 import actions from '../actions/updateContractedPersonsAction';
 import RequiredFieldMarker from './RequiredFieldMarker';
 import moment from 'moment';
@@ -62,7 +65,7 @@ const useStyles = makeStyles(() => ({
   },
   '@global': {
     '.attendance-component-dialog > div:nth-child(3) > div:nth-child(1)': {
-      height: '100%',
+      width: '100%',
     },
     '.submit-button:hover': {
       backgroundColor: '#3C6886',
@@ -71,7 +74,7 @@ const useStyles = makeStyles(() => ({
   confirmScreen: {
     display: 'flex',
     flexFlow: 'column',
-    padding: '10% 5%',
+    padding: '5%',
   },
   confirmButton: {
     margin: '5%',
@@ -82,22 +85,26 @@ const useStyles = makeStyles(() => ({
     background: 'grey',
   },
   closeButton: {
-    padding: '2%',
-    margin: '2%',
-    background: 'orange',
+    padding: 0,
+    margin: 0,
+    color: 'orange',
   },
   deleteButton: {
-    padding: '2%',
-    margin: '2%',
-    background: 'red',
-    color: 'white',
+    padding: 0,
+    margin: 0,
+    color: 'red',
+  },
+  duplicateButton: {
+    padding: 0,
+    margin: 0,
+    color: '#3C6886',
   },
   dropDown: {
     marginTop: '5%',
 
     '& label': {
       color: '#707070 !important',
-      fontSize: '18px',
+      fontSize: '14px',
     },
 
     '& fieldset': {
@@ -105,14 +112,16 @@ const useStyles = makeStyles(() => ({
     },
   },
   dropDownSelect: {
-    fontSize: '18px',
     marginTop: '3%',
     backgroundColor: '#fff',
 
     '& div': {
-      fontSize: '18px',
       color: '#4F4F4F',
     },
+  },
+  controlButtons: {
+    display: 'flex',
+    justifyContent: 'space-between',
   },
 }));
 
@@ -177,18 +186,28 @@ function renderMultiInput(label, key, value, handleOnChange, list, styles, isReq
   );
 }
 
-function renderDropdownInput(label, value, handleOnChange, list, styles, isRequired = false) {
+function renderDropdownInput(label, key, value, handleOnChange, list, styles, isRequired = false) {
   return (
     <FormControl className={styles.dropDown}>
       <Typography component={'div'} className={styles.fieldLabel}>
         {label}
         {isRequired && <RequiredFieldMarker />}
       </Typography>
-      <Select variant={'outlined'} size={'small'} className={styles.dropDownSelect} value={value} onChange={(e) => handleOnChange(e.target.value)}>
+      <Select
+        variant={'outlined'}
+        size={'small'}
+        className={styles.dropDownSelect}
+        value={value}
+        onChange={(e) => handleOnChange(key, e.target.value)}
+      >
         {list.map((item) => {
-          return (
+          return typeof item === 'string' ? (
             <MenuItem key={item} value={item}>
               {item}
+            </MenuItem>
+          ) : (
+            <MenuItem key={item.id} value={item.id}>
+              {item.name}
             </MenuItem>
           );
         })}
@@ -197,16 +216,68 @@ function renderDropdownInput(label, value, handleOnChange, list, styles, isRequi
   );
 }
 
+function renderDateInput(label, key, value, onChange, styles, isRequired = false) {
+  return (
+    <div style={{ marginTop: '5%' }}>
+      <Typography component={'div'} className={styles.fieldLabel}>
+        {label}
+        {isRequired && <RequiredFieldMarker />}
+      </Typography>
+      <TextField
+        type="date"
+        size="small"
+        variant={'outlined'}
+        className={styles.textField}
+        value={value}
+        onChange={(e) => {
+          const { value } = e.target;
+          if (moment(value).isValid() && moment(value).isBetween(moment().subtract(14, 'day'), moment().add(1, 'day'), 'day')) {
+            onChange(key, value);
+          }
+        }}
+        InputLabelProps={{
+          shrink: true,
+        }}
+        inputProps={{
+          max: moment().format('YYYY-MM-DD'),
+          min: moment().subtract(13, 'day').format('YYYY-MM-DD'),
+        }}
+      />
+    </div>
+  );
+}
+
+function renderNumberInput(label, field, value, handleChange, lengthAsMask, styles, isRequired = false) {
+  return (
+    <div style={{ marginTop: '5%' }}>
+      <Typography component={'div'} className={styles.fieldLabel}>
+        {label}
+        {isRequired && <RequiredFieldMarker />}
+      </Typography>
+      <InputMask mask={lengthAsMask} maskChar={null} value={value} onChange={(e) => handleChange(field, e.target.value)}>
+        {() => <TextField className={styles.textField} size="small" variant={'outlined'} InputLabelProps={{ shrink: true }} />}
+      </InputMask>
+    </div>
+  );
+}
 const yesNoRadioButton = [
   { label: 'Yes', value: 'Y' },
   { label: 'No', value: 'N' },
 ];
 
+const initialDuplicateDetails = {
+  quarantine_start_date: '',
+  quarantine_type: '',
+  quarantine_sub_type: null,
+  no_of_duplicates: '',
+}
+
 const AttendanceComponent = (props) => {
   const dispatch = useDispatch();
   const styles = useStyles();
-  const { patient, open, handleClose, contractedPersonResponse } = props;
-  const { id, name, phone_number, address, _quarantine_type, isolation_end_date, visitsMadeToday } = patient;
+  const { patient, open, handleClose, contractedPersonResponse, types } = props;
+  const { id, name, phone_number, address, quarantine_type, isolation_end_date, visitsMadeToday } = patient;
+  const _quarantine_type = find(types, ['id', quarantine_type]);
 
   const [showSave, setShowSave] = useState(false);
   const [closeCase, setCloseCase] = useState(false);
@@ -214,6 +285,7 @@ const AttendanceComponent = (props) => {
   const [isLastEnquiry, setIsLastEnquiry] = useState(false);
   const [closeReason, setCloseReason] = useState('');
   const [manualReason, setManualReason] = useState('');
+  const [duplicateCase, setDuplicateCase] = useState(false);
   const [attendanceDetails, setAttendanceDetails] = useState({
     isPersonPresent: '',
     isFamilyMembersPresent: '',
@@ -221,6 +293,8 @@ const AttendanceComponent = (props) => {
     symptoms: [],
     comments: '',
   });
+
+  const [duplicateDetails, setDuplicateDetails] = useState(initialDuplicateDetails);
 
   useEffect(() => {
     let showSave = attendanceDetails.isPersonPresent !== '' && attendanceDetails.symptoms.length && attendanceDetails.isFamilyMembersPresent !== '';
@@ -303,7 +377,14 @@ const AttendanceComponent = (props) => {
 
   const canEnableConfirm = () => {
     if (closeCase) {
-      return closeReason !== 'Others' || manualReason;
+      return closeReason && (closeReason !== 'Others' || manualReason);
+    }
+    if (deleteCase) {
+      return manualReason;
+    }
+    if (duplicateCase) {
+      const { quarantine_start_date, quarantine_type, quarantine_sub_type, no_of_duplicates } = duplicateDetails;
+      return quarantine_start_date && quarantine_type && no_of_duplicates && (quarantineSubTypes().length === 0 || quarantine_sub_type);
     }
     return true;
   };
@@ -315,13 +396,26 @@ const AttendanceComponent = (props) => {
         type: actions.CLOSE_CONTRACTED_PERSON,
         payload: { id, reason },
       });
-    } else {
+    } else if (deleteCase) {
       dispatch({
         type: actions.DELETE_CONTRACTED_PERSON,
-        payload: id,
+        payload: { id, reason: manualReason },
       });
+    } else {
+      dispatch({
+        type: actions.DUPLICATE_CONTRACTED_PERSON,
+        payload: { id, details: { ...duplicateDetails, person: id } },
+      });
+      setDuplicateCase(false);
+      setDuplicateDetails(initialDuplicateDetails);
     }
   };
+
+  const handleDuplicateDetailsChange = (key, value) => {
+    setDuplicateDetails({ ...duplicateDetails, [key]: value });
+  };
+
+  const quarantineSubTypes = () => find(types, ['id', duplicateDetails.quarantine_type]).quarantine_sub_types;
 
   return (
     <Dialog
@@ -348,8 +442,8 @@ const AttendanceComponent = (props) => {
           <Typography style={{ fontSize: '14px' }}>{address}</Typography>
           <Typography style={{ fontSize: '14px' }}>{phone_number}</Typography>
           <Typography style={{ fontSize: '14px' }}>Quarantine Type: {_quarantine_type.name}</Typography>
-          {!closeCase && !deleteCase && (
-            <div>
+          {!closeCase && !deleteCase && !duplicateCase && (
+            <div className={styles.controlButtons}>
               <Button onClick={() => setCloseCase(true)} className={styles.closeButton}>
                 <CloseIcon />
                 Close
@@ -358,10 +452,14 @@ const AttendanceComponent = (props) => {
                 <DeleteIcon />
                 Delete
               </Button>
+              <Button onClick={() => setDuplicateCase(true)} className={styles.duplicateButton}>
+                <DuplicateIcon />
+                Duplicate
+              </Button>
             </div>
           )}
         </div>
-        {!closeCase && !deleteCase && visitsMadeToday < 2 && !isLastEnquiry && (
+        {!closeCase && !deleteCase && !duplicateCase && visitsMadeToday < 2 && !isLastEnquiry && (
           <>
             <div style={{ padding: '5%' }}>
               <Typography variant="h5">
@@ -427,9 +525,10 @@ const AttendanceComponent = (props) => {
         {(closeCase || deleteCase) && (
           <div className={styles.confirmScreen}>
             <Typography>{`Confirm if you want to ${closeCase ? 'close' : 'delete'} the case`}</Typography>
-            {closeCase && renderDropdownInput('Close Reason', closeReason, (value) => setCloseReason(value), closeReasons, styles, true)}
-            {closeReason === 'Others' &&
-              renderTextField('Enter reason', 'otherCloseReason', manualReason, (event) => setManualReason(event.target.value), styles, true)}
+            {closeCase &&
+              renderDropdownInput('Close Reason', 'closeReason', closeReason, (key, value) => setCloseReason(value), closeReasons, styles, true)}
+            {(closeReason === 'Others' || deleteCase) &&
+              renderTextField('Enter reason', 'manualReason', manualReason, (event) => setManualReason(event.target.value), styles, true)}
             <Button variant="contained" className={styles.confirmButton} onClick={handleConfirmation} disabled={!canEnableConfirm()}>
               Yes
             </Button>
@@ -450,6 +549,53 @@ const AttendanceComponent = (props) => {
             <Typography>Confirm if we can close the case as this is last enquiry for the person.</Typography>
             <Button variant="contained" className={styles.confirmButton} onClick={handleSave}>
               Yes
+            </Button>
+          </div>
+        )}
+        {duplicateCase && (
+          <div className={styles.confirmScreen}>
+            {renderDateInput(
+              'Quarantine Start Date',
+              'quarantine_start_date',
+              duplicateDetails.quarantine_start_date,
+              handleDuplicateDetailsChange,
+              styles,
+              true,
+            )}
+            {renderDropdownInput(
+              'Quarantine Type',
+              'quarantine_type',
+              duplicateDetails.quarantine_type,
+              handleDuplicateDetailsChange,
+              types,
+              styles,
+              true,
+            )}
+            {duplicateDetails.quarantine_type &&
+              quarantineSubTypes().length > 0 &&
+              renderDropdownInput(
+                'Quarantine Sub-Type',
+                'quarantine_sub_type',
+                duplicateDetails.quarantine_sub_type,
+                handleDuplicateDetailsChange,
+                quarantineSubTypes(),
+                styles,
+                true,
+              )}
+            {renderNumberInput(
+              'No. Of Duplicates',
+              'no_of_duplicates',
+              duplicateDetails.no_of_duplicates,
+              handleDuplicateDetailsChange,
+              '99',
+              styles,
+              true,
+            )}
+            <Button variant="contained" className={styles.confirmButton} onClick={handleConfirmation} disabled={!canEnableConfirm()}>
+              Submit
+            </Button>
+            <Button variant="contained" className={styles.rejectButton} onClick={() => setDuplicateCase(false)}>
+              Cancel
             </Button>
           </div>
         )}

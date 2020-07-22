@@ -17,6 +17,7 @@ const PatientsContainer = () => {
   const dispatch = useDispatch();
   const personsList = useSelector((state) => state.getPersonsDetailReducer);
   const getAllZones = useSelector((state) => state.getAllZonesReducer);
+  const getQuarantineTypes = useSelector((state) => state.getQuarantineTypesReducer);
 
   useEffect(() => {
     dispatch({
@@ -24,7 +25,7 @@ const PatientsContainer = () => {
     });
   }, [dispatch]);
 
-  if (!personsList) {
+  if (personsList.error || getAllZones.allZonesError || getQuarantineTypes.typesError) {
     return (
       <Alert style={{ fontWeight: 'bold', justifyContent: 'center' }} severity={'error'}>
         Error connecting to server.. Please try later..
@@ -32,11 +33,11 @@ const PatientsContainer = () => {
     );
   }
 
-  if (personsList.isLoading || getAllZones.isLoading) {
+  if (personsList.isLoading || getAllZones.isLoading || getQuarantineTypes.isLoading) {
     return <LoadingComponent isLoading={true} style={loadingComponentStyle} />;
   }
 
-  return <PatientsComponent patients={personsList.personsDetails} zones={getAllZones.allZones} />;
+  return <PatientsComponent patients={personsList.personsDetails} zones={getAllZones.allZones} types={getQuarantineTypes.types} />;
 };
 
 export default PatientsContainer;

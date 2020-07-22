@@ -58,8 +58,8 @@ export default function* updateContractedPersonsSaga(action) {
       break;
     case updateContractedPersonsAction.DELETE_CONTRACTED_PERSON:
       try {
-        const api = apiUrls.updateContractedPersons.replace(':id', action.payload);
-        const response = yield call(callFetchApi, api, {}, 'DELETE');
+        const api = apiUrls.updateContractedPersons.replace(':id', `${action.payload.id}/deleteCase`);
+        const response = yield call(callFetchApi, api, {}, 'PUT', { deleteReason: action.payload.reason });
         if (response.data !== undefined && response.status === 200) {
           yield put({
             type: updateContractedPersonsAction.UPDATE_CONTRACTED_PERSONS_SUCCESS,
@@ -81,6 +81,29 @@ export default function* updateContractedPersonsSaga(action) {
         });
       }
       break;
+    case updateContractedPersonsAction.DUPLICATE_CONTRACTED_PERSON:
+      try {
+        const api = apiUrls.updateContractedPersons.replace(':id', `${action.payload.id}/duplicate`);
+        const response = yield call(callFetchApi, api, {}, 'POST', action.payload.details);
+        if (response.data !== undefined && response.status === 200) {
+          yield put({
+            type: updateContractedPersonsAction.UPDATE_CONTRACTED_PERSONS_SUCCESS,
+            response: 'Entry recorded Successfully',
+          });
+        } else {
+          yield put({
+            type: updateContractedPersonsAction.UPDATE_CONTRACTED_PERSONS_FAILURE,
+            response: 'Error while updating data...',
+          });
+        }
+      } catch (error) {
+        yield put({
+          type: updateContractedPersonsAction.UPDATE_CONTRACTED_PERSONS_FAILURE,
+          error,
+        });
+      }
+      break;
+
     default:
       break;
   }

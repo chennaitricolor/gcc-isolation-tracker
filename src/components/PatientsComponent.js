@@ -132,7 +132,7 @@ const useStyles = makeStyles(() => ({
   },
 }));
 
-const PatientsComponent = ({ patients, zones }) => {
+const PatientsComponent = ({ patients, zones, types }) => {
   const dispatch = useDispatch();
   const [openPatient, setOpenPatient] = useState(null);
   const contractedPersonResponse = useSelector((state) => state.contractedPersonReducer);
@@ -215,55 +215,60 @@ const PatientsComponent = ({ patients, zones }) => {
 
   const totalPatientsLength = pendingPatients.length + completedPatients.length;
 
-  if (contractedPersonResponse.addContractedPersonMessage !== '' && contractedPersonResponse.addContractedPersonMessage !== undefined) {
-    return (
-      <ToastComponent
-        toastMessage={contractedPersonResponse.addContractedPersonMessage}
-        openToast={contractedPersonResponse.addContractedPersonMessage !== ''}
-        handleClose={handleToastClose}
-        toastVariant={'success'}
-      />
-    );
-  } else {
-    return (
-      <div className={styles.root}>
-        <div className={styles.pageTitle}>
-          <Typography component={'div'} variant="h5" style={{ color: '#333333', fontWeight: 'bold', fontSize: '22px' }}>
-            Total Tasks
-          </Typography>
-          <Chip component={'div'} size="small" label={totalPatientsLength} color="secondary" className={styles.personCountChip} />
-        </div>
-        {totalPatientsLength === 0 && (
-          <div style={{ height: '100%', display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
-            <Typography>No tasks available</Typography>
-          </div>
-        )}
-        {totalPatientsLength > 0 && (
-          <>
-            <div className={styles.pendingPatients}>
-              <div className={styles.sectionTitle}>
-                <Typography component={'div'} variant="h5" style={{ color: '#333333', fontWeight: 'bold', fontSize: '20px' }}>
-                  Incomplete Tasks
-                </Typography>
-                <Chip size="small" label={pendingPatients.length} className={styles.pendingCountChip} component={'div'} />
-              </div>
-              <PatientCards details={pendingPatients} onSelect={(patient) => setOpenPatient(patient)} />
-            </div>
-            <div className={styles.completedPatients}>
-              <div className={styles.sectionTitle}>
-                <Typography component={'div'} variant="h5" style={{ color: '#333333', fontWeight: 'bold', fontSize: '20px' }}>
-                  Completed Tasks
-                </Typography>
-                <Chip size="small" label={completedPatients.length} className={styles.successCountChip} component={'div'} />
-              </div>
-              <PatientCards details={completedPatients} onSelect={(patient) => setOpenPatient(patient)} />
-            </div>
-          </>
-        )}
-        {openPatient && <AttendanceComponent open={openPatient !== null} handleClose={() => setOpenPatient(null)} patient={openPatient} contractedPersonResponse={contractedPersonResponse} />}
+  return (
+    <div className={styles.root}>
+      <div className={styles.pageTitle}>
+        <Typography component={'div'} variant="h5" style={{ color: '#333333', fontWeight: 'bold', fontSize: '22px' }}>
+          Total Tasks
+        </Typography>
+        <Chip component={'div'} size="small" label={totalPatientsLength} color="secondary" className={styles.personCountChip} />
       </div>
-    );
-  }
+      {totalPatientsLength === 0 && (
+        <div style={{ height: '100%', display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
+          <Typography>No tasks available</Typography>
+        </div>
+      )}
+      {totalPatientsLength > 0 && (
+        <>
+          <div className={styles.pendingPatients}>
+            <div className={styles.sectionTitle}>
+              <Typography component={'div'} variant="h5" style={{ color: '#333333', fontWeight: 'bold', fontSize: '20px' }}>
+                Incomplete Tasks
+              </Typography>
+              <Chip size="small" label={pendingPatients.length} className={styles.pendingCountChip} component={'div'} />
+            </div>
+            <PatientCards details={pendingPatients} onSelect={(patient) => setOpenPatient(patient)} />
+          </div>
+          <div className={styles.completedPatients}>
+            <div className={styles.sectionTitle}>
+              <Typography component={'div'} variant="h5" style={{ color: '#333333', fontWeight: 'bold', fontSize: '20px' }}>
+                Completed Tasks
+              </Typography>
+              <Chip size="small" label={completedPatients.length} className={styles.successCountChip} component={'div'} />
+            </div>
+            <PatientCards details={completedPatients} onSelect={(patient) => setOpenPatient(patient)} />
+          </div>
+        </>
+      )}
+      {openPatient && (
+        <AttendanceComponent
+          open={openPatient !== null}
+          handleClose={() => setOpenPatient(null)}
+          patient={openPatient}
+          contractedPersonResponse={contractedPersonResponse}
+          types={types}
+        />
+      )}
+      {contractedPersonResponse.addContractedPersonMessage && (
+        <ToastComponent
+          toastMessage={contractedPersonResponse.addContractedPersonMessage}
+          openToast={contractedPersonResponse.addContractedPersonMessage !== ''}
+          handleClose={handleToastClose}
+          toastVariant={'success'}
+        />
+      )}
+    </div>
+  );
 };
 
 export default PatientsComponent;

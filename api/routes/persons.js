@@ -171,7 +171,7 @@ router.get('/:id/isolation_enquiries/day/:day', isAuthorized, async (req, res) =
   }
 });
 
-router.delete('/:id', isAuthorized, async (req, res) => {
+router.put('/:id/deleteCase', isAuthorized, async (req, res) => {
   if (!req.params.id) {
     return res.status(500).json({
       message: 'Invalid request',
@@ -185,7 +185,7 @@ router.delete('/:id', isAuthorized, async (req, res) => {
     });
   }
   try {
-    const deletedPerson = await personService.deleteCase(person_id);
+    const deletedPerson = await personService.deleteCase(person_id, req.body.deleteReason);
     if (deletedPerson) {
       return res.send(deletedPerson);
     }
