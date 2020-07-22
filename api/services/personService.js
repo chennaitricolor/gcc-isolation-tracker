@@ -116,18 +116,9 @@ module.exports = {
             as: '_address',
           },
           {
-            model: user,
-            as: '_created_by',
-            attributes: ['id', 'name'],
-          },
-          {
             model: personIsolation,
             as: '_isolation_enquiries',
-          },
-          {
-            model: quarantineType,
-            as: '_quarantine_type',
-          },
+          }
         ],
       });
       if (res) return res;
