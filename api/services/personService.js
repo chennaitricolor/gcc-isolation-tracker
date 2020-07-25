@@ -19,8 +19,7 @@ module.exports = {
     let personTransaction = await sequelize.transaction();
     let _person = personObj;
     const isolation_start_date = moment.utc(_person.isolation_start_date);
-    if(!isolation_start_date || !isolation_start_date.isValid())
-      throw new Error('Isolation start date is invalid'); 
+    if (!isolation_start_date || !isolation_start_date.isValid()) throw new Error('Isolation start date is invalid');
     try {
       if (!_person.address && _person._address) {
         const address_result = await address.create(_person._address, { personTransaction });
@@ -28,7 +27,11 @@ module.exports = {
         _person['address'] = address_result.id;
       }
       if (!_person.created_by) _person['created_by'] = sessionUser.data.id;
-      _person['isolation_end_date'] = await getIsolationEndDateByQuarantineTypeAndSubType(_person.isolation_start_date, _person.quarantine_type, _person.quarantine_sub_type);
+      _person['isolation_end_date'] = await getIsolationEndDateByQuarantineTypeAndSubType(
+        _person.isolation_start_date,
+        _person.quarantine_type,
+        _person.quarantine_sub_type,
+      );
       const result = await person.create(_person, { personTransaction });
       const { id, created_by } = result;
       const personUserMap = {
@@ -37,32 +40,37 @@ module.exports = {
       };
       await personUser.create(personUserMap, { personTransaction });
       const today = moment.utc().startOf('day');
-      let isol_start_day = moment.utc(result.isolation_start_date).startOf('day');
-      if (isol_start_day < today) {
-        let status_entries = [];
-        let enquiry = {
-          person: id,
-          is_present_at_home: null,
-          is_family_members_at_home: null,
-          basic_necessities_delivered: [],
-          self_or_family_with_symptoms: [],
-          additional_comments: 'NA',
-          status_check_date: null,
-          created_by: created_by,
-          updated_by: created_by,
-          disabled: true,
-          is_offline_enquiry: true,
-          day: -1,
-        };
-        let count = 1;
-        while (isol_start_day < today) {
-          var clone = Object.assign({}, enquiry);
-          clone['status_check_date'] = isol_start_day.clone();
-          clone['day'] = count++;
-          status_entries.push(clone);
-          isol_start_day = isol_start_day.add(1, 'day');
+      if (today.isAfter(_person['isolation_end_date'])) {
+        result['quarantine_status'] = 'closed';
+        await person.update(result, { returning: true, where: { id: result.id } }, { personTransaction });
+      } else {
+        let isol_start_day = moment.utc(result.isolation_start_date).startOf('day');
+        if (isol_start_day < today) {
+          let status_entries = [];
+          let enquiry = {
+            person: id,
+            is_present_at_home: null,
+            is_family_members_at_home: null,
+            basic_necessities_delivered: [],
+            self_or_family_with_symptoms: [],
+            additional_comments: 'NA',
+            status_check_date: null,
+            created_by: created_by,
+            updated_by: created_by,
+            disabled: true,
+            is_offline_enquiry: true,
+            day: -1,
+          };
+          let count = 1;
+          while (isol_start_day < today) {
+            var clone = Object.assign({}, enquiry);
+            clone['status_check_date'] = isol_start_day.clone();
+            clone['day'] = count++;
+            status_entries.push(clone);
+            isol_start_day = isol_start_day.add(1, 'day');
+          }
+          await personIsolationService.insertMany(status_entries);
         }
-        await personIsolationService.insertMany(status_entries);
       }
       await personTransaction.commit();
       return result;
@@ -118,7 +126,7 @@ module.exports = {
           {
             model: personIsolation,
             as: '_isolation_enquiries',
-          }
+          },
         ],
       });
       if (res) return res;
@@ -208,19 +216,18 @@ module.exports = {
     try {
       const day = moment.utc(_personIsolation.status_check_date);
       const today = moment.utc().startOf('day');
-      if(!day.isSame(today))
-        throw new Error('Isolation status check date should be today');
+      if (!day.isSame(today)) throw new Error('Isolation status check date should be today');
       if (!_personIsolation.created_by) _personIsolation['created_by'] = sessionUser.data.id;
       if (!_personIsolation.updated_by) _personIsolation['updated_by'] = sessionUser.data.id;
       _personIsolation['is_offline_enquiry'] = false;
       _personIsolation['disabled'] = true;
-      const lastEnquirySeqForDayOfPerson = await personIsolationService.getEnquirySeqOfDayForPerson(_personIsolation.status_check_date, _personIsolation.person);
-      if(lastEnquirySeqForDayOfPerson && lastEnquirySeqForDayOfPerson.length > 2)
-        throw new Error('Only 2 enquiries can be recorded per day');
-      if(lastEnquirySeqForDayOfPerson && lastEnquirySeqForDayOfPerson.length === 1)  
-        _personIsolation.enquiry_seq = 2;
-      if(!lastEnquirySeqForDayOfPerson || lastEnquirySeqForDayOfPerson.length === 0)  
-        _personIsolation.enquiry_seq = 1;  
+      const lastEnquirySeqForDayOfPerson = await personIsolationService.getEnquirySeqOfDayForPerson(
+        _personIsolation.status_check_date,
+        _personIsolation.person,
+      );
+      if (lastEnquirySeqForDayOfPerson && lastEnquirySeqForDayOfPerson.length > 2) throw new Error('Only 2 enquiries can be recorded per day');
+      if (lastEnquirySeqForDayOfPerson && lastEnquirySeqForDayOfPerson.length === 1) _personIsolation.enquiry_seq = 2;
+      if (!lastEnquirySeqForDayOfPerson || lastEnquirySeqForDayOfPerson.length === 0) _personIsolation.enquiry_seq = 1;
       const result = await personIsolationService.insertOne(_personIsolation);
       await personIsolationTransaction.commit();
       return result;
@@ -257,14 +264,12 @@ module.exports = {
       throw e;
     }
   },
-  saveDuplicateCase: async(id, personDuplicateContactObj, sessionUser) => {
+  saveDuplicateCase: async (id, personDuplicateContactObj, sessionUser) => {
     const duplicateCaseTransaction = await sequelize.transaction();
     try {
       let _personDuplicateContactObj = personDuplicateContactObj;
-      if(!_personDuplicateContactObj.person)
-        _personDuplicateContactObj.person = id;
-      if(_personDuplicateContactObj.person !== id)
-        throw new Error('Invalid request'); 
+      if (!_personDuplicateContactObj.person) _personDuplicateContactObj.person = id;
+      if (_personDuplicateContactObj.person !== id) throw new Error('Invalid request');
       _personDuplicateContactObj.created_by = sessionUser.data.id;
       _personDuplicateContactObj.updated_by = sessionUser.data.id;
       const result = await personDuplicateContact.create(_personDuplicateContactObj, { duplicateCaseTransaction });
@@ -274,17 +279,15 @@ module.exports = {
       if (duplicateCaseTransaction) duplicateCaseTransaction.rollback();
       throw e;
     }
-  }
+  },
 };
-
 
 const getIsolationEndDateByQuarantineTypeAndSubType = async (isolationStartDate, quarantineTypeId, quarantineSubTypeId) => {
   let isloationEndDate = moment.utc(isolationStartDate).add(13, 'days');
-  const type = quarantineTypeId && await quarantineTypeService.getById(quarantineTypeId);
-  const subType = quarantineSubTypeId && await quarantineSubTypeService.getById(quarantineSubTypeId);
-  if(type && type.name === 'Tested and Waiting for Results')
-    isloationEndDate = moment.utc(isolationStartDate).add(2, 'days');
-  if(type && type.name === 'Travel Quarantine' && (subType && subType.name === 'International Flight'))
+  const type = quarantineTypeId && (await quarantineTypeService.getById(quarantineTypeId));
+  const subType = quarantineSubTypeId && (await quarantineSubTypeService.getById(quarantineSubTypeId));
+  if (type && type.name === 'Tested and Waiting for Results') isloationEndDate = moment.utc(isolationStartDate).add(2, 'days');
+  if (type && type.name === 'Travel Quarantine' && subType && subType.name === 'International Flight')
     isloationEndDate = moment.utc(isolationStartDate).add(6, 'days');
   return isloationEndDate;
-}
+};
