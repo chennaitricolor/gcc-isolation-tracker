@@ -3,7 +3,6 @@ const { userService } = require('../services');
 
 router.get('/users/:login', async(req, res) => {
     const { login } = req.params;
-    console.log(login);
     try {
         const user = await userService.getByLogin(login);
         return res.send(user).status(200);

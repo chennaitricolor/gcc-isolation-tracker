@@ -95,6 +95,10 @@ module.exports = {
                     {
                         model: person,
                         as: '_person',
+                        where: {
+                            quarantine_status: 'open',
+                            active: true,
+                          },
                         include: [
                             {
                                 model: address,
