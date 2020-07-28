@@ -14,19 +14,7 @@ traefik_ssl_provider: letsencrypt
 vault:
   enabled: true
   name: gcc-isolation-tracker-fe
-  dev:
-    - NODE_ENV
-    - TZ
-    - DB_USER
-    - DB_PWD
-    - DB_NAME
-    - DB_HOST
-    - DB_SCHEMA
-    - DB_PORT
-    - REDIS_HOST
-    - SECURITY_USER
-    - SECURITY_PASSWORD
-  prod:
+  envs:
     - NODE_ENV
     - TZ
     - DB_USER
