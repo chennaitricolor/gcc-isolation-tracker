@@ -62,7 +62,13 @@ const AddNewPatientContainer = (props) => {
 
   return (
     <div style={{ height: '100%' }}>
-      <AddNewPatientComponent onSubmit={handlePreview} onCancel={onCancel} zones={getAllZones.allZones} types={getQuarantineTypes.types} />
+      <AddNewPatientComponent
+        onSubmit={handlePreview}
+        onCancel={onCancel}
+        zones={getAllZones.allZones}
+        wards={getAllZones.wardsMapping}
+        types={getQuarantineTypes.types}
+      />
       {showPreview && (
         <AddPatientPreviewComponent
           showPreview={showPreview}

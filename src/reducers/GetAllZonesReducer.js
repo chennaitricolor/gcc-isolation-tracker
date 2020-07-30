@@ -4,6 +4,7 @@ import toastActions from '../actions/ToastAction';
 const defaultState = {
     allZones: [],
     allZonesError: '',
+    wardsMapping: [],
     isLoading: false,
 };
 
@@ -17,7 +18,8 @@ const getAllZonesReducer = (state = defaultState, { type, payload }) => {
         case actions.GET_ALL_ZONES_SUCCESS:
             return Object.assign({}, state, {
                 isLoading: false,
-                allZones: payload,
+                allZones: payload.zonePayload,
+                wardsMapping: payload.wardsMappingPayload,
             });
         case actions.GET_ALL_ZONES_FAILURE:
             return Object.assign({}, state, {

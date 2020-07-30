@@ -120,12 +120,17 @@ const initialState = {
   },
 };
 
-const AddNewPatientComponent = ({ onSubmit, onCancel, zones, types }) => {
+const AddNewPatientComponent = ({ onSubmit, onCancel, zones, wards, types }) => {
   const styles = useStyles();
   const [details, setDetails] = useState(initialState);
 
   const personalInfoOnChange = (field, value) => setDetails({ ...details, [field]: value });
   const addressInfoOnChange = (field, value) => setDetails({ ...details, _address: { ...details._address, [field]: value } });
+
+  const getWardsListing = () => {
+    const zoneName = find(zones, ['id', details._address.zone]).name;
+    return find(wards, ['name', zoneName]).wards;
+  };
 
   const renderTextInput = (label, field, handleChange, isRequired = false) => {
     return (
@@ -237,7 +242,7 @@ const AddNewPatientComponent = ({ onSubmit, onCancel, zones, types }) => {
           {list.map((item) => {
             return (
               <MenuItem key={item.id} value={item.id}>
-                {field === 'zone' ? `${item.id} - ${item.name}` : item.name}
+                {field === 'zone' ? `${item.id} - ${item.name}` : item.name || item.id}
               </MenuItem>
             );
           })}
@@ -305,7 +310,7 @@ const AddNewPatientComponent = ({ onSubmit, onCancel, zones, types }) => {
           {renderTextInput('Area Name / பகுதி பெயர்', 'area', addressInfoOnChange, true)}
           {renderTextInput('Locality / வட்டாரம்', 'locality', addressInfoOnChange, true)}
           {renderDropdownInput('Zone / மண்டலம்', 'zone', addressInfoOnChange, zones, true)}
-          {renderNumberInput('Division', 'division', addressInfoOnChange, '99999', true)}
+          {details._address.zone && renderDropdownInput('Division', 'division', addressInfoOnChange, getWardsListing(), true)}
         </form>
       </div>
       <div style={{ textAlign: 'center' }}>
