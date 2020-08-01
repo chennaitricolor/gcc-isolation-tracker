@@ -31,10 +31,6 @@ app.use(
   }),
 );
 
-const corsOptions = {
-    origin: false,
-}
-
 app.use((req, res, next) => {
   res.header('Cache-Control', 'private, no-cache, no-store, must-revalidate');
   res.header('Expires', '-1');
