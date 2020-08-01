@@ -21,11 +21,11 @@ router.get('/', async(req, res) => {
                 wards: values,
             })
         });
-        return res.send(wardsResponse).status(200);
+        return res.status(200).send(wardsResponse);
     } catch(e) {
-        return res.json({
+        return res.status(500).json({
             message: e.message
-        }).status(500);
+        });
     }
 });
 

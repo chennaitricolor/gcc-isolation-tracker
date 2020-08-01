@@ -24,7 +24,7 @@ module.exports = {
         });
         if(res)
             return res;
-        return null;    
+        return null;
     } catch (e) {
       throw e;
     }
@@ -34,7 +34,7 @@ module.exports = {
         const res = await user.findByPk(id);
         if(res)
             return res;
-        return null;    
+        return null;
     } catch (e) {
       throw e;
     }
@@ -48,7 +48,7 @@ module.exports = {
         });
         if(res)
             return res;
-        return null;    
+        return null;
     } catch (e) {
       throw e;
     }

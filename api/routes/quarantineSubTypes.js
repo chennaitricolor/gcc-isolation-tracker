@@ -5,11 +5,11 @@ const { isAuthorized } = require('../helpers/authHelper');
 router.get('/', isAuthorized, async(req, res) => {
   try {
   const quarantineSubTypes = await quarantineSubTypeService.getAll();
-  return res.send(quarantineSubTypes).status(200);
+  return res.status(200).send(quarantineSubTypes);
   } catch(e) {
-      return res.json({
+      return res.status(500).json({
           message: e.message
-      }).status(500);
+      });
   }
 });
 
@@ -17,11 +17,11 @@ router.get('/:id', isAuthorized, async(req, res) => {
   const { id } = req.params;
   try {
   const quarantineSubType = await quarantineSubTypeService.getById(id);
-  return res.send(quarantineSubType).status(200);
+  return res.status(200).send(quarantineSubType);
   } catch(e) {
-      return res.json({
+      return res.status(500).json({
           message: e.message
-      }).status(500);
+      });
   }
 });
 
@@ -29,11 +29,11 @@ router.get('/by-type/:id', isAuthorized, async(req, res) => {
   const { id } = req.params;
   try {
   const quarantineSubTypes = await quarantineSubTypeService.getByQuarantineTypeId(id);
-  return res.send(quarantineSubTypes).status(200);
+  return res.status(200).send(quarantineSubTypes);
   } catch(e) {
-      return res.json({
+      return res.status(500).json({
           message: e.message
-      }).status(500);
+      });
   }
 });
 

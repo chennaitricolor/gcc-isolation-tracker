@@ -4,11 +4,11 @@ const { zoneService } = require('../services');
 router.get('/', async(req, res) => {
   try {
   const zones = await zoneService.getAll();
-  return res.send(zones).status(200);
+  return res.status(200).send(zones);
   } catch(e) {
-      return res.json({
+      return res.status(500).json({
           message: e.message
-      }).status(500);
+      });
   }
 });
 
@@ -16,11 +16,11 @@ router.get('/:id', async(req, res) => {
   const { id } = req.params;
   try {
   const zone = await zoneService.getById(id);
-  return res.send(zone).status(200);
+  return res.status(200).send(zone);
   } catch(e) {
-      return res.json({
+      return res.status(500).json({
           message: e.message
-      }).status(500);
+      });
   }
 });
 

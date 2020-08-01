@@ -38,12 +38,12 @@ router.put('/:id', isAuthorized, async (req, res) => {
       message: 'Invalid request'
     });
   }
-  const person_id = req.params.id;  
+  const person_id = req.params.id;
   const existing_person = await personService.getById(person_id);
   if(!existing_person) {
     return res.status(500).json({
       message: 'Invalid request'
-    });    
+    });
   }
     if(!req.body.id) {
         return res.status(500).json({
@@ -89,13 +89,13 @@ router.put('/:id/closeCase', isAuthorized, async (req, res) => {
 
 router.get('/', isAuthorized, async(req, res) => {
     try {
-    let persons = [];  
+    let persons = [];
     persons= await personService.getAll(req.session.user);
-    return res.send(persons).status(200);
+    return res.status(200).send(persons);
     } catch(e) {
-        return res.json({
+        return res.status(500).json({
             message: e.message
-        }).status(500);
+        });
     }
 });
 
@@ -103,11 +103,11 @@ router.get('/:id', isAuthorized, async(req, res) => {
     const { id } = req.params;
     try {
     const person = await personService.getById(id);
-    return res.send(person).status(200);
+    return res.status(200).send(person);
     } catch(e) {
-        return res.json({
+        return res.status(500).json({
             message: e.message
-        }).status(500);
+        });
     }
 });
 
@@ -207,7 +207,7 @@ router.post('/:id/duplicate', isAuthorized, async (req, res) => {
       });
     }
     await personService.saveDuplicateCase(id, req.body, req.session.user);
-    return res.send({message: 'saved successfully'}).status(200);
+    return res.status(200).send({message: 'saved successfully'});
   } catch (e) {
     return res.status(500).json({
       message: e.message
