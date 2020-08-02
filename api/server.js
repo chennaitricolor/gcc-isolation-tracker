@@ -6,6 +6,8 @@ const RedisStore = require('connect-redis')(session);
 const bodyParser = require('body-parser');
 const cookieParser = require('cookie-parser');
 const helmet = require('helmet');
+const winston = require('winston');
+const expressWinston = require('express-winston');
 const routes = require('./routes');
 
 const PORT = process.env.PORT || 8000;
@@ -30,6 +32,21 @@ app.use(
     expires: Date.now() + (7 * 86400 * 1000)
   }),
 );
+
+app.use(expressWinston.logger({
+  transports: [
+    new winston.transports.Console()
+  ],
+  meta: false,
+  format: winston.format.combine(
+    winston.format.colorize(),
+    winston.format.timestamp({
+      format: 'YYYY-MM-DD HH:mm:ss',
+    }),
+    winston.format.printf(info => `${info.timestamp} ${info.level}: ${info.message}`),
+  ),
+  expressFormat: true,
+}));
 
 app.use((req, res, next) => {
   res.header('Cache-Control', 'private, no-cache, no-store, must-revalidate');
