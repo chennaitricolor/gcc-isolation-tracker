@@ -1,5 +1,6 @@
 const router = require('express').Router();
 const { userService } = require('../services');
+const logger = require('../helpers/logger');
 
 router.get('/users/:login', async(req, res) => {
     const { login } = req.params;
@@ -7,6 +8,7 @@ router.get('/users/:login', async(req, res) => {
         const user = await userService.getByLogin(login);
         return res.status(200).send(user);
     } catch(e) {
+        logger.error(JSON.stringify(e));
         return res.status(500).json({
             message: e.message
         });
@@ -20,6 +22,7 @@ router.post('/users', async(req, res) => {
         console.log(record, created);
         return res.status(200).send(record);
     } catch(e) {
+        logger.error(JSON.stringify(e));
         return res.status(500).json({
             message: e.message
         });
@@ -32,6 +35,7 @@ router.delete('/users/:id', async(req, res) => {
         await userService.deleteUserById(id);
         return res.status(200).json({});
     } catch(e) {
+        logger.error(JSON.stringify(e));
         return res.status(500).json({
             message: e.message
         });
@@ -45,6 +49,7 @@ router.get('/users/:id/persons', async(req, res) => {
         const personslist = persons.map(p => p._person);
         return res.status(200).send(personslist);
     } catch(e) {
+        logger.error(JSON.stringify(e));
         return res.status(500).json({
             message: e.message
         });
@@ -57,6 +62,7 @@ router.post('/users/persons/transfer', async(req, res) => {
         const persons = await userService.transferPersonsToUser(payload);
         return res.status(200).send(persons);
     } catch(e) {
+        logger.error(JSON.stringify(e));
         return res.status(500).json({
             message: e.message
         });

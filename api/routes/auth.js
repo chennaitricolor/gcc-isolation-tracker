@@ -1,6 +1,7 @@
 const router = require('express').Router();
 const { authService } = require('../services');
 const { isAuthorized } = require('../helpers/authHelper');
+const logger = require('../helpers/logger');
 
 router.post('/login', async (req, res) => {
   try {
@@ -17,6 +18,7 @@ router.post('/login', async (req, res) => {
     }
     throw new Error('Invalid Credentials');
   } catch (e) {
+    logger.error(JSON.stringify(e));
     return res.status(401).json({
       message: e.message
     });

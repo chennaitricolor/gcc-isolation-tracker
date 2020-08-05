@@ -1,12 +1,14 @@
 const router = require('express').Router();
 const { quarantineTypeService } = require('../services');
 const { isAuthorized } = require('../helpers/authHelper');
+const logger = require('../helpers/logger');
 
 router.get('/', isAuthorized, async(req, res) => {
   try {
   const zones = await quarantineTypeService.getAll();
   return res.status(200).send(zones);
   } catch(e) {
+      logger.error(JSON.stringify(e));
       return res.status(500).json({
           message: e.message
       });
@@ -19,6 +21,7 @@ router.get('/:id', isAuthorized, async(req, res) => {
   const zone = await quarantineTypeService.getById(id);
   return res.status(200).send(zone);
   } catch(e) {
+      logger.error(JSON.stringify(e));
       return res.status(500).json({
           message: e.message
       });

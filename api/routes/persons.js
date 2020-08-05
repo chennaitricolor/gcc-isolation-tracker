@@ -2,6 +2,7 @@ const router = require('express').Router();
 const { personService, personIsolationService } = require('../services');
 const { isAuthorized } = require('../helpers/authHelper');
 const { person } = require('../models');
+const logger = require('../helpers/logger');
 
 router.post('/', isAuthorized, async (req, res) => {
   try {
@@ -26,6 +27,7 @@ router.post('/', isAuthorized, async (req, res) => {
       return res.send(savedPerson);
     }
   } catch (e) {
+    logger.error(JSON.stringify(e));
     return res.status(500).json({
       message: e.message
     });
@@ -56,6 +58,7 @@ router.put('/:id', isAuthorized, async (req, res) => {
         return res.send(savedPerson);
       }
     } catch (e) {
+      logger.error(JSON.stringify(e));
       return res.status(500).json({
         message: e.message
       });
@@ -81,6 +84,7 @@ router.put('/:id/closeCase', isAuthorized, async (req, res) => {
       return res.send(closedPerson);
     }
   } catch (e) {
+    logger.error(JSON.stringify(e));
     return res.status(500).json({
       message: e.message,
     });
@@ -93,6 +97,7 @@ router.get('/', isAuthorized, async(req, res) => {
     persons= await personService.getAll(req.session.user);
     return res.status(200).send(persons);
     } catch(e) {
+        logger.error(JSON.stringify(e));
         return res.status(500).json({
             message: e.message
         });
@@ -105,6 +110,7 @@ router.get('/:id', isAuthorized, async(req, res) => {
     const person = await personService.getById(id);
     return res.status(200).send(person);
     } catch(e) {
+        logger.error(JSON.stringify(e));
         return res.status(500).json({
             message: e.message
         });
@@ -125,6 +131,7 @@ router.post('/:id/isolation_enquiries', isAuthorized, async (req, res) => {
       return res.send(savedPersonIsolationDetail);
     }
   } catch (e) {
+    logger.error(JSON.stringify(e));
     return res.status(500).json({
       message: e.message
     });
@@ -145,6 +152,7 @@ router.get('/:id/isolation_enquiries/last_check_day', isAuthorized, async (req, 
       return res.send(savedPersonIsolationDetail);
     }
   } catch (e) {
+    logger.error(JSON.stringify(e));
     return res.status(500).json({
       message: e.message
     });
@@ -166,6 +174,7 @@ router.get('/:id/isolation_enquiries/day/:day', isAuthorized, async (req, res) =
       return res.send(savedPersonIsolationDetail);
     }
   } catch (e) {
+    logger.error(JSON.stringify(e));
     return res.status(500).json({
       message: e.message
     });
@@ -191,6 +200,7 @@ router.put('/:id/deleteCase', isAuthorized, async (req, res) => {
       return res.send(deletedPerson);
     }
   } catch (e) {
+    logger.error(JSON.stringify(e));
     return res.status(500).json({
       message: e.message,
     });
@@ -209,6 +219,7 @@ router.post('/:id/duplicate', isAuthorized, async (req, res) => {
     await personService.saveDuplicateCase(id, req.body, req.session.user);
     return res.status(200).send({message: 'saved successfully'});
   } catch (e) {
+    logger.error(JSON.stringify(e));
     return res.status(500).json({
       message: e.message
     });

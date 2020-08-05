@@ -1,5 +1,6 @@
 const router = require('express').Router();
 const { wardService } = require('../services');
+const logger = require('../helpers/logger');
 
 router.get('/', async(req, res) => {
     try {
@@ -23,6 +24,7 @@ router.get('/', async(req, res) => {
         });
         return res.status(200).send(wardsResponse);
     } catch(e) {
+        logger.error(JSON.stringify(e));
         return res.status(500).json({
             message: e.message
         });
