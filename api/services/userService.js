@@ -122,7 +122,8 @@ module.exports = {
     save: async (payload) => {
         try {
             let userTransaction = await sequelize.transaction();
-            const res = await user.create(payload, { userTransaction });
+            const res = await user.create(payload, { transaction: userTransaction });
+            await userTransaction.commit();
             if (res)
                 return res;
             return null;
@@ -133,7 +134,8 @@ module.exports = {
     update: async (payload) => {
         try {
             let userTransaction = await sequelize.transaction();
-            const res = await user.update(payload, { returning: true, plain: true, where: { id: payload.id } }, { userTransaction });
+            const res = await user.update(payload, { returning: true, plain: true, where: { id: payload.id }, transaction: userTransaction });
+            await userTransaction.commit();
             if (res)
                 return res;
             return null;
@@ -155,8 +157,10 @@ module.exports = {
                         as: '_ward',
                     }
                 ],
-                returning: true, plain: true
-            }, { userTransaction });
+                returning: true, plain: true,
+                transaction: userTransaction
+            });
+            await userTransaction.commit();
             if (res)
                 return res;
             return null;
@@ -176,12 +180,11 @@ module.exports = {
                         person: {
                             [Sequelize.Op.in]: payload.patients.map(p => p.id)
                         }
-                    }
-                },
-                {
-                    userTransaction
+                    },
+                    transaction: userTransaction
                 }
             );
+            await userTransaction.commit();
             if (res)
                 return res;
             return null;
