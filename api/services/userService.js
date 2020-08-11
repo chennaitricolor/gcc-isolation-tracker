@@ -120,32 +120,34 @@ module.exports = {
         }
     },
     save: async (payload) => {
+        let userTransaction = await sequelize.transaction();
         try {
-            let userTransaction = await sequelize.transaction();
             const res = await user.create(payload, { transaction: userTransaction });
             await userTransaction.commit();
             if (res)
                 return res;
             return null;
         } catch (e) {
+            if (userTransaction) await userTransaction.rollback();
             throw e;
         }
     },
     update: async (payload) => {
+        let userTransaction = await sequelize.transaction();
         try {
-            let userTransaction = await sequelize.transaction();
             const res = await user.update(payload, { returning: true, plain: true, where: { id: payload.id }, transaction: userTransaction });
             await userTransaction.commit();
             if (res)
                 return res;
             return null;
         } catch (e) {
+            if (userTransaction) await userTransaction.rollback();
             throw e;
         }
     },
     upsert: async (payload) => {
+        let userTransaction = await sequelize.transaction();
         try {
-            let userTransaction = await sequelize.transaction();
             const res = await user.upsert(payload, {
                 include: [
                     {
@@ -165,12 +167,13 @@ module.exports = {
                 return res;
             return null;
         } catch (e) {
+            if (userTransaction) await userTransaction.rollback();
             throw e;
         }
     },
     transferPersonsToUser: async (payload) => {
+        let userTransaction = await sequelize.transaction();
         try {
-            let userTransaction = await sequelize.transaction();
             const res = await personUser.update(
                 {
                     gcc_user: payload.toId
@@ -190,6 +193,7 @@ module.exports = {
             return null;
         } catch (e) {
             console.log(e);
+            if (userTransaction) await userTransaction.rollback();
             throw e;
         }
     },
