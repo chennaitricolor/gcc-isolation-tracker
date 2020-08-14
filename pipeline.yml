@@ -4,7 +4,7 @@ replicas:
   dev: 1
   qa: 1 
   uat: 1
-  prod: 3
+  prod: 10
 restart_policy: any
 max_mem: 1024M
 max_cpu: 1
