@@ -198,16 +198,16 @@ module.exports = {
         }
     },
     deleteUserById: async (id) => {
+        let userTransaction = await sequelize.transaction();
         try {
-            const res = await user.destroy({
-                where: {
-                    id: id,
-                }
-            });
+            const res = await user.update({active:false}, { returning: true, plain: true, where: { id: id }, transaction: userTransaction });
+            await userTransaction.commit();
             if(res)
-                return res;
+                return {success:true};
             return null;
         } catch (e) {
+            console.log(e);
+            if (userTransaction) await userTransaction.rollback();
             throw e;
         }
     },
