@@ -5,7 +5,8 @@ const logger = require('../helpers/logger');
 router.get('/users/:login', async(req, res) => {
     const { login } = req.params;
     try {
-        const user = await userService.getByLogin(login);
+        const region = req.headers.region ? req.headers.region : 'GCC';
+        const user = await userService.getByLogin(login, region);
         return res.status(200).send(user);
     } catch(e) {
         logger.error(JSON.stringify(e));
@@ -32,7 +33,8 @@ router.post('/users', async(req, res) => {
 router.delete('/users/:id', async(req, res) => {
     const { id } = req.params;
     try {
-        await userService.deleteUserById(id);
+        const region = req.headers.region ? req.headers.region : 'GCC';
+        await userService.deleteUserById(id, region);
         return res.status(200).json({});
     } catch(e) {
         logger.error(JSON.stringify(e));
