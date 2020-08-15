@@ -18,7 +18,7 @@ module.exports = {
           ]
       });
       if (userRecord) {
-        return [true, false, { id: userRecord.id, username: userRecord.name, login: userRecord.login }];
+        return [true, false, { id: userRecord.id, username: userRecord.name, login: userRecord.login, region: userRecord.region}];
       }
       return [false];
     } catch (e) {
