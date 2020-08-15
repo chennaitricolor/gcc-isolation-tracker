@@ -1,6 +1,6 @@
 module.exports = {
     isAuthorized: async (req, res, next) => {
-        if (req.session.user && req.cookies['gcc-isolation-tracker']) {
+        if (req.session.user && req.cookies['gcc-isolation-tracker'] && req.session.user.region === req.headers.region) {
           next();
         } else {
             res.status(401).json({
@@ -25,4 +25,4 @@ module.exports = {
             });
         }
       }
-  };  
+  };
