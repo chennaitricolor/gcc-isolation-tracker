@@ -4,7 +4,7 @@ const { isAuthorized } = require('../helpers/authHelper');
 const { person } = require('../models');
 const logger = require('../helpers/logger');
 
-router.post('/', isAuthorized, async (req, res) => {
+router.post('/', async (req, res) => {
   try {
     const existingPerson = await personService.getByNameAndPhoneNumberAndStatusOpen(req.body.name, req.body.phone_number);
     if(existingPerson) {
@@ -34,7 +34,7 @@ router.post('/', isAuthorized, async (req, res) => {
   }
 });
 
-router.put('/:id', isAuthorized, async (req, res) => {
+router.put('/:id', async (req, res) => {
   if(!req.params.id) {
     return res.status(500).json({
       message: 'Invalid request'
@@ -65,7 +65,7 @@ router.put('/:id', isAuthorized, async (req, res) => {
     }
   });
 
-router.put('/:id/closeCase', isAuthorized, async (req, res) => {
+router.put('/:id/closeCase', async (req, res) => {
   if (!req.params.id) {
     return res.status(500).json({
       message: 'Invalid request',
@@ -91,7 +91,7 @@ router.put('/:id/closeCase', isAuthorized, async (req, res) => {
   }
 });
 
-router.get('/', isAuthorized, async(req, res) => {
+router.get('/', async(req, res) => {
     try {
     let persons = [];
     persons= await personService.getAll(req.session.user);
@@ -104,7 +104,7 @@ router.get('/', isAuthorized, async(req, res) => {
     }
 });
 
-router.get('/:id', isAuthorized, async(req, res) => {
+router.get('/:id', async(req, res) => {
     const { id } = req.params;
     try {
     const person = await personService.getById(id);
@@ -117,7 +117,7 @@ router.get('/:id', isAuthorized, async(req, res) => {
     }
 });
 
-router.post('/:id/isolation_enquiries', isAuthorized, async (req, res) => {
+router.post('/:id/isolation_enquiries', async (req, res) => {
   const { id } = req.params;
   try {
     const existingPerson = await personService.getById(id);
@@ -138,7 +138,7 @@ router.post('/:id/isolation_enquiries', isAuthorized, async (req, res) => {
   }
 });
 
-router.get('/:id/isolation_enquiries/last_check_day', isAuthorized, async (req, res) => {
+router.get('/:id/isolation_enquiries/last_check_day', async (req, res) => {
   const { id } = req.params;
   try {
     const existingPerson = await personService.getById(id);
@@ -159,7 +159,7 @@ router.get('/:id/isolation_enquiries/last_check_day', isAuthorized, async (req, 
   }
 });
 
-router.get('/:id/isolation_enquiries/day/:day', isAuthorized, async (req, res) => {
+router.get('/:id/isolation_enquiries/day/:day', async (req, res) => {
   const { id, day } = req.params;
   try {
     const existingPerson = await personService.getById(id);
@@ -181,7 +181,7 @@ router.get('/:id/isolation_enquiries/day/:day', isAuthorized, async (req, res) =
   }
 });
 
-router.put('/:id/deleteCase', isAuthorized, async (req, res) => {
+router.put('/:id/deleteCase', async (req, res) => {
   if (!req.params.id) {
     return res.status(500).json({
       message: 'Invalid request',
@@ -207,7 +207,7 @@ router.put('/:id/deleteCase', isAuthorized, async (req, res) => {
   }
 });
 
-router.post('/:id/duplicate', isAuthorized, async (req, res) => {
+router.post('/:id/duplicate', async (req, res) => {
   const { id } = req.params;
   try {
     const existingPerson = await person.findByPk(id);

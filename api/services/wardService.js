@@ -19,4 +19,18 @@ module.exports = {
             throw e;
         }
     },
+    getByZoneId: async (zone) => {
+        try {
+            const res = await ward.findAll({
+            where: {
+                zone
+            }
+            });
+            if(res)
+                return res;
+            return null;
+        } catch (e) {
+            throw e;
+        }
+    }
 };

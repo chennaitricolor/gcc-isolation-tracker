@@ -3,7 +3,7 @@ const { quarantineSubTypeService } = require('../services');
 const { isAuthorized } = require('../helpers/authHelper');
 const logger = require('../helpers/logger');
 
-router.get('/', isAuthorized, async(req, res) => {
+router.get('/', async(req, res) => {
   try {
   const quarantineSubTypes = await quarantineSubTypeService.getAll();
   return res.status(200).send(quarantineSubTypes);
@@ -15,7 +15,7 @@ router.get('/', isAuthorized, async(req, res) => {
   }
 });
 
-router.get('/:id', isAuthorized, async(req, res) => {
+router.get('/:id', async(req, res) => {
   const { id } = req.params;
   try {
   const quarantineSubType = await quarantineSubTypeService.getById(id);
@@ -28,7 +28,7 @@ router.get('/:id', isAuthorized, async(req, res) => {
   }
 });
 
-router.get('/by-type/:id', isAuthorized, async(req, res) => {
+router.get('/by-type/:id', async(req, res) => {
   const { id } = req.params;
   try {
   const quarantineSubTypes = await quarantineSubTypeService.getByQuarantineTypeId(id);

@@ -2,9 +2,10 @@ const router = require('express').Router();
 const { zoneService } = require('../services');
 const logger = require('../helpers/logger');
 
-router.get('/', async(req, res) => {
+router.get('/:type', async(req, res) => {
   try {
-  const zones = await zoneService.getAll();
+      const region = req.headers.region ? req.headers.region : 'GCC';
+  const zones = await zoneService.getAll(region,req.params.type);
   return res.status(200).send(zones);
   } catch(e) {
       logger.error(JSON.stringify(e));
