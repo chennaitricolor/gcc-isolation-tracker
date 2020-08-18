@@ -13,9 +13,10 @@ module.exports = {
       throw e;
     }
   },
-  getAll: async (id) => {
+  getAll: async (region,type) => {
     try {
         const res = await zone.findAll({
+            where: {region, type},
           include: [
             {
               model: city,
@@ -27,7 +28,7 @@ module.exports = {
         });
         if(res)
             return res;
-        return null;    
+        return null;
     } catch (e) {
       throw e;
     }
@@ -37,7 +38,7 @@ module.exports = {
         const res = await zone.findByPk(id);
         if(res)
             return res;
-        return null;    
+        return null;
     } catch (e) {
       throw e;
     }
@@ -51,7 +52,7 @@ module.exports = {
         });
         if(res)
             return res;
-        return null;    
+        return null;
     } catch (e) {
       throw e;
     }

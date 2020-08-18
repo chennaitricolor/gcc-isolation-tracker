@@ -7,6 +7,14 @@ module.exports = function (sequelize, DataTypes) {
             primaryKey: true,
             autoIncrement: true
         },
+        name:{
+            type: DataTypes.STRING,
+            allowNull: true,
+        },
+        zone:{
+            type: DataTypes.INTEGER,
+            allowNull: true,
+        }
     }, {
         tableName: 'ward',
         timestamps: false

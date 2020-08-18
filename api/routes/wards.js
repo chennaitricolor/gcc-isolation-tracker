@@ -31,4 +31,16 @@ router.get('/', async(req, res) => {
     }
 });
 
+router.get('/:zone', async(req, res) => {
+    try {
+        const zone = await wardService.getByZoneId(req.params.zone);
+        return res.status(200).send(zone);
+    } catch(e) {
+        logger.error(JSON.stringify(e));
+        return res.status(500).json({
+            message: e.message
+        });
+    }
+});
+
 module.exports = router;

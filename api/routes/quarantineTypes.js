@@ -3,7 +3,7 @@ const { quarantineTypeService } = require('../services');
 const { isAuthorized } = require('../helpers/authHelper');
 const logger = require('../helpers/logger');
 
-router.get('/', isAuthorized, async(req, res) => {
+router.get('/', async(req, res) => {
   try {
   const zones = await quarantineTypeService.getAll();
   return res.status(200).send(zones);
@@ -15,7 +15,7 @@ router.get('/', isAuthorized, async(req, res) => {
   }
 });
 
-router.get('/:id', isAuthorized, async(req, res) => {
+router.get('/:id', async(req, res) => {
   const { id } = req.params;
   try {
   const zone = await quarantineTypeService.getById(id);

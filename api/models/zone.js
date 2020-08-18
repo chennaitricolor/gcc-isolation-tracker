@@ -11,6 +11,18 @@ module.exports = function (sequelize, DataTypes) {
       type: DataTypes.STRING,
       allowNull: true
     },
+    city: {
+      type: DataTypes.INTEGER,
+      allowNull: true
+    },
+    region: {
+      type: DataTypes.STRING,
+      allowNull: true
+    },
+    type:{
+      type: DataTypes.STRING,
+      allowNull: true
+    }
   }, {
     tableName: 'zone',
     timestamps: false
