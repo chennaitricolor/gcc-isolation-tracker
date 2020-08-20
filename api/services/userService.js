@@ -74,7 +74,7 @@ module.exports = {
                     {
                         model: ward,
                         as: '_ward',
-                        attributes: ['id']
+                        attributes: ['id', 'name']
                     }
                 ]
             });
