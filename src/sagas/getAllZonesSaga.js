@@ -1,21 +1,21 @@
 import { put, call } from 'redux-saga/effects';
-import actions from '../actions/getWardsAction';
+import actions from '../actions/getAllZonesAction';
 import { apiUrls } from '../utils/constants';
 import { callFetchApi } from '../services/api';
 import routeToPathAction from '../actions/RouteToPathAction';
 
-export default function* getAllWardsSaga(action) {
+export default function* getAllZonesSaga(action) {
   try {
-    const api = apiUrls.getWardsMapping.replace(':zoneId', action.payload.zoneId);
+    const api = apiUrls.getAllZones;
     const response = yield call(callFetchApi, api, {}, 'GET');
     if (response.data !== undefined) {
       yield put({
-        type: actions.GET_ALL_WARDS_SUCCESS,
-        payload: { wardListing: response.data },
+        type: actions.GET_ALL_ZONES_SUCCESS,
+        payload: { zones: response.data },
       });
     } else {
       yield put({
-        type: actions.GET_ALL_WARDS_FAILURE,
+        type: actions.GET_ALL_ZONES_FAILURE,
         payload: 'Error in fetching Data',
       });
     }
@@ -27,7 +27,7 @@ export default function* getAllWardsSaga(action) {
       });
     } else {
       yield put({
-        type: actions.GET_ZONE_BY_TYPE_FAILURE,
+        type: actions.GET_ALL_ZONES_FAILURE,
         payload: 'Error in fetching Data',
       });
     }

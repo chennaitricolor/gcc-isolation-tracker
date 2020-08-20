@@ -25,7 +25,7 @@ const PatientsContainer = () => {
     });
   }, [dispatch]);
 
-  if (personsList.error || getAllZones.allZonesError || getQuarantineTypes.typesError) {
+  if (personsList.error || getQuarantineTypes.typesError) {
     return (
       <Alert style={{ fontWeight: 'bold', justifyContent: 'center' }} severity={'error'}>
         Error connecting to server.. Please try later..

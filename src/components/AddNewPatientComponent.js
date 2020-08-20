@@ -15,7 +15,7 @@ import find from 'lodash/find';
 import moment from 'moment';
 import RequiredFieldMarker from './RequiredFieldMarker';
 import { useDispatch, useSelector } from 'react-redux';
-import zoneActions from '../actions/GetZonesAction';
+import zoneActions from '../actions/getZonesByTypeAction';
 import wardActions from '../actions/getWardsAction';
 
 const useStyles = makeStyles(() => ({
@@ -131,13 +131,13 @@ const AddNewPatientComponent = ({ onSubmit, onCancel, zones, wards, types }) => 
 
   const personalInfoOnChange = (field, value) => setDetails({ ...details, [field]: value });
   const addressInfoOnChange = (field, value) => setDetails({ ...details, _address: { ...details._address, [field]: value } });
-  const getAllZones = useSelector((state) => state.getAllZonesReducer);
+  const getZonesBasedOnType = useSelector((state) => state.getZonesBasedOnTypeReducer);
   const getAllWards = useSelector((state) => state.getAllWardsReducer);
 
   const addressTypeChange = (field, value) => {
     setDetails({ ...details, _address: { ...details._address, [field]: value, zone: '', division: '' } });
     dispatch({
-      type: zoneActions.GET_ALL_ZONE,
+      type: zoneActions.GET_ZONE_BY_TYPE,
       payload: {
         addressType: value,
       },
@@ -294,7 +294,7 @@ const AddNewPatientComponent = ({ onSubmit, onCancel, zones, wards, types }) => 
       locality &&
       zone &&
       (getAllWards.allWards.length === 0 || division) &&
-      !getAllZones.isLoading &&
+      !getZonesBasedOnType.isLoading &&
       !getAllWards.isLoading
     );
   };
@@ -343,12 +343,12 @@ const AddNewPatientComponent = ({ onSubmit, onCancel, zones, wards, types }) => 
           {renderTextInput('Area Name / பகுதி பெயர்', 'area', addressInfoOnChange, true)}
           {renderTextInput('Locality / வட்டாரம்', 'locality', addressInfoOnChange, true)}
           {renderDropdownInput('Address Type', 'addressType', addressTypeChange, addressType, true)}
-          {details._address.addressType === 'zone' && renderDropdownInput('Zone / மண்டலம்', 'zone', zoneOnChange, getAllZones.allZones, true)}
-          {details._address.addressType === 'municipality' && renderDropdownInput('Municipality', 'zone', zoneOnChange, getAllZones.allZones, true)}
+          {details._address.addressType === 'zone' && renderDropdownInput('Zone / மண்டலம்', 'zone', zoneOnChange, getZonesBasedOnType.allZones, true)}
+          {details._address.addressType === 'municipality' && renderDropdownInput('Municipality', 'zone', zoneOnChange, getZonesBasedOnType.allZones, true)}
           {details._address.addressType === 'town panchayat' &&
-            renderDropdownInput('Town Panchayat', 'zone', zoneOnChange, getAllZones.allZones, true)}
-          {details._address.addressType === 'panchayat' && renderDropdownInput('Panchayat', 'zone', zoneOnChange, getAllZones.allZones, true)}
-          {details._address.addressType === 'block' && renderDropdownInput('Block', 'zone', zoneOnChange, getAllZones.allZones, true)}
+            renderDropdownInput('Town Panchayat', 'zone', zoneOnChange, getZonesBasedOnType.allZones, true)}
+          {details._address.addressType === 'panchayat' && renderDropdownInput('Panchayat', 'zone', zoneOnChange, getZonesBasedOnType.allZones, true)}
+          {details._address.addressType === 'block' && renderDropdownInput('Block', 'zone', zoneOnChange, getZonesBasedOnType.allZones, true)}
           {details._address.zone &&
             getAllWards.allWards.length > 0 &&
             renderDropdownInput('Division', 'division', addressInfoOnChange, getAllWards.allWards, true)}

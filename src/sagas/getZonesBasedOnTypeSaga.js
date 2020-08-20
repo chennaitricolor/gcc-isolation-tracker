@@ -1,21 +1,21 @@
 import { put, call } from 'redux-saga/effects';
-import actions from '../actions/GetZonesAction';
+import actions from '../actions/getZonesByTypeAction';
 import { apiUrls } from '../utils/constants';
 import { callFetchApi } from '../services/api';
 import routeToPathAction from '../actions/RouteToPathAction';
 
-export default function* getAllZones(action) {
+export default function* getZonesBasedOnTypeSaga(action) {
   try {
-    const api = apiUrls.getZones.replace(':type', action.payload.addressType);
+    const api = apiUrls.getZonesByType.replace(':type', action.payload.addressType);
     const response = yield call(callFetchApi, api, {}, 'GET');
     if (response.data !== undefined) {
       yield put({
-        type: actions.GET_ALL_ZONES_SUCCESS,
+        type: actions.GET_ZONE_BY_TYPE_SUCCESS,
         payload: { zoneListing: response.data },
       });
     } else {
       yield put({
-        type: actions.GET_ALL_ZONES_FAILURE,
+        type: actions.GET_ZONE_BY_TYPE_FAILURE,
         payload: 'Error in fetching Data',
       });
     }
@@ -27,7 +27,7 @@ export default function* getAllZones(action) {
       });
     } else {
       yield put({
-        type: actions.GET_ALL_ZONES_FAILURE,
+        type: actions.GET_ZONE_BY_TYPE_FAILURE,
         payload: 'Error in fetching Data',
       });
     }

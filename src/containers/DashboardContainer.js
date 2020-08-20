@@ -3,6 +3,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import Fab from '@material-ui/core/Fab';
 import AddIcon from '@material-ui/icons/Add';
 import typesActions from '../actions/GetQuarantineTypesAction';
+import getAllZonesAction from '../actions/getAllZonesAction';
 import toastActions from '../actions/ToastAction';
 import PatientsContainer from './PatientsContainer';
 import AddNewPatientContainer from './AddNewPatientContainer';
@@ -19,6 +20,9 @@ const DashboardContainer = () => {
   useEffect(() => {
     dispatch({
       type: typesActions.GET_QUARANTINE_TYPE,
+    });
+    dispatch({
+      type: getAllZonesAction.GET_ALL_ZONES,
     });
   }, [dispatch]);
 

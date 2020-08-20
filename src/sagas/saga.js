@@ -1,7 +1,8 @@
 import { takeLatest } from 'redux-saga/effects';
 import loginActions from '../actions/LoginAction';
 import routesActions from '../actions/RouteToPathAction';
-import getZonesAction from '../actions/GetZonesAction';
+import getAllZonesAction from '../actions/getAllZonesAction';
+import getZonesByTypeAction from '../actions/getZonesByTypeAction';
 import getWardsAction from '../actions/getWardsAction';
 import getQuarantineTypesAction from '../actions/GetQuarantineTypesAction';
 import resetPasswordActions from '../actions/ResetPasswordAction';
@@ -11,7 +12,7 @@ import updateContractedPersonsAction from '../actions/updateContractedPersonsAct
 import logoutActions from '../actions/LogoutAction';
 import loginSaga from './LoginSaga';
 import routesSaga from './RouteUrlsSaga';
-import getAllZones from './GetAllZonesSaga';
+import getZonesBasedOnTypeSaga from './getZonesBasedOnTypeSaga';
 import getAllWardsSaga from './getAllWardsSaga';
 import resetPasswordSaga from './ResetPasswordSaga';
 import getPersonsDetailSaga from './getPersonsDetailSaga';
@@ -19,11 +20,13 @@ import addContractedPersonsSaga from './addContractedPersonSaga';
 import updateContractedPersonsSaga from './updateContractedPersonsSaga';
 import getQuarantineTypesSaga from './GetQuaratineTypesSaga';
 import logoutSaga from './LogoutSaga';
+import getAllZonesSaga from './getAllZonesSaga';
 
 export default function* saga() {
   yield takeLatest(loginActions.INITIATE_LOGIN, loginSaga);
   yield takeLatest(routesActions.ROUTE_TO_PATH, routesSaga);
-  yield takeLatest(getZonesAction.GET_ALL_ZONE, getAllZones);
+  yield takeLatest(getAllZonesAction.GET_ALL_ZONES, getAllZonesSaga);
+  yield takeLatest(getZonesByTypeAction.GET_ZONE_BY_TYPE, getZonesBasedOnTypeSaga);
   yield takeLatest(getWardsAction.GET_ALL_WARDS, getAllWardsSaga);
   yield takeLatest(resetPasswordActions.RESET_PASSWORD, resetPasswordSaga);
   yield takeLatest(getPersonsDetailAction.GET_PERSONS_DETAILS, getPersonsDetailSaga);

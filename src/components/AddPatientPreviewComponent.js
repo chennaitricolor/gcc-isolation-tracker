@@ -55,10 +55,10 @@ function renderReadOnlyData(label, value, styles) {
 const AddPatientPreviewComponent = (props) => {
   const styles = useStyles();
 
-  const getAllZones = useSelector((state) => state.getAllZonesReducer);
+  const getZonesBasedOnType = useSelector((state) => state.getZonesBasedOnTypeReducer);
 
   const { door_num, building_name, house_num_old, house_num_new, street, area, locality, zone, division } = props.previewData._address;
-  const zoneName = find(getAllZones.allZones, ['id', zone]).name;
+  const zoneName = find(getZonesBasedOnType.allZones, ['id', zone]).name;
   const address = join(
     filter([door_num, house_num_new, house_num_old, building_name, street, area, locality, zoneName, division], (item) => item),
     ', ',
@@ -111,7 +111,6 @@ const AddPatientPreviewComponent = (props) => {
 AddPatientPreviewComponent.propTypes = {
   showPreview: PropTypes.bool,
   handleCloseForPreview: PropTypes.func,
-  getAllZones: PropTypes.array,
   getQuarantineTypes: PropTypes.array,
   previewData: PropTypes.object,
   handleSave: PropTypes.func,

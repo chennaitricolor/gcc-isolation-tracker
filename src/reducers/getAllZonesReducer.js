@@ -1,4 +1,4 @@
-import actions from '../actions/GetZonesAction';
+import actions from '../actions/getAllZonesAction';
 import toastActions from '../actions/ToastAction';
 import logoutActions from '../actions/LogoutAction';
 
@@ -10,7 +10,7 @@ const defaultState = {
 
 const getAllZonesReducer = (state = defaultState, { type, payload }) => {
   switch (type) {
-    case actions.GET_ALL_ZONE:
+    case actions.GET_ALL_ZONES:
       return Object.assign({}, state, {
         isLoading: true,
         allZones: [],
@@ -19,7 +19,7 @@ const getAllZonesReducer = (state = defaultState, { type, payload }) => {
     case actions.GET_ALL_ZONES_SUCCESS:
       return Object.assign({}, state, {
         isLoading: false,
-        allZones: payload.zoneListing,
+        allZones: payload.zones,
         allZonesError: '',
       });
     case actions.GET_ALL_ZONES_FAILURE:
