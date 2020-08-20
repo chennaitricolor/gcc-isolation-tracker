@@ -13,10 +13,14 @@ module.exports = {
       throw e;
     }
   },
-  getAll: async (region,type) => {
+  getAll: async (region,type, typeCheck) => {
+      let query = {region, type};
+      if (!typeCheck) {
+          query= {region}
+      }
     try {
         const res = await zone.findAll({
-            where: {region, type},
+            where: query,
           include: [
             {
               model: city,

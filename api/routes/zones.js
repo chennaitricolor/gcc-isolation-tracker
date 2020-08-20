@@ -5,7 +5,7 @@ const logger = require('../helpers/logger');
 router.get('/:type', async(req, res) => {
   try {
       const region = req.headers.region ? req.headers.region : 'GCC';
-  const zones = await zoneService.getAll(region,req.params.type);
+  const zones = await zoneService.getAll(region,req.params.type, true);
   return res.status(200).send(zones);
   } catch(e) {
       logger.error(JSON.stringify(e));
@@ -13,6 +13,19 @@ router.get('/:type', async(req, res) => {
           message: e.message
       });
   }
+});
+
+router.get('/', async(req, res) => {
+    try {
+        const region = req.headers.region ? req.headers.region : 'GCC';
+        const zones = await zoneService.getAll(region,req.params.type, false);
+        return res.status(200).send(zones);
+    } catch(e) {
+        logger.error(JSON.stringify(e));
+        return res.status(500).json({
+            message: e.message
+        });
+    }
 });
 
 router.get('/:id', async(req, res) => {
