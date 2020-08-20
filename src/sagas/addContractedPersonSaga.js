@@ -19,7 +19,9 @@ export default function* addContractedPersonsSaga(action) {
       yield put({
         type: addContractedPersonsAction.ADD_CONTRACTED_PERSONS_FAILURE,
         response:
-          response.response && response.response.data && response.response.data.message ? response.response.data.message : 'Error while saving data...',
+          response.response && response.response.data && response.response.data.message
+            ? response.response.data.message
+            : 'Error while saving data...',
       });
     }
   } catch (error) {

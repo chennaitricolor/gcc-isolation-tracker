@@ -1,7 +1,7 @@
 import actions from '../actions/ToastAction';
 
 const defaultState = {
-  toastMessage: null
+  toastMessage: null,
 };
 
 const toastMessageReducer = (state = defaultState, action) => {

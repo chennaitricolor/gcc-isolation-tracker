@@ -29,24 +29,24 @@ app.use(
     resave: false,
     saveUninitialized: false,
     cookie: { secure: false },
-    expires: Date.now() + (7 * 86400 * 1000)
+    expires: Date.now() + 7 * 86400 * 1000,
   }),
 );
 
-app.use(expressWinston.logger({
-  transports: [
-    new winston.transports.Console()
-  ],
-  meta: false,
-  format: winston.format.combine(
-    winston.format.colorize(),
-    winston.format.timestamp({
-      format: 'YYYY-MM-DD HH:mm:ss',
-    }),
-    winston.format.printf(info => `${info.timestamp} ${info.level}: ${info.message}`),
-  ),
-  expressFormat: true,
-}));
+app.use(
+  expressWinston.logger({
+    transports: [new winston.transports.Console()],
+    meta: false,
+    format: winston.format.combine(
+      winston.format.colorize(),
+      winston.format.timestamp({
+        format: 'YYYY-MM-DD HH:mm:ss',
+      }),
+      winston.format.printf((info) => `${info.timestamp} ${info.level}: ${info.message}`),
+    ),
+    expressFormat: true,
+  }),
+);
 
 app.use((req, res, next) => {
   res.header('Cache-Control', 'private, no-cache, no-store, must-revalidate');

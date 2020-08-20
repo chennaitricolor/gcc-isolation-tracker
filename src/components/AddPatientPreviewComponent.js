@@ -12,6 +12,7 @@ import Button from '@material-ui/core/Button';
 import join from 'lodash/join';
 import filter from 'lodash/filter';
 import find from 'lodash/find';
+import { useSelector } from 'react-redux';
 
 const useStyles = makeStyles(() => ({
   title: {
@@ -53,8 +54,11 @@ function renderReadOnlyData(label, value, styles) {
 
 const AddPatientPreviewComponent = (props) => {
   const styles = useStyles();
+
+  const getAllZones = useSelector((state) => state.getAllZonesReducer);
+
   const { door_num, building_name, house_num_old, house_num_new, street, area, locality, zone, division } = props.previewData._address;
-  const zoneName = find(props.getAllZones, ['id', zone]).name;
+  const zoneName = find(getAllZones.allZones, ['id', zone]).name;
   const address = join(
     filter([door_num, house_num_new, house_num_old, building_name, street, area, locality, zoneName, division], (item) => item),
     ', ',

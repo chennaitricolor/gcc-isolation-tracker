@@ -4,6 +4,7 @@ import resetPasswordResponse from './ResetPasswordReducer';
 import getPersonsDetailReducer from './getPersonsDetailReducer';
 import contractedPersonReducer from './contractedPersonReducer';
 import getAllZonesReducer from './GetAllZonesReducer';
+import getAllWardsReducer from './getAllWardsReducer';
 import getQuarantineTypesReducer from './GetQuarantineTypesReducer';
 import toastMessageReducer from './toastMessageReducer';
 
@@ -13,6 +14,7 @@ const reducers = combineReducers({
   getPersonsDetailReducer,
   contractedPersonReducer,
   getAllZonesReducer,
+  getAllWardsReducer,
   getQuarantineTypesReducer,
   toastMessageReducer,
 });

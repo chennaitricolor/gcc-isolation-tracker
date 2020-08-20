@@ -15,6 +15,7 @@ export default function* logoutSaga(action) {
       yield put({
         type: logoutActions.LOGOUT_SUCCESS,
       });
+      sessionStorage.removeItem('region');
     } else {
       yield put({
         type: logoutActions.LOGOUT_FAILURE,

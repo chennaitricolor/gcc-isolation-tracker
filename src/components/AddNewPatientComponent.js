@@ -14,6 +14,9 @@ import InputMask from 'react-input-mask';
 import find from 'lodash/find';
 import moment from 'moment';
 import RequiredFieldMarker from './RequiredFieldMarker';
+import { useDispatch, useSelector } from 'react-redux';
+import zoneActions from '../actions/GetZonesAction';
+import wardActions from '../actions/getWardsAction';
 
 const useStyles = makeStyles(() => ({
   root: { display: 'flex', flexFlow: 'column', height: '92%', overflowY: 'scroll', padding: '5%' },
@@ -115,6 +118,7 @@ const initialState = {
     street: '',
     area: '',
     locality: '',
+    addressType: '',
     zone: '',
     division: '',
   },
@@ -122,14 +126,32 @@ const initialState = {
 
 const AddNewPatientComponent = ({ onSubmit, onCancel, zones, wards, types }) => {
   const styles = useStyles();
+  const dispatch = useDispatch();
   const [details, setDetails] = useState(initialState);
 
   const personalInfoOnChange = (field, value) => setDetails({ ...details, [field]: value });
   const addressInfoOnChange = (field, value) => setDetails({ ...details, _address: { ...details._address, [field]: value } });
+  const getAllZones = useSelector((state) => state.getAllZonesReducer);
+  const getAllWards = useSelector((state) => state.getAllWardsReducer);
 
-  const getWardsListing = () => {
-    const zoneName = find(zones, ['id', details._address.zone]).name;
-    return find(wards, ['name', zoneName]).wards;
+  const addressTypeChange = (field, value) => {
+    setDetails({ ...details, _address: { ...details._address, [field]: value, zone: '', division: '' } });
+    dispatch({
+      type: zoneActions.GET_ALL_ZONE,
+      payload: {
+        addressType: value,
+      },
+    });
+  };
+
+  const zoneOnChange = (field, value) => {
+    setDetails({ ...details, _address: { ...details._address, [field]: value } });
+    dispatch({
+      type: wardActions.GET_ALL_WARDS,
+      payload: {
+        zoneId: value,
+      },
+    });
   };
 
   const renderTextInput = (label, field, handleChange, isRequired = false) => {
@@ -256,6 +278,7 @@ const AddNewPatientComponent = ({ onSubmit, onCancel, zones, wards, types }) => 
   const canEnableSubmit = () => {
     const { name, age, gender, phone_number, quarantine_type, quarantine_sub_type, family_member_total, _address, isolation_start_date } = details;
     const { door_num, street, area, locality, zone, division } = _address;
+
     return (
       name &&
       age &&
@@ -270,9 +293,19 @@ const AddNewPatientComponent = ({ onSubmit, onCancel, zones, wards, types }) => 
       area &&
       locality &&
       zone &&
-      division
+      (getAllWards.allWards.length === 0 || division) &&
+      !getAllZones.isLoading &&
+      !getAllWards.isLoading
     );
   };
+
+  const addressType = [
+    { id: 'zone', name: 'Zone' },
+    { id: 'municipality', name: 'Municipality' },
+    { id: 'town panchayat', name: 'Town Panchayat' },
+    { id: 'panchayat', name: 'Panchayat' },
+    { id: 'block', name: 'Block' },
+  ];
 
   return (
     <div className={styles.root}>
@@ -309,8 +342,16 @@ const AddNewPatientComponent = ({ onSubmit, onCancel, zones, wards, types }) => 
           {renderTextInput('Street Name / தெரு பெயர்', 'street', addressInfoOnChange, true)}
           {renderTextInput('Area Name / பகுதி பெயர்', 'area', addressInfoOnChange, true)}
           {renderTextInput('Locality / வட்டாரம்', 'locality', addressInfoOnChange, true)}
-          {renderDropdownInput('Zone / மண்டலம்', 'zone', addressInfoOnChange, zones, true)}
-          {details._address.zone && renderDropdownInput('Division', 'division', addressInfoOnChange, getWardsListing(), true)}
+          {renderDropdownInput('Address Type', 'addressType', addressTypeChange, addressType, true)}
+          {details._address.addressType === 'zone' && renderDropdownInput('Zone / மண்டலம்', 'zone', zoneOnChange, getAllZones.allZones, true)}
+          {details._address.addressType === 'municipality' && renderDropdownInput('Municipality', 'zone', zoneOnChange, getAllZones.allZones, true)}
+          {details._address.addressType === 'town panchayat' &&
+            renderDropdownInput('Town Panchayat', 'zone', zoneOnChange, getAllZones.allZones, true)}
+          {details._address.addressType === 'panchayat' && renderDropdownInput('Panchayat', 'zone', zoneOnChange, getAllZones.allZones, true)}
+          {details._address.addressType === 'block' && renderDropdownInput('Block', 'zone', zoneOnChange, getAllZones.allZones, true)}
+          {details._address.zone &&
+            getAllWards.allWards.length > 0 &&
+            renderDropdownInput('Division', 'division', addressInfoOnChange, getAllWards.allWards, true)}
         </form>
       </div>
       <div style={{ textAlign: 'center' }}>

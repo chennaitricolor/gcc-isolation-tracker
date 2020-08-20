@@ -1,20 +1,21 @@
 import { put, call } from 'redux-saga/effects';
-import actions from '../actions/GetQuarantineTypesAction';
+import actions from '../actions/getWardsAction';
 import { apiUrls } from '../utils/constants';
 import { callFetchApi } from '../services/api';
 import routeToPathAction from '../actions/RouteToPathAction';
 
-export default function* getQuarantineTypes() {
+export default function* getAllWardsSaga(action) {
   try {
-    const response = yield call(callFetchApi, apiUrls.getQuarantineTypes, {}, 'GET');
+    const api = apiUrls.getWardsMapping.replace(':zoneId', action.payload.zoneId);
+    const response = yield call(callFetchApi, api, {}, 'GET');
     if (response.data !== undefined) {
       yield put({
-        type: actions.GET_QUARANTINE_TYPES_SUCCESS,
-        payload: response.data,
+        type: actions.GET_ALL_WARDS_SUCCESS,
+        payload: { wardListing: response.data },
       });
     } else {
       yield put({
-        type: actions.GET_QUARANTINE_TYPES_FAILURE,
+        type: actions.GET_ALL_WARDS_FAILURE,
         payload: 'Error in fetching Data',
       });
     }
@@ -26,7 +27,7 @@ export default function* getQuarantineTypes() {
       });
     } else {
       yield put({
-        type: actions.GET_QUARANTINE_TYPES_FAILURE,
+        type: actions.GET_ALL_ZONES_FAILURE,
         payload: 'Error in fetching Data',
       });
     }

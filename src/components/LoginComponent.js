@@ -9,6 +9,7 @@ import InputAdornment from '@material-ui/core/InputAdornment';
 import IconButton from '@material-ui/core/IconButton';
 import Visibility from '@material-ui/icons/Visibility';
 import VisibilityOff from '@material-ui/icons/VisibilityOff';
+import { Helmet } from 'react-helmet';
 
 const useStyles = makeStyles(() => ({
   loginContainer: {
@@ -72,8 +73,12 @@ export const LoginComponent = (props) => {
   const styles = useStyles();
   return (
     <div className={styles.loginContainer}>
+      <Helmet>
+        <meta charSet="utf-8" />
+        <title>{'HQIMS FOCUS Module'}</title>
+      </Helmet>
       <div className={styles.loginInformationContainer}>
-        <Typography className={styles.agentXTitle}>GCC HQIMS FOCUS Module</Typography>
+        <Typography className={styles.agentXTitle}>HQIMS FOCUS Module</Typography>
         <div style={{ textAlign: 'center' }}>
           <img className={styles.agentXLoginLogo} alt={'loginLogo'} src={agentXLoginLogo} />
         </div>
@@ -110,7 +115,12 @@ export const LoginComponent = (props) => {
           ),
         }}
       />
-      <Button id={'agent-x-sign-in-button'} variant="contained" className={styles.actionButton + ' sign-in-button'} onClick={(event) => props.handleLogin(event)}>
+      <Button
+        id={'agent-x-sign-in-button'}
+        variant="contained"
+        className={styles.actionButton + ' sign-in-button'}
+        onClick={(event) => props.handleLogin(event)}
+      >
         SIGN IN
       </Button>
     </div>

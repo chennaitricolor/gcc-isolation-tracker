@@ -270,7 +270,7 @@ const initialDuplicateDetails = {
   quarantine_type: '',
   quarantine_sub_type: null,
   no_of_duplicates: '',
-}
+};
 
 const AttendanceComponent = (props) => {
   const dispatch = useDispatch();

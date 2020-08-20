@@ -4,14 +4,14 @@ import { apiUrls } from '../utils/constants';
 import { callFetchApi } from '../services/api';
 import routeToPathAction from '../actions/RouteToPathAction';
 
-export default function* getAllZones() {
+export default function* getAllZones(action) {
   try {
-    const response = yield call(callFetchApi, apiUrls.getZones, {}, 'GET');
-    const wardsMappingResponse = yield call(callFetchApi, apiUrls.getWardsMapping, {}, 'GET');
-    if (response.data !== undefined && wardsMappingResponse.data !== undefined) {
+    const api = apiUrls.getZones.replace(':type', action.payload.addressType);
+    const response = yield call(callFetchApi, api, {}, 'GET');
+    if (response.data !== undefined) {
       yield put({
         type: actions.GET_ALL_ZONES_SUCCESS,
-        payload: { zonePayload: response.data, wardsMappingPayload: wardsMappingResponse.data },
+        payload: { zoneListing: response.data },
       });
     } else {
       yield put({
