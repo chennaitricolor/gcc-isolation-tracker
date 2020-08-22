@@ -58,8 +58,7 @@ module.exports = {
             const res = await user.findOne({
                 where: {
                     login: number,
-                    region,
-                    active: true
+                    region
                 },
                 include: [
                     {
@@ -86,6 +85,21 @@ module.exports = {
             throw e;
         }
     },
+    getByLoginAndActive: async (number, region, active) => {
+        try {
+            const res = await user.findOne({
+                where: {
+                    login: number,
+                    active
+                }
+            });
+            if(res)
+                return res;
+            return null;
+        } catch (e) {
+            throw e;
+        }
+    },    
     getPersonsByUser: async (id) => {
         try {
             const res = await personUser.findAll({
