@@ -147,7 +147,7 @@ const PatientsComponent = ({ patients, zones, types }) => {
     return details.map((detail) => {
       const { id, name, phone_number, age, gender, _address, isolation_start_date, isolation_end_date, _isolation_enquiries } = detail;
       const { door_num, house_num_new, house_num_old, building_name, street, area, locality, division, zone } = _address;
-      const zoneName = find(zones, ['id', zone]).name;
+      const zoneName = find(zones, ['id', zone]) !== undefined ? find(zones, ['id', zone]).name : '';
       const address = join(
         filter([door_num, house_num_new, house_num_old, building_name, street, area, locality, zoneName, division], (item) => item),
         ', ',
