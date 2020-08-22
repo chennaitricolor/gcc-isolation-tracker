@@ -65,7 +65,7 @@ app.use((req, res, next) => {
 routes.bind(app);
 
 const authorized = (req, res, next) => {
-  if (req.session.user && req.cookies['gcc-isolation-tracker'] && req.session.user.region === req.headers.region) {
+  if (req.session.user && req.cookies['gcc-isolation-tracker']) {
     next();
   } else {
     res.redirect('/');
