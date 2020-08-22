@@ -303,7 +303,7 @@ const AddNewPatientComponent = ({ onSubmit, onCancel, zones, wards, types }) => 
     { id: 'zone', name: 'Zone' },
     { id: 'municipality', name: 'Municipality' },
     { id: 'town panchayat', name: 'Town Panchayat' },
-    { id: 'panchayat', name: 'Panchayat' },
+    { id: 'cantonment', name: 'Cantonment' },
     { id: 'block', name: 'Block' },
   ];
 
@@ -347,7 +347,7 @@ const AddNewPatientComponent = ({ onSubmit, onCancel, zones, wards, types }) => 
           {details._address.addressType === 'municipality' && renderDropdownInput('Municipality', 'zone', zoneOnChange, getZonesBasedOnType.allZones, true)}
           {details._address.addressType === 'town panchayat' &&
             renderDropdownInput('Town Panchayat', 'zone', zoneOnChange, getZonesBasedOnType.allZones, true)}
-          {details._address.addressType === 'panchayat' && renderDropdownInput('Panchayat', 'zone', zoneOnChange, getZonesBasedOnType.allZones, true)}
+          {details._address.addressType === 'cantonment' && renderDropdownInput('Cantonment', 'zone', zoneOnChange, getZonesBasedOnType.allZones, true)}
           {details._address.addressType === 'block' && renderDropdownInput('Block', 'zone', zoneOnChange, getZonesBasedOnType.allZones, true)}
           {details._address.zone &&
             getAllWards.allWards.length > 0 &&
