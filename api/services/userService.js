@@ -58,7 +58,8 @@ module.exports = {
             const res = await user.findOne({
                 where: {
                     login: number,
-                    region
+                    region,
+                    active: true
                 },
                 include: [
                     {
