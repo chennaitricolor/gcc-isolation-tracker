@@ -19,12 +19,6 @@ router.get('/users/:login', async(req, res) => {
 router.post('/users', async(req, res) => {
     const payload = req.body;
     try {
-        const user = await userService.getByLoginAndActive(payload.login, payload.region, true);
-        if(user) {
-            return res.status(500).json({
-                message: 'User already exists'
-            });
-        }
         const [record, created] = await userService.upsert(payload);
         console.log(record, created);
         return res.status(200).send(record);
