@@ -91,7 +91,6 @@ module.exports = {
             const res = await user.findOne({
                 where: {
                     login: number,
-                    active: true,
                 }
             });
             if(res)
