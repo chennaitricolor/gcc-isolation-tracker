@@ -6,7 +6,7 @@ router.get('/users/:login', async(req, res) => {
     const { login } = req.params;
     try {
         const region = req.headers.region ? req.headers.region : 'GCC';
-        const user = await userService.getByLogin(login, region);
+        const user = await userService.getByLoginAndRegion(login, region);
         return res.status(200).send(user);
     } catch(e) {
         logger.error(JSON.stringify(e));
@@ -17,27 +17,28 @@ router.get('/users/:login', async(req, res) => {
 });
 
 router.post('/users', async (req, res) => {
-    const payload = req.body;
-    const region = req.headers.region ? req.headers.region : 'GCC';
-    try {
-      if (!payload.id) {
-        const existingUser = await userService.getByLoginAndActive(payload.login);
-        if (existingUser) {
-          const errorReason = existingUser.region === region ? 'Volunteer already exists' : 'Volunteer already exists in another region';
-          res.status(409).json({
-            message: errorReason,
-          });
-        }
-      }
-      const [record] = await userService.upsert(payload);
-      return res.status(200).send(record);
-    } catch (e) {
-      logger.error(JSON.stringify(e));
-      return res.status(500).json({
-        message: e.message,
+  let payload = req.body;
+  const region = req.headers.region ? req.headers.region : 'GCC';
+  try {
+    const existingUser = await userService.getByLogin(payload.login);
+    if (existingUser && existingUser.active && !payload.id) {
+      const errorReason = existingUser.region === region ? 'Volunteer already exists' : 'Volunteer already exists in another region';
+      res.status(409).json({
+        message: errorReason,
       });
     }
-  });
+    if (existingUser && !existingUser.active) {
+      payload = { ...payload, id: existingUser.id };
+    }
+    const [record] = await userService.upsert(payload);
+    return res.status(200).send(record);
+  } catch (e) {
+    logger.error(JSON.stringify(e));
+    return res.status(500).json({
+      message: e.message,
+    });
+  }
+});
 
 router.delete('/users/:id', async(req, res) => {
     const { id } = req.params;

@@ -53,7 +53,7 @@ module.exports = {
       throw e;
     }
   },
-    getByLogin: async (number, region) => {
+    getByLoginAndRegion: async (number, region) => {
         try {
             const res = await user.findOne({
                 where: {
