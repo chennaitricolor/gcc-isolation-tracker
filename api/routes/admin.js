@@ -16,19 +16,28 @@ router.get('/users/:login', async(req, res) => {
     }
 });
 
-router.post('/users', async(req, res) => {
+router.post('/users', async (req, res) => {
     const payload = req.body;
+    const region = req.headers.region ? req.headers.region : 'GCC';
     try {
-        const [record, created] = await userService.upsert(payload);
-        console.log(record, created);
-        return res.status(200).send(record);
-    } catch(e) {
-        logger.error(JSON.stringify(e));
-        return res.status(500).json({
-            message: e.message
-        });
+      if (!payload.id) {
+        const existingUser = await userService.getByLoginAndActive(payload.login);
+        if (existingUser) {
+          const errorReason = existingUser.region === region ? 'Volunteer already exists' : 'Volunteer already exists in another region';
+          res.status(409).json({
+            message: errorReason,
+          });
+        }
+      }
+      const [record] = await userService.upsert(payload);
+      return res.status(200).send(record);
+    } catch (e) {
+      logger.error(JSON.stringify(e));
+      return res.status(500).json({
+        message: e.message,
+      });
     }
-});
+  });
 
 router.delete('/users/:id', async(req, res) => {
     const { id } = req.params;
