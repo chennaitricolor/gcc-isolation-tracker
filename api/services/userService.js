@@ -86,7 +86,7 @@ module.exports = {
             throw e;
         }
     },
-    getByLoginAndActive: async (number) => {
+    getByLogin: async (number) => {
         try {
             const res = await user.findOne({
                 where: {
