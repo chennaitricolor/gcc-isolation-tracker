@@ -288,6 +288,7 @@ const AttendanceComponent = (props) => {
   const [duplicateCase, setDuplicateCase] = useState(false);
   const [attendanceDetails, setAttendanceDetails] = useState({
     isPersonPresent: '',
+    personSp02Level: '',
     isFamilyMembersPresent: '',
     basicNecessities: [],
     symptoms: [],
@@ -357,6 +358,7 @@ const AttendanceComponent = (props) => {
           basic_necessities_delivered: attendanceDetails.basicNecessities,
           self_or_family_with_symptoms: attendanceDetails.symptoms,
           additional_comments: attendanceDetails.comments,
+          spo2: attendanceDetails.personSp02Level,
           status_check_date: moment().format('YYYY-MM-DD'),
           person: patient.id,
           day: patient.currentDay,
@@ -477,6 +479,20 @@ const AttendanceComponent = (props) => {
                   styles,
                   true,
                 )}
+              </div>
+              <div style={{ marginTop: '5%' }}>
+              {renderNumberInput(
+              'SpO₂ level of person?',
+              'personSp02Level',
+              attendanceDetails.personSp02Level,
+              (field, value) => setAttendanceDetails({
+                ...attendanceDetails,
+                personSp02Level: value,
+              }),
+              '999',
+              styles,
+              false,
+            )}
               </div>
               <div style={{ marginTop: '5%' }}>
                 {renderRadioButtonField(

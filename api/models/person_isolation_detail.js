@@ -70,6 +70,10 @@ module.exports = function (sequelize, DataTypes) {
     enquiry_seq: {
       type: DataTypes.INTEGER,
       allowNull: true
+    },
+    spo2: {
+      type: DataTypes.INTEGER,
+      allowNull: true
     }
   }, {
     tableName: 'person_isolation_details',
