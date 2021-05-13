@@ -27,6 +27,8 @@ import moment from 'moment';
 
 import { symptoms, necessities, closeReasons } from '../utils/constants';
 
+const spO2Levels = [{label: '95 - 100', value:'95 - 100'}, {label:'90 - 94',value:'90 - 94'}, {label:'Below 90', value:'Below 90'}];
+
 const useStyles = makeStyles(() => ({
   dialogContent: {
     padding: 0,
@@ -481,18 +483,15 @@ const AttendanceComponent = (props) => {
                 )}
               </div>
               <div style={{ marginTop: '5%' }}>
-              {renderNumberInput(
-              'SpO₂ level of person?',
-              'personSp02Level',
-              attendanceDetails.personSp02Level,
-              (field, value) => setAttendanceDetails({
-                ...attendanceDetails,
-                personSp02Level: value,
-              }),
-              '999',
-              styles,
-              false,
-            )}
+                {renderRadioButtonField(
+                  'SpO₂ level of person?',
+                  'personSp02Level',
+                  attendanceDetails.personSp02Level,
+                  spO2Levels,
+                  handleOnChange,
+                  styles,
+                  false,
+                )}
               </div>
               <div style={{ marginTop: '5%' }}>
                 {renderRadioButtonField(
