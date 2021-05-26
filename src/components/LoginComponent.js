@@ -3,7 +3,8 @@ import { makeStyles } from '@material-ui/core/styles';
 import * as PropTypes from 'prop-types';
 import { Typography } from '@material-ui/core';
 import Button from '@material-ui/core/Button';
-import agentXLoginLogo from '../images/GccLogo.jpg';
+import gccLoginLogo from '../images/GccLogo.jpg';
+import agentXLoginLogo from '../images/TNLogo.jpg';
 import TextField from '@material-ui/core/TextField';
 import InputAdornment from '@material-ui/core/InputAdornment';
 import IconButton from '@material-ui/core/IconButton';
@@ -80,7 +81,7 @@ export const LoginComponent = (props) => {
       <div className={styles.loginInformationContainer}>
         <Typography className={styles.agentXTitle}>HQIMS FOCUS Module</Typography>
         <div style={{ textAlign: 'center' }}>
-          <img className={styles.agentXLoginLogo} alt={'loginLogo'} src={agentXLoginLogo} />
+          <img className={styles.agentXLoginLogo} alt={'loginLogo'} src={props.path ? agentXLoginLogo : gccLoginLogo} />
         </div>
         <Typography className={styles.agentXSignInInformation}>Sign in by entering the information below</Typography>
       </div>
@@ -134,4 +135,5 @@ LoginComponent.propTypes = {
   getLoginResponse: PropTypes.any,
   handleClickShowPassword: PropTypes.func.isRequired,
   handleMouseDownPassword: PropTypes.func.isRequired,
+  path: PropTypes.string,
 };

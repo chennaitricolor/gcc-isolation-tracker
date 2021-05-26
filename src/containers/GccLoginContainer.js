@@ -5,7 +5,7 @@ import actions from '../actions/LoginAction';
 import resetPasswordActions from '../actions/ResetPasswordAction';
 import ResetPasswordComponent from '../components/ResetPasswordComponent';
 
-export const LoginContainer = () => {
+export const GccLoginContainer = () => {
   const [loginDetails, setLoginDetails] = useReducer((state, newState) => ({ ...state, ...newState }), {
     userId: '',
     password: '',
@@ -88,6 +88,7 @@ export const LoginContainer = () => {
         getLoginResponse={getLoginResponse}
         handleClickShowPassword={handleClickShowPassword}
         handleMouseDownPassword={handleMouseDownPassword}
+        path=''
       />
       <ResetPasswordComponent
         openRestPasswordDialog={openRestPasswordDialog()}
@@ -102,4 +103,4 @@ export const LoginContainer = () => {
   );
 };
 
-export default LoginContainer;
+export default GccLoginContainer;
