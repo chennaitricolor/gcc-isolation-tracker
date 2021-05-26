@@ -80,6 +80,14 @@ app.get('/', function (req, res) {
   }
 });
 
+app.get('/others', function (req, res) {
+  if (req.session.user && req.cookies['gcc-isolation-tracker']) {
+    res.redirect('/dashboard');
+  } else {
+    res.sendFile(path.join(__dirname, '../build', 'index.html'));
+  }
+});
+
 app.get('/dashboard', authorized, function (req, res) {
   res.sendFile(path.join(__dirname, '../build', 'index.html'));
 });
