@@ -4,8 +4,13 @@ import history from '../utils/history';
 import Loadable from 'react-loadable';
 import LoadingComponent from '../components/LoadingComponent';
 
-const AsyncLogin = Loadable({
-  loader: () => import('../containers/LoginContainer'),
+const gccAsyncLogin = Loadable({
+  loader: () => import('../containers/GccLoginContainer'),
+  loading: LoadingComponent,
+});
+
+const genericAsyncLogin = Loadable({
+  loader: () => import('../containers/GenericLoginContainer'),
   loading: LoadingComponent,
 });
 
@@ -17,7 +22,8 @@ const AsyncHome = Loadable({
 export default (props) => (
   <Router history={history}>
     <Switch>
-      <Route exact path="/" component={AsyncLogin} />
+      <Route exact path="/" component={gccAsyncLogin} />
+      <Route exact path="/others" component={genericAsyncLogin} />
       <Route exact path="/dashboard" component={AsyncHome} />
     </Switch>
   </Router>
