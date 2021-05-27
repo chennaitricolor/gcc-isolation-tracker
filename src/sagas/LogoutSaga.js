@@ -3,6 +3,9 @@ import logoutActions from '../actions/LogoutAction';
 import routeToPathAction from '../actions/RouteToPathAction';
 import { callFetchApi } from '../services/api';
 import { apiUrls } from '../utils/constants';
+const region = sessionStorage.getItem('region');
+
+const logoutPath = region=='GCC'?'/':'/others';
 
 export default function* logoutSaga(action) {
   try {
@@ -10,7 +13,7 @@ export default function* logoutSaga(action) {
     if (response.data !== undefined && response.status === 200) {
       yield put({
         type: routeToPathAction.ROUTE_TO_PATH,
-        payload: { path: '/' },
+        payload: { path: logoutPath },
       });
       yield put({
         type: logoutActions.LOGOUT_SUCCESS,
