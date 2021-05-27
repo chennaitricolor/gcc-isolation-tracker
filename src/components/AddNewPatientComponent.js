@@ -101,6 +101,10 @@ const useStyles = makeStyles(() => ({
   },
 }));
 
+const idCompare = (a,b) => {
+  return a-b;
+}
+
 const initialState = {
   name: '',
   age: '',
@@ -248,7 +252,7 @@ const AddNewPatientComponent = ({ onSubmit, onCancel, zones, wards, types }) => 
   };
 
   const renderDropdownInput = (label, field, handleChange, list, isRequired = false) => {
-    const sortedList = list.sort();
+    const sortedList = list.sort(idCompare);
     return (
       <FormControl className={styles.dropDown}>
         <Typography component={'div'} className={styles.fieldLabel}>
