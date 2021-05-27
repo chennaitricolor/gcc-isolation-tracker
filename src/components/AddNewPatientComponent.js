@@ -248,6 +248,7 @@ const AddNewPatientComponent = ({ onSubmit, onCancel, zones, wards, types }) => 
   };
 
   const renderDropdownInput = (label, field, handleChange, list, isRequired = false) => {
+    const sortedList = list.sort();
     return (
       <FormControl className={styles.dropDown}>
         <Typography component={'div'} className={styles.fieldLabel}>
@@ -261,7 +262,7 @@ const AddNewPatientComponent = ({ onSubmit, onCancel, zones, wards, types }) => 
           value={details[field] === undefined ? details._address[field] : details[field]}
           onChange={(e) => handleChange(field, e.target.value)}
         >
-          {list.map((item) => {
+          {sortedList.map((item) => {
             return (
               <MenuItem key={item.id} value={item.id}>
                 {field === 'zone' ? `${item.id} - ${item.name}` : item.name || item.id}
