@@ -102,7 +102,7 @@ const useStyles = makeStyles(() => ({
 }));
 
 const idCompare = (a,b) => {
-  return a-b;
+  return a.id-b.id;
 }
 
 const initialState = {
